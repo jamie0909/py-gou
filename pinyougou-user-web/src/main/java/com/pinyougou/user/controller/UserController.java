@@ -1,6 +1,8 @@
 package com.pinyougou.user.controller;
 import java.util.List;
 
+
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -110,7 +112,7 @@ public class UserController {
 	
 		/**
 	 * 查询+分页
-	 * @param brand
+	 * @param
 	 * @param page
 	 * @param rows
 	 * @return
@@ -122,8 +124,9 @@ public class UserController {
 	
 	@RequestMapping("/sendCode")
 	public Result sendCode(String phone){
-		
+		System.out.println("phone的格式"+phone);
 		if(!PhoneFormatCheckUtils.isPhoneLegal(phone)){
+			System.out.println("phonede根式"+phone);
 			return new Result(false, "手机格式不正确");
 		}
 		
@@ -135,5 +138,90 @@ public class UserController {
 			return new Result(false, "验证码发送失败");
 		}
 	}
-	
+
+
+
+	/***
+	* @Description: 修改用户的密码
+	* @Param: [user]
+	* @return: entity.Result
+	* @Author: WangRui
+	* @Date: 2019/7/25
+	*/
+	@RequestMapping("/updatePassword")
+	public Result updatePassword(@RequestBody TbUser user ){
+		//获取到登录名
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		System.out.println("username"+username);
+		if(!username.equals(user.getUsername())){
+			return new Result(false, "用户名输入不正确");
+		}
+		try {
+			userService.updatePassword(user,username);
+			return new Result(true, "密码修改成功,请重新登陆");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Result(false, "修改失败");
+		}
+	}
+
+
+	/***
+	* @Description: 修改手机号码
+	* @Param: [phone]
+	* @return: entity.Result
+	* @Author: WangRui
+	* @Date: 2019/7/25
+	*/ 
+	@RequestMapping("/updatePhone")
+	public  Result updatePhone(String phone){
+		//获取到登录名
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		try {
+			userService.updatePhone(username,phone);
+			return new Result(true, "手机号修改成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Result(false, "手机号修改失败");
+		}
+	}
+
+
+	/***
+	* @Description: 登陆额用户
+	* @Param: []
+	* @return: User
+	* @Author: WangRui
+	* @Date: 2019/7/25
+	*/
+	@RequestMapping("/findUser.do")
+	public TbUser findUser(){
+		String username= SecurityContextHolder.getContext().getAuthentication().getName();
+		return userService.findUser(username);
+	}
+
+
+
+	/***
+	* @Description: 检查验证码功能
+	* @Param: [code, phone]
+	* @return: entity.Result
+	* @Author: WangRui
+	* @Date: 2019/7/25
+	*/ 
+	@RequestMapping("/checkCode.do")
+	public Result checkCode(String phone,String code){
+		System.out.println("code"+code+"phone"+phone);
+		boolean isTrue = userService.checkSmsCode(phone,code);
+		System.out.println("bolean"+isTrue);
+		if(isTrue) {
+			return this.updatePhone(phone);
+		}else {
+			return new Result(false, "输入错误,请重新验证");
+		}
+	}
+
+
+
+
 }
