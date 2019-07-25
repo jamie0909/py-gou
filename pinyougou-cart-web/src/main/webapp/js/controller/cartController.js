@@ -73,8 +73,8 @@ app.controller('cartController',function($scope,cartService){
 				//alert(response.message);
 				if(response.success){
 					//页面跳转
-					if($scope.order.paymentType=='1'){//如果是微信支付，跳转到支付页面
-						location.href="pay.html";
+					if($scope.order.paymentType=='1'||$scope.order.paymentType=='3'){//如果是微信支付或者支付宝支付，跳转到相应支付页面
+						location.href="pay.html#?type="+$scope.order.paymentType;
 					}else{//如果货到付款，跳转到提示页面
 						location.href="paysuccess.html";
 					}

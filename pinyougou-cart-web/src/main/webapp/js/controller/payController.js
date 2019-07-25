@@ -2,7 +2,8 @@ app.controller('payController' ,function($scope ,$location,payService){
 	
 	
 	$scope.createNative=function(){
-		payService.createNative().success(
+		var paymentType=$location.search()['type'];
+		payService.createNative(paymentType).success(
 			function(response){
 				
 				//显示订单号和金额
