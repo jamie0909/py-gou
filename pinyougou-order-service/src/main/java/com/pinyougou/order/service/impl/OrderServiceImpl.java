@@ -1,8 +1,11 @@
 package com.pinyougou.order.service.impl;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.pinyougou.pojo.group.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +41,8 @@ public class OrderServiceImpl implements OrderService {
 	
 	@Autowired
 	private TbPayLogMapper payLogMapper;
+
+
 	
 	/**
 	 * 查询全部
@@ -148,8 +153,12 @@ public class OrderServiceImpl implements OrderService {
 	 * @return
 	 */
 	@Override
-	public TbOrder findOne(Long id){
-		return orderMapper.selectByPrimaryKey(id);
+	public Order findOne(Long id){
+		Order order=new Order();
+		order.setTbOrder(orderMapper.selectByPrimaryKey(id));
+		order.setTbOrderItem(orderItemMapper.selectByPrimaryKey(id));
+
+		return order;
 	}
 
 	/**
@@ -159,7 +168,7 @@ public class OrderServiceImpl implements OrderService {
 	public void delete(Long[] ids) {
 		for(Long id:ids){
 			orderMapper.deleteByPrimaryKey(id);
-		}		
+		}
 	}
 	
 	
@@ -255,5 +264,72 @@ public class OrderServiceImpl implements OrderService {
 		redisTemplate.boundHashOps("payLog").delete(payLog.getUserId());
 		
 	}
+
+	@Override
+	public void deleteOne(Long id) {
+		orderMapper.deleteByPrimaryKey(id);
+	}
+
+
+	@Override
+	public PageResult findByPage(TbOrder order, int pageNum, int pageSize) {
+
+		// 使用分页插件:
+		PageHelper.startPage(pageNum, pageSize);
+		// 进行条件查询:
+		TbOrderExample example = new TbOrderExample();
+		Criteria criteria = example.createCriteria();
+		// 设置条件:
+		if(order!=null) {
+			//通过电话或者收件人查询
+			if (order.getReceiver()!= null && order.getReceiver().length()>0) {
+
+				try {
+					new BigInteger(order.getReceiver());//能安全转换  说明纯数字
+
+					criteria.andReceiverMobileEqualTo(order.getReceiver());
+				} catch (NumberFormatException e) {//报错说明不是纯数字
+
+					criteria.andReceiverLike("%" + order.getReceiver() + "%");
+				}
+
+			}
+
+			//通过订单编号查询
+			if (order.getOrderId()!= null && !"".equals(order.getOrderId())) {
+				criteria.andOrderIdEqualTo(order.getOrderId());
+			}
+
+			//通过订单状态查询
+			if (order.getStatus()!= null &&order.getStatus().length()>0) {
+				criteria.andStatusEqualTo(order.getStatus());
+			}
+
+			//通过订单来源查询
+			if (order.getSourceType() != null && order.getSourceType().length()>0) {
+				criteria.andSourceTypeEqualTo(order.getSourceType());
+			}
+
+		}
+
+		Page<TbOrder> page = (Page<TbOrder>) orderMapper.selectByExample(example);
+
+		return new PageResult(page.getTotal(),page.getResult());
+
+
+	}
+
+
+    @Override
+    public void updateStatus(Long id, String status) {
+
+            TbOrder order = orderMapper.selectByPrimaryKey(id);
+
+            order.setStatus(status);
+
+            orderMapper.updateByPrimaryKey(order);
+
+    }
+
 	
 }
