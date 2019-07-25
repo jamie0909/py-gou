@@ -73,14 +73,6 @@ public interface OrderService {
 	 * @param transaction_id
 	 */
 	public void updateOrderStatus(String out_trade_no,String transaction_id);
-
-
-	/**
-	 * 导出订单到Excel中
-	 * @param order
-	 * @param page
-	 * @param rows
-	 */
-	public void exportOrderToExcel(TbOrder order,int page,int rows) throws Exception;
+	
 	
 }
