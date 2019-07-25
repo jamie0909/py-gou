@@ -10,7 +10,9 @@ import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.Session;
 
+
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.ibatis.annotations.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -37,8 +39,84 @@ import entity.PageResult;
 @Service
 public class UserServiceImpl implements UserService {
 
+
 	@Autowired
 	private TbUserMapper userMapper;
+
+
+	@Override
+	public TbUser findUser(String name) {
+		TbUserExample example = new TbUserExample();
+		example.createCriteria().andUsernameEqualTo(name);
+		List<TbUser> users = userMapper.selectByExample(example);
+		return users.get(0);
+	}
+
+
+
+
+	/***
+	 * @Description: 修改用户的密码
+	 * @Param: [user]
+	 * @return: void
+	 * @Author: WangRui
+	 * @Date: 2019/7/25
+	 */
+
+	@Override
+	public void updatePassword(TbUser user,String username) {
+
+
+  		TbUserExample example = new TbUserExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andUsernameEqualTo(username);
+		System.out.println("username"+username);
+
+		List<TbUser> tbUsers = userMapper.selectByExample(example);
+
+		System.out.println("tbUsers"+tbUsers.get(0).toString());
+		System.out.println("修改过的密码为"+user.getPassword());
+
+		String password = DigestUtils.md5Hex(user.getPassword());
+		System.out.println("加密后的密码为"+password);
+		tbUsers.get(0).setPassword(password);
+
+
+		 tbUsers.get(0).setUpdated(new Date());
+	 	 System.out.println("修改时间为"+new Date());
+		 System.out.println("修改密码重新加密成功");
+	     userMapper.updateByPrimaryKey(tbUsers.get(0));
+
+
+		 System.out.println("密码更新完成");
+
+
+	}
+
+
+
+	/***
+	* @Description: 修改手机的号码
+	* @Param: [username, phone]
+	* @return: void
+	* @Author: WangRui
+	* @Date: 2019/7/25
+	*/
+	@Override
+	public void updatePhone(String username, String phone) {
+		TbUserExample example = new TbUserExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andUsernameEqualTo(username);
+		System.out.println("username"+username);
+
+		List<TbUser> tbUsers = userMapper.selectByExample(example);
+		TbUser user = tbUsers.get(0);
+		user.setPhone(phone);
+		userMapper.updateByPrimaryKey(user);
+
+	}
+
+
 	
 	/**
 	 * 查询全部
@@ -66,7 +144,7 @@ public class UserServiceImpl implements UserService {
 		
 		user.setCreated(new Date());//用户注册时间
 		user.setUpdated(new Date());//修改时间
-		user.setSourceType("1");//注册来源		
+		user.setSourceType("1");//注册来源
 		user.setPassword( DigestUtils.md5Hex(user.getPassword()));//密码加密
 		
 		userMapper.insert(user);		
@@ -79,16 +157,19 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void update(TbUser user){
 		userMapper.updateByPrimaryKey(user);
-	}	
-	
+	}
+
 	/**
 	 * 根据ID获取实体
-	 * @param id
+	 * @param name
 	 * @return
 	 */
 	@Override
-	public TbUser findOne(Long id){
-		return userMapper.selectByPrimaryKey(id);
+	public List<TbUser> findOne(String name){
+	    TbUserExample example=new TbUserExample();
+        Criteria criteria = example.createCriteria();
+        criteria.andUsernameEqualTo(name);
+        return userMapper.selectByExample(example);
 	}
 
 	/**
@@ -178,8 +259,10 @@ public class UserServiceImpl implements UserService {
 		System.out.println("验证码："+smscode);
 		
 		//2.将验证码放入redis
-		redisTemplate.boundHashOps("smscode").put(phone, smscode);
+		redisTemplate.boundHashOps("smscode").put(phone,smscode);
+		System.out.println("验证码已放入缓存中");
 		//3.将短信内容发送给activeMQ
+
 		
 		jmsTemplate.send(smsDestination, new MessageCreator() {
 			
@@ -190,7 +273,7 @@ public class UserServiceImpl implements UserService {
 				message.setString("template_code", template_code);//验证码
 				message.setString("sign_name", sign_name);//签名
 				Map map=new HashMap();
-				map.put("number", smscode);				
+				map.put("number", smscode);
 				message.setString("param", JSON.toJSONString(map));
 				return message;
 			}
@@ -201,8 +284,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean checkSmsCode(String phone, String code) {
-		 
+
+		System.out.println("你好");
+		System.out.println("你你你"+phone+"code"+code);
 		String systemcode= (String) redisTemplate.boundHashOps("smscode").get(phone);
+		System.out.println("你你你"+phone+"code"+code);
+		System.out.println("systemcode:"+systemcode);
 		if(systemcode==null){
 			return false;
 		}
@@ -212,5 +299,12 @@ public class UserServiceImpl implements UserService {
 		
 		return true;
 	}
+
+
+
+
+
+
+
 	
 }

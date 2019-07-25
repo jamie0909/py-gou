@@ -25,7 +25,7 @@ app.controller('goodsController' ,function($scope,$controller,$location,typeTemp
 	//查询实体 
 	$scope.findOne=function(){	
 		var id = $location.search()['id'];
-		// alert(id);
+		alert(id);
 		goodsService.findOne(id).success(
 			function(response){
 				$scope.entity= response;	

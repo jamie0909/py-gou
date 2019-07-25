@@ -3,6 +3,8 @@ import java.util.List;
 import com.pinyougou.pojo.TbUser;
 
 import entity.PageResult;
+import entity.Result;
+
 /**
  * 服务层接口
  * @author Administrator
@@ -38,12 +40,11 @@ public interface UserService {
 
 	/**
 	 * 根据ID获取实体
-	 * @param id
+	 * @param name
 	 * @return
 	 */
-	public TbUser findOne(Long id);
-	
-	
+	public List<TbUser> findOne(String name);
+
 	/**
 	 * 批量删除
 	 * @param ids
@@ -72,5 +73,39 @@ public interface UserService {
 	 * @return
 	 */
 	public boolean checkSmsCode(String phone,String code);
+
+
+
+ 
+	/***
+	* @Description: 修改密码
+	* @Param: [user, username]
+	* @return: void
+	* @Author: WangRui
+	* @Date: 2019/7/25
+	*/ 
+	public void updatePassword(TbUser user,String username);
 	
+	
+	/***
+	* @Description: 修改手机的号码
+	* @Param: [username, phone]
+	* @return: void
+	* @Author: WangRui
+	* @Date: 2019/7/25
+	*/
+	public void updatePhone(String username,String phone);
+
+	
+	
+    /***
+    * @Description: 登陆的用户
+    * @Param: [name]
+    * @return: com.pinyougou.pojo.TbUser
+    * @Author: WangRui
+    * @Date: 2019/7/25
+    */ 
+	TbUser findUser(String name);
+
+
 }
