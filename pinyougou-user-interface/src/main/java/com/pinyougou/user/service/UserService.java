@@ -38,12 +38,11 @@ public interface UserService {
 
 	/**
 	 * 根据ID获取实体
-	 * @param id
+	 * @param name
 	 * @return
 	 */
-	public TbUser findOne(Long id);
-	
-	
+	public List<TbUser> findOne(String name);
+
 	/**
 	 * 批量删除
 	 * @param ids

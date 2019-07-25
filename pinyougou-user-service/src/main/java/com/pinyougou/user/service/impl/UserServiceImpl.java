@@ -79,16 +79,19 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void update(TbUser user){
 		userMapper.updateByPrimaryKey(user);
-	}	
-	
+	}
+
 	/**
 	 * 根据ID获取实体
-	 * @param id
+	 * @param name
 	 * @return
 	 */
 	@Override
-	public TbUser findOne(Long id){
-		return userMapper.selectByPrimaryKey(id);
+	public List<TbUser> findOne(String name){
+	    TbUserExample example=new TbUserExample();
+        Criteria criteria = example.createCriteria();
+        criteria.andUsernameEqualTo(name);
+        return userMapper.selectByExample(example);
 	}
 
 	/**

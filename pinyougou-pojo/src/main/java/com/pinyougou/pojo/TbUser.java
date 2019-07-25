@@ -48,6 +48,46 @@ public class TbUser implements Serializable{
 
     private Date lastLoginTime;
 
+    private String area;
+
+    private String citiy;
+
+    private String job;
+
+    public String getJob() {
+        return job;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getCitiy() {
+        return citiy;
+    }
+
+    public void setCitiy(String citiy) {
+        this.citiy = citiy;
+    }
+
+    public String getProvinces() {
+        return provinces;
+    }
+
+    public void setProvinces(String provinces) {
+        this.provinces = provinces;
+    }
+
+    private String provinces;
+
     public Long getId() {
         return id;
     }

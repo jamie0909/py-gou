@@ -1,6 +1,7 @@
 package com.pinyougou.user.controller;
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,8 +32,8 @@ public class UserController {
 	public List<TbUser> findAll(){			
 		return userService.findAll();
 	}
-	
-	
+
+
 	/**
 	 * 返回全部列表
 	 * @return
@@ -73,25 +74,47 @@ public class UserController {
 	 */
 	@RequestMapping("/update")
 	public Result update(@RequestBody TbUser user){
-		try {
-			userService.update(user);
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        //user.setUsername(name);
+        System.out.println(user.getProvinces());
+        System.out.println(user.getUsername());
+        System.out.println(user.getBirthday());
+        System.out.println(user.getJob());
+
+
+        List<TbUser> userList = userService.findOne(name);
+        TbUser user1 = userList.get(0);
+        user1.setNickName(user.getNickName());
+        user1.setSex(user.getSex());
+        user1.setProvinces(user.getProvinces());
+        user1.setCitiy(user.getCitiy());
+        user1.setArea(user.getArea());
+        user1.setBirthday(user.getBirthday());
+        user1.setJob(user.getJob());
+
+        try {
+			userService.update(user1);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new Result(false, "修改失败");
 		}
-	}	
-	
+	}
+
 	/**
 	 * 获取实体
-	 * @param id
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/findOne")
-	public TbUser findOne(Long id){
-		return userService.findOne(id);		
+	public List<TbUser> findOne(){
+
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(name);
+        return userService.findOne(name);
 	}
-	
+
+
 	/**
 	 * 批量删除
 	 * @param ids
@@ -110,7 +133,7 @@ public class UserController {
 	
 		/**
 	 * 查询+分页
-	 * @param brand
+	 * @param
 	 * @param page
 	 * @param rows
 	 * @return
