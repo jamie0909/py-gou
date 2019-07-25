@@ -1,12 +1,16 @@
 package com.pinyougou.user.service.impl;
 import java.util.List;
+
+import com.pinyougou.mapper.TbAreasMapper;
+import com.pinyougou.mapper.TbCitiesMapper;
+import com.pinyougou.mapper.TbProvincesMapper;
+import com.pinyougou.pojo.*;
+import com.pinyougou.pojo.group.AddressList;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinyougou.mapper.TbAddressMapper;
-import com.pinyougou.pojo.TbAddress;
-import com.pinyougou.pojo.TbAddressExample;
 import com.pinyougou.pojo.TbAddressExample.Criteria;
 import com.pinyougou.user.service.AddressService;
 
@@ -28,6 +32,14 @@ public class AddressServiceImpl implements AddressService {
 	 */
 	@Override
 	public List<TbAddress> findAll() {
+		List<TbAddress> addresses = addressMapper.selectByExample(null);
+		for (TbAddress address : addresses) {
+			String mobile = address.getMobile();
+			String phoneNumber = mobile.substring(0, 3) + "****" + mobile.substring(7, mobile.length());
+			address.setMobile(phoneNumber);
+			addressMapper.updateByPrimaryKey(address);
+		}
+
 		return addressMapper.selectByExample(null);
 	}
 
@@ -46,6 +58,14 @@ public class AddressServiceImpl implements AddressService {
 	 */
 	@Override
 	public void add(TbAddress address) {
+		TbProvinces provinces=new TbProvinces();
+		TbCities cities=new TbCities();
+		String provinceId = address.getProvinceId();
+		String cityId = address.getCityId();
+		System.out.println(provinceId);
+		System.out.println(cityId);
+		provinces.setProvince(provinceId);
+		cities.setCity(cityId);
 		addressMapper.insert(address);		
 	}
 
@@ -132,5 +152,69 @@ public class AddressServiceImpl implements AddressService {
 		criteria.andUserIdEqualTo(userId);
 		return addressMapper.selectByExample(example);
 	}
-	
+	@Autowired
+	private TbProvincesMapper provincesMapper;
+
+	@Autowired
+	private TbCitiesMapper citiesMapper;
+
+	@Autowired
+	private TbAreasMapper areasMapper;
+
+
+	@Override
+	public List<TbProvinces> findAllProvinces() {
+
+		return provincesMapper.selectByExample(null);
+	}
+
+	@Override
+	public List<TbCities> findCityListByProvinceId(String provinceId) {
+
+
+		TbCitiesExample example=new TbCitiesExample();
+
+		TbCitiesExample.Criteria criteria = example.createCriteria();
+
+		criteria.andProvinceidEqualTo(provinceId);
+
+		return citiesMapper.selectByExample(example);
+	}
+
+	@Override
+	public List<TbAreas> findAreaListByCityId(String cityId) {
+
+
+		TbAreasExample example=new TbAreasExample();
+
+		TbAreasExample.Criteria criteria = example.createCriteria();
+
+		criteria.andCityidEqualTo(cityId);
+
+		return areasMapper.selectByExample(example);
+	}
+
+	@Override
+	public List<AddressList> findAddressAndCountry() {
+
+		List<TbAddress> address = findAll();//查询所有地址
+
+
+
+		return null;
+	}
+
+	@Override
+	public void updateStatus(long id, String isDefault) {
+		TbAddress address=new TbAddress();
+		address.setId(id);
+		address.setIsDefault(isDefault);
+
+		System.out.println(address.getContact());
+		System.out.println(address.getIsDefault());
+
+		addressMapper.updateByPrimaryKeySelective(address);
+	}
+
+
 }

@@ -2,6 +2,10 @@ package com.pinyougou.user.service;
 import java.util.List;
 import com.pinyougou.pojo.TbAddress;
 
+import com.pinyougou.pojo.TbAreas;
+import com.pinyougou.pojo.TbCities;
+import com.pinyougou.pojo.TbProvinces;
+import com.pinyougou.pojo.group.AddressList;
 import entity.PageResult;
 /**
  * 服务层接口
@@ -59,5 +63,37 @@ public interface AddressService {
 	public PageResult findPage(TbAddress address, int pageNum,int pageSize);
 	
 	public List<TbAddress> findListByUserId(String userId);
-	
+
+	/**
+	 * 查询所有
+	 * @return
+	 */
+	public List<TbProvinces> findAllProvinces();
+
+	/**
+	 * 根据省id查询城市列表
+	 * @param provinceId
+	 * @return
+	 */
+	public List<TbCities> findCityListByProvinceId(String provinceId);
+
+	/**
+	 * 根据城市id查询区域列表
+	 * @param cityId
+	 * @return
+	 */
+	public List<TbAreas> findAreaListByCityId(String cityId);
+
+	/**
+	 * 回显的
+	 * @return
+	 */
+	public List<AddressList> findAddressAndCountry();
+
+	/**
+	 * 修改默认地址
+	 * @param id
+	 * @param isDefault
+	 */
+	public void updateStatus(long id,String isDefault);
 }
