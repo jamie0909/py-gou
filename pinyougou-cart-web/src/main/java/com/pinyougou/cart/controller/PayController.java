@@ -3,6 +3,7 @@ package com.pinyougou.cart.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.pinyougou.pay.service.AliPayService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,9 @@ public class PayController {
 	
 	@Reference
 	private WeixinPayService weixinPayService;
+
+	@Reference
+	private AliPayService aliPayService;
 	
 	@Reference
 	private OrderService orderService;
@@ -37,6 +41,20 @@ public class PayController {
 		}else{
 			return new HashMap<>();
 		}		
+	}
+
+	@RequestMapping("/createAliPayNative")
+	public Map createAliPayNative(){
+		//1.获取当前登录用户
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		//2.提取支付日志（从缓存 ）
+		TbPayLog payLog = orderService.searchPayLogFromRedis(username);
+		//3.调用微信支付接口
+		if(payLog!=null){
+			return aliPayService.createNative(payLog.getOutTradeNo(), payLog.getTotalFee()+"");
+		}else{
+			return new HashMap<>();
+		}
 	}
 
 	

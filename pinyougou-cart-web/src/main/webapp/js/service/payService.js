@@ -1,8 +1,13 @@
 app.service('payService',function($http){
 	//本地支付
 
-	this.createNative=function(){
-		return $http.get('pay/createNative.do');
+	this.createNative=function(paymentType){
+		if (paymentType=='1'){
+            return $http.get('pay/createNative.do');
+		}
+		if (paymentType=='3'){
+            return $http.get('pay/createAliPayNative.do');
+		}
 	}
 	
 	//查询支付状态
