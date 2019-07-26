@@ -89,10 +89,10 @@ public class UserController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping("/findOne")
+/*	@RequestMapping("/findOne")
 	public TbUser findOne(Long id){
-		return userService.findOne(id);		
-	}
+		return userService.findOne(id);
+	}*/
 	
 	/**
 	 * 批量删除
@@ -197,7 +197,10 @@ public class UserController {
 	@RequestMapping("/findUser.do")
 	public TbUser findUser(){
 		String username= SecurityContextHolder.getContext().getAuthentication().getName();
-		return userService.findUser(username);
+
+		TbUser user=userService.findUser(username);
+		user.setPassword("");
+		return user;
 	}
 
 

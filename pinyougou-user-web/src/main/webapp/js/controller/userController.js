@@ -44,10 +44,10 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
     $scope.updatePassword=function(){
 
     //比较两次输入的密码是否一致
-            if($scope.newPassword!=$scope.entity.newPassword){
+            if($scope.password!=$scope.entity.password){
                 alert("两次输入密码不一致，请重新输入");
-                $scope.entity.newPassword="";
-                $scope.newPassword="";
+                $scope.entity.password="";
+                $scope.password="";
                 return ;
             }
 
@@ -57,8 +57,10 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
                    if(response.success){
                        //重新查询
                       // $scope.reloadList();
+
+
                        alert(response.message);
-                       location.href="login"
+                       location.href="home-index.html"
                    }else{
                        alert(response.message);
                    }
@@ -190,12 +192,16 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
 
 
 
+    
+    /***
+    * @Description: 
+    * @Param: 
+    * @return: 
+    * @Author: WangRui
+    * @Date: 2019/7/26
+    */ 
     $scope.checkPassword = function(password){
-//$scope.safeMsg = "安全强度：*";
-//$scope.teColor = "red";
-
-
-        var lowTest1 = /^\d{1,6}$/; //纯数字
+  var lowTest1 = /^\d{1,6}$/; //纯数字
         var lowTest2 = /^[a-zA-Z]{1,6}$/; //纯字母
         var halfTest = /^[A-Za-z0-9]{1,6}$/;
         var halfTest2 = /^[A-Za-z0-9]{6,8}$/;

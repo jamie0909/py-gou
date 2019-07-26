@@ -75,7 +75,9 @@ public class UserServiceImpl implements UserService {
 		List<TbUser> tbUsers = userMapper.selectByExample(example);
 
 		System.out.println("tbUsers"+tbUsers.get(0).toString());
-		System.out.println("修改过的密码为"+user.getPassword());
+		System.out.println("修改前的密码为"+tbUsers.get(0).getPassword());
+
+		System.out.println("从前端传来的密码为"+user.getPassword());
 
 		String password = DigestUtils.md5Hex(user.getPassword());
 		System.out.println("加密后的密码为"+password);
