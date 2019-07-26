@@ -63,6 +63,7 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
                        location.href="home-index.html"
                    }else{
                        alert(response.message);
+
                    }
                }
            );
@@ -91,6 +92,19 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
     $scope.endTOPhone=function () {
         var code=$("#msgcode").val();
         var phone=$("#inputphone").val();
+
+        userService.findUser().success(
+            function(response){
+                $scope.entity=response;
+
+
+                if (phone==$scope.entity.phone){
+                    alert("手机号码不能与原手机号码相同")
+                    return;
+                }
+
+            });
+
         userService.checkCode(code,phone).success(function (response) {
             if(response.success){
                 location.href="home-setting-address-complete.html";
@@ -105,13 +119,19 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
     * @return: 
     * @Author: WangRui
     * @Date: 2019/7/25
-    */ 
+    */
+
+
+
+
+
       $scope.findUser=function(){
-        userService.findUser().success(
-            function(response){
-                $scope.entity=response;
-            }
-        ) ;
+
+          userService.findUser().success(
+              function(response){
+                  $scope.entity=response;
+
+              });
      };
 
 
