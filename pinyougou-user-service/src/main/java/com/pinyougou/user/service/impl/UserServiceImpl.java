@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 
-	
+
 	/**
 	 * 查询全部
 	 */
@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService {
 		
 		user.setCreated(new Date());//用户注册时间
 		user.setUpdated(new Date());//修改时间
-		user.setSourceType("1");//注册来源
+		user.setSourceType("1");//注册来源		
 		user.setPassword( DigestUtils.md5Hex(user.getPassword()));//密码加密
 		
 		userMapper.insert(user);		
@@ -159,18 +159,16 @@ public class UserServiceImpl implements UserService {
 		userMapper.updateByPrimaryKey(user);
 	}
 
+	@Override
+	public List<TbUser> findOne(String name) {
+		return null;
+	}
+
 	/**
 	 * 根据ID获取实体
-	 * @param name
+	 * @param id
 	 * @return
 	 */
-	@Override
-	public List<TbUser> findOne(String name){
-	    TbUserExample example=new TbUserExample();
-        Criteria criteria = example.createCriteria();
-        criteria.andUsernameEqualTo(name);
-        return userMapper.selectByExample(example);
-	}
 
 	/**
 	 * 批量删除
@@ -259,10 +257,8 @@ public class UserServiceImpl implements UserService {
 		System.out.println("验证码："+smscode);
 		
 		//2.将验证码放入redis
-		redisTemplate.boundHashOps("smscode").put(phone,smscode);
-		System.out.println("验证码已放入缓存中");
+		redisTemplate.boundHashOps("smscode").put(phone, smscode);
 		//3.将短信内容发送给activeMQ
-
 		
 		jmsTemplate.send(smsDestination, new MessageCreator() {
 			
@@ -273,7 +269,7 @@ public class UserServiceImpl implements UserService {
 				message.setString("template_code", template_code);//验证码
 				message.setString("sign_name", sign_name);//签名
 				Map map=new HashMap();
-				map.put("number", smscode);
+				map.put("number", smscode);				
 				message.setString("param", JSON.toJSONString(map));
 				return message;
 			}
@@ -306,5 +302,5 @@ public class UserServiceImpl implements UserService {
 
 
 
-	
+
 }

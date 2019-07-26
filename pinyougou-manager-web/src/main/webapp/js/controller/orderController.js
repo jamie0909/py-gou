@@ -31,17 +31,6 @@ app.controller('orderController' ,function($scope,$controller,$http,orderService
     $scope.orderSource = ["","app端","pc端","M端","微信端","手机qq端"];
 
 
-    $scope.searchEntity={};
-
-    // 假设定义一个查询的实体：searchEntity
-    $scope.search = function(page,rows){
-        // 向后台发送请求获取数据:
-        orderService.search(page,rows,$scope.searchEntity).success(function(response){
-            $scope.paginationConf.totalItems = response.total;
-            $scope.list = response.rows;
-        });
-    }
-
     // 删除选中:
     $scope.dele = function(){
         orderService.dele($scope.selectIds).success(function(response){
@@ -84,7 +73,7 @@ app.controller('orderController' ,function($scope,$controller,$http,orderService
 
     // 审核的方法:
     $scope.updateStatus = function(orderId,status){
-        orderService.updateStatus(orderId,4).success(function(response){
+        orderService.updateStatus(orderId,status).success(function(response){
             if(response.flag){
                 $scope.reloadList();//刷新列表
             }else{
@@ -93,6 +82,31 @@ app.controller('orderController' ,function($scope,$controller,$http,orderService
         });
     }
 
+
+    $scope.searchEntity={};
+
+    // 假设定义一个查询的实体：searchEntity
+    $scope.search = function(page,rows){
+        // 向后台发送请求获取数据:
+        orderService.search(page,rows,$scope.searchEntity).success(function(response){
+            $scope.paginationConf.totalItems = response.total;
+            $scope.list = response.rows;
+        });
+    }
+
+
+    //excel报表导出
+    $scope.excelOperate = function(){
+        alert($scope.searchEntity);
+        orderService.excelOperate($scope.searchEntity).success(function(response){
+            alert("11111111111");
+            if(response.flag){
+                alert(response.message);
+            }else{
+                alert(response.message);
+            }
+        });
+    }
 
 
 });

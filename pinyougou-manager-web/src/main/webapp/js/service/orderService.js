@@ -29,5 +29,9 @@ app.service("orderService",function($http){
     this.updateStatus = function(id,status){
         return $http.get('../order/updateStatus.do?id='+id+"&status="+status);
     }
+    //excel
+    this.excelOperate = function(searchEntity){
+        return $http.post("../order/excel.do",searchEntity);
+    }
 
 });

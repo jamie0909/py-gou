@@ -46,6 +46,7 @@
 		  <artifactId>pinyougou-pojo</artifactId>
 		  <version>0.0.5-SNAPSHOT</version>
 	  </dependency>
+
 	  <dependency>
 		  <groupId>org.apache.poi</groupId>
 		  <artifactId>poi</artifactId>
