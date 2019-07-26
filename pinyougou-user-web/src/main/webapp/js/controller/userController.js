@@ -1,5 +1,5 @@
  //控制层 
-app.controller('userController' ,function($scope,$controller   ,userService){	
+app.controller('userController' ,function($scope,$controller ,userService,$interval,$timeout){
 	
 	//注册用户
 	$scope.reg=function(){
@@ -18,7 +18,6 @@ app.controller('userController' ,function($scope,$controller   ,userService){
 			}		
 		);
 	}
-    
 	//发送验证码
 	$scope.sendCode=function(){
 		alert("执行了");
@@ -45,10 +44,10 @@ app.controller('userController' ,function($scope,$controller   ,userService){
     $scope.updatePassword=function(){
 
     //比较两次输入的密码是否一致
-            if($scope.password!=$scope.entity.password){
+            if($scope.newPassword!=$scope.entity.newPassword){
                 alert("两次输入密码不一致，请重新输入");
-                $scope.entity.password="";
-                $scope.password="";
+                $scope.entity.newPassword="";
+                $scope.newPassword="";
                 return ;
             }
 
@@ -67,6 +66,11 @@ app.controller('userController' ,function($scope,$controller   ,userService){
            );
         }
 
+
+
+
+
+    //第一个下一步
     $scope.nextTOPhone=function (entity) {
         var code=$("#msgcode").val();
         var phone=$scope.entity.phone;
@@ -80,25 +84,7 @@ app.controller('userController' ,function($scope,$controller   ,userService){
         })
     }
 
-
-
-    $scope.sendCode2=function(){
-        var code=$("#msgcode").val();
-        var phone=$("#inputphone").val();
-        alert(phone);
-
-        if(phone==null || phone==""){
-            alert("请填写手机号码");
-            return ;
-        }
-
-        userService.sendCode(phone,code).success(
-            function(response){
-                alert(response.message);
-            }
-        );
-    };
-
+    //第二个下一步
 
     $scope.endTOPhone=function () {
         var code=$("#msgcode").val();
@@ -118,13 +104,120 @@ app.controller('userController' ,function($scope,$controller   ,userService){
     * @Author: WangRui
     * @Date: 2019/7/25
     */ 
-    $scope.findUser=function(){
+      $scope.findUser=function(){
         userService.findUser().success(
             function(response){
                 $scope.entity=response;
             }
+        ) ;
+     };
+
+
+
+
+            $scope.timer = false;
+            $scope.timeout = 60000;
+            $scope.timerCount = $scope.timeout / 1000;
+            $scope.text = "获取验证码";
+
+
+              //第一个验证码发送
+            $scope.sendCode = function(){
+
+                $scope.showTimer = true;
+                $scope.timer = true;
+                $scope.text = "秒后重新获取";
+                var counter = $interval(function(){
+                    $scope.timerCount = $scope.timerCount - 1;
+                }, 1000);
+                $timeout(function(){
+                    $scope.text = "获取验证码";
+                    $scope.timer = false;
+                    $interval.cancel(counter);
+                    $scope.showTimer = false;
+                    $scope.timerCount = $scope.timeout / 1000;
+                }, $scope.timeout);
+                //发送验证码
+
+
+                    if($scope.entity.phone==null || $scope.entity.phone==""){
+                        alert("请填写手机号码");
+                        return ;
+                    }
+
+                    userService.sendCode($scope.entity.phone).success(
+                        function(response){
+                            alert(response.message);
+                        }
+                    );
+
+            };
+
+
+
+
+    //第一个验证码发送
+    $scope.sendCode2 = function(){
+
+        $scope.showTimer = true;
+        $scope.timer = true;
+        $scope.text = "秒后重新获取";
+        var counter = $interval(function(){
+            $scope.timerCount = $scope.timerCount - 1;
+        }, 1000);
+        $timeout(function(){
+            $scope.text = "获取验证码";
+            $scope.timer = false;
+            $interval.cancel(counter);
+            $scope.showTimer = false;
+            $scope.timerCount = $scope.timeout / 1000;
+        }, $scope.timeout);
+        //发送验证码
+
+
+        if($scope.entity.phone==null || $scope.entity.phone==""){
+            alert("请填写手机号码");
+            return ;
+        }
+
+        userService.sendCode($scope.entity.phone).success(
+            function(response){
+                alert(response.message);
+            }
         );
+
     };
+
+
+
+    $scope.checkPassword = function(password){
+//$scope.safeMsg = "安全强度：*";
+//$scope.teColor = "red";
+
+
+        var lowTest1 = /^\d{1,6}$/; //纯数字
+        var lowTest2 = /^[a-zA-Z]{1,6}$/; //纯字母
+        var halfTest = /^[A-Za-z0-9]{1,6}$/;
+        var halfTest2 = /^[A-Za-z0-9]{6,8}$/;
+        var highTest = /^[A-Za-z0-9]{6,16}$/;
+        if(lowTest1.test(password)|lowTest2.test(password)|halfTest.test(password)){
+            $scope.safeMsg = "安全强度：*低";
+            $scope.teColor = "red";
+        }else if(halfTest2.test(password)){
+            $scope.safeMsg = "安全强度：***中";
+            $scope.teColor = "yellow";
+        }else if(highTest.test(password)){
+
+            $scope.safeMsg = "安全强度：*****高";
+            $scope.teColor = "green";
+            $scope.repassDis = "false";
+        }else{
+            $scope.safeMsg = "密码不符合要求";
+            $scope.teColor = "red";
+        }
+
+    };
+
 
 
 
