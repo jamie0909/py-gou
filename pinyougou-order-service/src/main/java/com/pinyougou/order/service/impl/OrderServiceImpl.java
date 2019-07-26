@@ -136,6 +136,20 @@ public class OrderServiceImpl implements OrderService {
             redisTemplate.boundHashOps("payLog").put(order.getUserId(), payLog);//放入缓存
         }
 
+		if ("3".equals(order.getPaymentType())) {
+			TbPayLog payLog = new TbPayLog();
+
+			payLog.setOutTradeNo(idWorker.nextId() + "");//支付订单号
+			payLog.setCreateTime(new Date());
+			payLog.setUserId(order.getUserId());//用户ID
+			payLog.setOrderList(orderIdList.toString().replace("[", "").replace("]", ""));//订单ID串
+			payLog.setTotalFee((long) (total_money * 100));//金额（分）
+			payLog.setTradeState("0");//交易状态
+			payLog.setPayType("3");//支付宝
+			payLogMapper.insert(payLog);
+
+			redisTemplate.boundHashOps("payLog").put(order.getUserId(), payLog);//放入缓存
+		}
 
         //3.清除redis中的购物车
         redisTemplate.boundHashOps("cartList").delete(order.getUserId());

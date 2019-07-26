@@ -3,6 +3,10 @@ app.controller('payController' ,function($scope ,$location,payService){
 	
 	$scope.createNative=function(){
 		var paymentType=$location.search()['type'];
+		$scope.paymentType_str='微信';
+		if(paymentType=='3'){
+			$scope.paymentType_str='支付宝';
+		}
 		payService.createNative(paymentType).success(
 			function(response){
 				
@@ -17,7 +21,7 @@ app.controller('payController' ,function($scope ,$location,payService){
 						value:response.code_url,
 						level:'H'
 			     });
-				 
+				 $scope.paymentType=paymentType;
 				 queryPayStatus();//调用查询
 				
 			}	
@@ -25,9 +29,10 @@ app.controller('payController' ,function($scope ,$location,payService){
 	}
 	
 	//调用查询
-	queryPayStatus=function(){
-		payService.queryPayStatus($scope.out_trade_no).success(
+	queryPayStatus=function(paymentType){
+		payService.queryPayStatus($scope.out_trade_no,$scope.paymentType).success(
 			function(response){
+				//alert(response.message);
 				if(response.success){
 					location.href="paysuccess.html#?money="+$scope.money;
 				}else{

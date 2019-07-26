@@ -1,6 +1,7 @@
 package com.pinyougou.cart.controller;
 import java.util.List;
 
+import com.pinyougou.pojo.group.Order;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -86,7 +87,7 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping("/findOne")
-	public TbOrder findOne(Long id){
+	public Order findOne(Long id){
 		return orderService.findOne(id);		
 	}
 	
