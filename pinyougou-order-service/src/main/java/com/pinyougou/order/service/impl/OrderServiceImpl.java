@@ -28,6 +28,7 @@ import com.pinyougou.pojo.group.Cart;
 import com.pinyougou.order.service.OrderService;
 
 import entity.PageResult;
+import util.ExcelOperateUtil;
 import util.IdWorker;
 
 /**
@@ -334,6 +335,52 @@ public class OrderServiceImpl implements OrderService {
             orderMapper.updateByPrimaryKey(order);
 
     }
+
+	@Override
+	public void excel(TbOrder order) {
+
+		// 进行条件查询:
+		TbOrderExample example = new TbOrderExample();
+		Criteria criteria = example.createCriteria();
+		// 设置条件:
+		if(order!=null) {
+			//通过电话或者收件人查询
+			if (order.getReceiver()!= null && order.getReceiver().length()>0) {
+
+				try {
+					new BigInteger(order.getReceiver());//能安全转换  说明纯数字
+
+					criteria.andReceiverMobileEqualTo(order.getReceiver());
+				} catch (NumberFormatException e) {//报错说明不是纯数字
+
+					criteria.andReceiverLike("%" + order.getReceiver() + "%");
+				}
+
+			}
+
+			//通过订单编号查询
+			if (order.getOrderId()!= null && !"".equals(order.getOrderId())) {
+				criteria.andOrderIdEqualTo(order.getOrderId());
+			}
+
+			//通过订单状态查询
+			if (order.getStatus()!= null &&order.getStatus().length()>0) {
+				criteria.andStatusEqualTo(order.getStatus());
+			}
+
+			//通过订单来源查询
+			if (order.getSourceType() != null && order.getSourceType().length()>0) {
+				criteria.andSourceTypeEqualTo(order.getSourceType());
+			}
+
+		}
+
+		List<TbOrder> orders = orderMapper.selectByExample(example);
+
+		System.out.println(orders);
+		ExcelOperateUtil.createExcel(orders);
+
+	}
 
 
 }

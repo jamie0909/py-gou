@@ -1,6 +1,9 @@
 package com.pinyougou.manager.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.order.service.OrderService;
 import com.pinyougou.pojo.group.Order;
@@ -9,6 +12,7 @@ import entity.Result;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import util.ExcelOperateUtil;
 
 import java.util.List;
 
@@ -88,11 +92,26 @@ public class OrderController {
     @RequestMapping("/updateStatus")
     public Result updateStatus(Long id,String status){
         try {
-            orderService.updateStatus(id,"4");
+            orderService.updateStatus(id,(Integer.parseInt(status)+1)+"");
             return new Result(true,"订单状态修改成功");
         } catch (Exception e) {
             e.printStackTrace();
             return new Result(false,"订单状态修改失败");
+        }
+    }
+
+    @RequestMapping("/excel")
+    public Result excel(@RequestBody TbOrder order){
+
+        try {
+            orderService.excel(order);
+
+
+            return new Result(true,"导出Excel成功");
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return new Result(false,"导出Excel失败");
         }
     }
 

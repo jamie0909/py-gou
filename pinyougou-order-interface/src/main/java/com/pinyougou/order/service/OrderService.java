@@ -89,4 +89,6 @@ public interface OrderService {
     void deleteOne(Long id);
 
 	public void updateStatus(Long id,String status);
+
+    void excel(TbOrder order);
 }
