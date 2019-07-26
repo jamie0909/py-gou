@@ -336,16 +336,28 @@ $(function(){
 
                                         </div>
                                     </div>
-                                    <div class="control-group">
+                                   <!-- <div class="control-group">
                                         <label for="inputPassword" class="control-label">密码：</label>
                                         <div class="controls">
-                                            <input class="fn-tinput" type="password" name="password" value="" placeholder="新密码" ng-model="entity.password" required id="password" data-rule-remote="php.php">
+                                            <input class="fn-tinput" type="password" name="password" value="" placeholder="原密码" ng-model="entity.oldPassword" required id="password" data-rule-remote="php.php">
                                         </div>
-                                    </div>
+                                    </div>-->
+
+
+
+									<div class="control-group">
+										<label for="inputPassword" class="control-label">新密码：</label>
+										<div class="controls">
+
+											<input class="form-control" type="password" name="password"  value="" placeholder="请输入新的密码,6-16位数字或英文字母" ng-keyup="checkPassword(entity.newPassword)" ng-model="entity.newPassword" required id="password" data-rule-remote="php.php"><br>
+											<p class="text-right grey show-{{teColor}}" ng-bind="safeMsg"></p>
+
+										</div>
+									</div>
                                     <div class="control-group">
                                         <label for="inputRepassword" class="control-label">重复密码：</label>
                                         <div class="controls">
-                                            <input class="fn-tinput" type="password" name="confirm_password" value="" placeholder="确认新密码" ng-model="password" required equalTo="#password">
+                                            <input class="fn-tinput" type="password" name="confirm_password" value="" placeholder="确认新密码" ng-model="newPassword" required equalTo="#password">
                                         </div>
                                     </div>
 
@@ -396,11 +408,13 @@ $(function(){
                                             <input name="msgcode" type="text" id="msgcode">
                                         </div>
                                         <div class="controls">
-                                            <button class="sui-btn btn-info" ng-click="sendCode(entity)">发送</button>
+
+											<button class="yz-btn" ng-click="sendCode(entity)" ng-disabled="timer"><span ng-if="showTimer">{{timerCount}}</span>{{text}}</button>
                                         </div>
                                     </div>
                                     <div class="control-group next-btn">
                                         <a class="sui-btn btn-primary"  ng-click="nextTOPhone(entity)">下一步</a>
+
 
                                     </div>
                                 </form>
