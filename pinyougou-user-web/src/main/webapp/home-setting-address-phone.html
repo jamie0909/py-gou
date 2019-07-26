@@ -404,7 +404,9 @@ $(function(){
                                             <input name="msgcode" type="text" id="msgcode">
                                         </div>
                                         <div class="controls">
-                                            <button class="sui-btn btn-info" ng-click="sendCode2()">发送</button>
+                                           <!--<button class="sui-btn btn-info" ng-click="sendCode2()">发送</button>-->
+											<button class="yz-btn" ng-click="sendCode2()" ng-disabled="timer"><span ng-if="showTimer">{{timerCount}}</span>{{text}}</button>
+
                                         </div>
                                     </div>
 
