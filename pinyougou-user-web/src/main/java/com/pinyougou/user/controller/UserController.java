@@ -84,15 +84,15 @@ public class UserController {
 		}
 	}	
 	
-	/**
+/*	*//**
 	 * 获取实体
 	 * @param id
 	 * @return
-	 */
+	 *//*
 	@RequestMapping("/findOne")
 	public TbUser findOne(Long id){
-		return userService.findOne(id);		
-	}
+		return userService.findOne(String.valueOf(id));
+	}*/
 	
 	/**
 	 * 批量删除
