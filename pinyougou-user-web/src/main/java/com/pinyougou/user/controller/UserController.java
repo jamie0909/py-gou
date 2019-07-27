@@ -112,14 +112,15 @@ public class UserController {
 	 * 获取实体
 	 * @param id
 	 * @return
-	 */
+/*	 */
 	@RequestMapping("/findOne")
 	public TbUser findOne(){
 		String name = SecurityContextHolder.getContext().getAuthentication().getName();
         TbUser user = userService.findUser(name);
+		user.setPassword("");
         return user;
 	}
-	
+
 	/**
 	 * 批量删除
 	 * @param ids
@@ -231,7 +232,7 @@ public class UserController {
 
 		 TbUser user=userService.findUser(username);
 		 user.setPassword("");
-        System.out.println("密码的为"+user.getPassword());
+         System.out.println("密码回显被置为空"+user.getPassword());
 		 return user;
 	}
 
