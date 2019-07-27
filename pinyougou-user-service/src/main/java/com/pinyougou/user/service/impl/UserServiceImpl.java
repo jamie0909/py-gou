@@ -11,8 +11,11 @@ import javax.jms.Message;
 import javax.jms.Session;
 
 
+import com.pinyougou.mapper.TbAreasMapper;
+import com.pinyougou.mapper.TbCitiesMapper;
+import com.pinyougou.mapper.TbProvincesMapper;
+import com.pinyougou.pojo.*;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.ibatis.annotations.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -24,8 +27,6 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinyougou.mapper.TbUserMapper;
-import com.pinyougou.pojo.TbUser;
-import com.pinyougou.pojo.TbUserExample;
 import com.pinyougou.pojo.TbUserExample.Criteria;
 import com.pinyougou.user.service.UserService;
 
@@ -47,15 +48,60 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public TbUser findUser(String name) {
 		TbUserExample example = new TbUserExample();
-		example.createCriteria().andUsernameEqualTo(name);
+        Criteria criteria = example.createCriteria();
+        criteria.andUsernameEqualTo(name);
 		List<TbUser> users = userMapper.selectByExample(example);
 		return users.get(0);
 	}
 
 
+    @Autowired
+    private TbProvincesMapper provincesMapper;
 
+    @Autowired
+    private TbCitiesMapper citiesMapper;
 
-	/***
+    @Autowired
+    private TbAreasMapper areasMapper;
+
+    /**
+     * 查询所有省份
+     *
+     * @return
+     */
+    @Override
+    public List<TbProvinces> findProvince() {
+
+        return provincesMapper.selectByExample(null);
+    }
+
+    /**
+     * 查询所有市
+     *
+     * @param
+     * @return
+     */
+    @Override
+    public List<TbCities> findCity(String provinceId) {
+        TbCitiesExample example=new TbCitiesExample();
+        TbCitiesExample.Criteria criteria = example.createCriteria();
+        criteria.andProvinceidEqualTo(provinceId);
+        return citiesMapper.selectByExample(example);
+    }
+    /**
+     * 查询所有区县
+     *
+     * @param
+     * @return
+     */
+    @Override
+    public List<TbAreas> findArea(String cityId) {
+        TbAreasExample example = new TbAreasExample();
+        TbAreasExample.Criteria criteria = example.createCriteria();
+        criteria.andCityidEqualTo(cityId);
+        return areasMapper.selectByExample(example);
+    }
+    /***
 	 * @Description: 修改用户的密码
 	 * @Param: [user]
 	 * @return: void
@@ -156,11 +202,12 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void update(TbUser user){
-		userMapper.updateByPrimaryKey(user);
+
+	    userMapper.updateByPrimaryKey(user);
 	}
 
 	/**
-	 * 根据ID获取实体
+	 * 根据用户名获得实体类
 	 * @param name
 	 * @return
 	 */
@@ -278,13 +325,9 @@ public class UserServiceImpl implements UserService {
 				return message;
 			}
 		});
-		
-		
 	}
-
 	@Override
 	public boolean checkSmsCode(String phone, String code) {
-
 		System.out.println("你好");
 		System.out.println("你你你"+phone+"code"+code);
 		String systemcode= (String) redisTemplate.boundHashOps("smscode").get(phone);
@@ -296,15 +339,6 @@ public class UserServiceImpl implements UserService {
 		if(!systemcode.equals(code)){
 			return false;
 		}
-		
 		return true;
 	}
-
-
-
-
-
-
-
-	
 }

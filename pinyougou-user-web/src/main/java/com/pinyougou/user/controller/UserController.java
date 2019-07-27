@@ -2,6 +2,9 @@ package com.pinyougou.user.controller;
 import java.util.List;
 
 
+import com.pinyougou.pojo.TbAreas;
+import com.pinyougou.pojo.TbCities;
+import com.pinyougou.pojo.TbProvinces;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +27,7 @@ public class UserController {
 
 	@Reference
 	private UserService userService;
+
 	
 	/**
 	 * 返回全部列表
@@ -75,8 +79,19 @@ public class UserController {
 	 */
 	@RequestMapping("/update")
 	public Result update(@RequestBody TbUser user){
-		try {
-			userService.update(user);
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<TbUser> users = userService.findOne(name);
+        TbUser user1= users.get(0);
+        user1.setJob(user.getJob());
+        user1.setBirthday(user.getBirthday());
+        user1.setArea(user.getArea());
+        user1.setCitiy(user.getCitiy());
+        user1.setProvinces(user.getProvinces());
+        user1.setSex(user.getSex());
+        user1.setNickName(user.getNickName());
+        user1.setHeadPic(user.getHeadPic());
+        try {
+			userService.update(user1);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,12 +101,14 @@ public class UserController {
 	
 	/**
 	 * 获取实体
-	 * @param id
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/findOne")
-	public TbUser findOne(Long id){
-		return userService.findOne(id);		
+	public TbUser findOne(){
+		String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        TbUser user = userService.findUser(name);
+        return user;
 	}
 	
 	/**
@@ -221,7 +238,26 @@ public class UserController {
 		}
 	}
 
+    /**
+     * ==================================================================
+     * 查询省市区三级联动↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↑↑↑↑↑↑↑↑
+     */
+	@RequestMapping("/findProvince.do")
+	public List<TbProvinces> findProvince(){
+	    return userService.findProvince();
+    }
 
+    @RequestMapping("/findCity.do")
+    public List<TbCities> findCity(String provinceId){
+	    return userService.findCity(provinceId);
+    }
 
-
+    @RequestMapping("/findArea.do")
+    public List<TbAreas> findArea(String cityId){
+        return userService.findArea(cityId);
+    }
+    /**
+     * ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+     * ==================================================================
+     */
 }
