@@ -20,7 +20,6 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
 	}
 	//发送验证码
 	$scope.sendCode=function(){
-		alert("执行了");
 		if($scope.entity.phone==null || $scope.entity.phone==""){
 			alert("请填写手机号码");
 			return ;
@@ -130,8 +129,8 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
     }
     /***
     * @Description: 登陆的用户
-    * @Param: 
-    * @return: 
+    * @Param:
+    * @return:
     * @Author: WangRui
     * @Date: 2019/7/25
     */
@@ -261,4 +260,5 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
 
 
 
-});	
+
+});

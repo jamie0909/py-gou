@@ -21,4 +21,20 @@ public class OrderExport {
     private OrderService orderService;
 
 
+    /**
+     * 导出订单
+     */
+//    @RequestMapping("/orderToExcel")
+//    public Result orderToExcel(int page, int rows) {
+//
+//        TbOrder order = new TbOrder();
+//        try {
+//            orderService.exportOrderToExcel(order, page, rows);
+//            return new Result(true, "导出成功");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new Result(false, "导出失败");
+//        }
+//    }
+
 }

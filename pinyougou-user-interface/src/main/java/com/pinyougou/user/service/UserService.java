@@ -4,6 +4,8 @@ import java.util.List;
 import com.pinyougou.pojo.TbAreas;
 import com.pinyougou.pojo.TbCities;
 import com.pinyougou.pojo.TbProvinces;
+
+import com.pinyougou.pojo.TbCities;
 import com.pinyougou.pojo.TbUser;
 
 import entity.PageResult;
@@ -47,7 +49,7 @@ public interface UserService {
 	 * @param id
 	 * @return
 	 */
-	public TbUser findOne(Long id);
+	//	public List<TbUser> findOne(Long id);
 
 	/**
 	 * 批量删除
@@ -130,5 +132,11 @@ public interface UserService {
 	 */
 	public List<TbAreas> findArea(String cid);
 
+	/**
+	 *
+	 * @param orderId
+	 * @return
+	 */
 
+	String getEmailFromOrderId(String orderId);
 }

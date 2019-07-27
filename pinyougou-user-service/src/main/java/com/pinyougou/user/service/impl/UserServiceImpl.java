@@ -13,6 +13,10 @@ import com.pinyougou.mapper.TbCitiesMapper;
 import com.pinyougou.mapper.TbProvincesMapper;
 import com.pinyougou.pojo.*;
 import entity.Result;
+import com.pinyougou.mapper.TbOrderMapper;
+import com.pinyougou.mapper.TbSellerMapper;
+import com.pinyougou.pojo.TbOrder;
+import com.pinyougou.pojo.TbSeller;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +46,12 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private TbUserMapper userMapper;
 
+
+	@Autowired
+	private TbOrderMapper orderMapper;
+
+	@Autowired
+	TbSellerMapper sellerMapper;
 
 	@Override
 	public TbUser findUser(String name) {
@@ -205,12 +215,13 @@ public class UserServiceImpl implements UserService {
 	    userMapper.updateByPrimaryKey(user);
 	}
 
-	@Override
-	public List<TbUser> findOne(String name) {
-		return null;
-	public TbUser findOne(Long id) {
-		return userMapper.selectByPrimaryKey(id);
-	}
+//	@Override
+//	public List<TbUser> findOne(String name) {
+//		return null;
+//	}
+//	public TbUser findOne(Long id) {
+//		return userMapper.selectByPrimaryKey(id);
+//	}
 
 	/**
 	 * 根据ID获取实体
@@ -358,6 +369,14 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		return true;
+	}
+
+	@Override
+	public String getEmailFromOrderId(String orderId) {
+		TbOrder order = orderMapper.selectByPrimaryKey(Long.parseLong(orderId));
+		String sellerId = order.getSellerId();
+		TbSeller tbSeller = sellerMapper.selectByPrimaryKey(sellerId);
+		return tbSeller.getEmail();
 	}
 
 

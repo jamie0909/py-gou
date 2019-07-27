@@ -10,9 +10,16 @@
 
     <link rel="stylesheet" type="text/css" href="css/webbase.css" />
     <link rel="stylesheet" type="text/css" href="css/pages-seckillOrder.css" />
+	<script type="text/javascript" src="plugins/angularjs/angular.min.js"></script>
+	<script type="text/javascript" src="js/base.js"></script>
+	<script type="text/javascript" src="js/service/loginService.js"></script>
+	<script type="text/javascript" src="js/service/orderService.js"></script>
+	<script type="text/javascript" src="js/controller/baseController.js"></script>
+	<script type="text/javascript" src="js/controller/indexController.js"></script>
+	<script type="text/javascript" src="js/controller/orderController.js"></script>
 </head>
 
-<body>
+<body ng-app="pinyougou" ng-controller="orderController" ng-init="findOrderListByOutOrderNo()">
     <!-- 头部栏位 -->
     <!--页面顶部-->
 <div id="nav-bottom">
@@ -23,7 +30,7 @@
 				<div class="shortcut">
 					<ul class="fl">
 						<li class="f-item">品优购欢迎您！</li>
-						<li class="f-item">请<a href="login.html" target="_blank">登录</a>　<span><a href="register.html" target="_blank">免费注册</a></span></li>
+						<!--<li class="f-item">请<a href="login.html" target="_blank">登录</a>　<span><a href="register.html" target="_blank">免费注册</a></span></li>-->
 					</ul>
 					<ul class="fr">
 						<li class="f-item">我的订单</li>
@@ -178,7 +185,7 @@ $(function(){
 						<dl>
 							<dt><i>·</i> 设置</dt>
 							<dd><a href="home-setting-info.html">个人信息</a></dd>
-							<dd><a  >地址管理</a></dd>
+							<dd><a href="home-setting-address.html"  >地址管理</a></dd>
 							<dd><a href="home-setting-safe.html" >安全管理</a></dd>
 						</dl>
                     </div>
@@ -197,69 +204,70 @@ $(function(){
                                         </div>
                                         <label>
                                             <span>提交订单</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+                                            <span>{{(order.createTime|cutStr)[0]}}</span>
+                                            <span>{{(order.createTime|cutStr)[1]}}</span>
                                         </label>
                                     </div>
-                                    <div class="current">
+                                    <div  class="{{isCurrent(order.status,'提交订单')}}">
                                         <div class="wrap">
                                         <div class="round">2</div>
                                         <div class="bar"></div>
                                         </div>
                                         <label>
                                             <span>付款成功</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+                                            <span ng-if="order.status > 1">{{(order.createTime|cutStr)[0]}}</span>
+                                            <span ng-if="order.status > 1">{{(order.createTime|cutStr)[1]}}</span>
                                         </label>
                                     </div>
-                                    <div class="todo">
+
+                                    <div class="{{isCurrent(order.status,'发货')}}">
                                         <div class="wrap">
                                         <div class="round">3</div>
                                         <div class="bar"></div>
                                         </div>
                                         <label>
                                             <span>发货</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+                                            <span>{{(order.createTime|cutStr)[0]}}</span>
+                                            <span>{{(order.createTime|cutStr)[1]}}</span>
                                         </label>
                                     </div>
-                                    <div class="todo">
+                                    <div class="{{isCurrent(order.status,'确认收货')}}">
                                         <div class="wrap">
                                         <div class="round">4</div>
                                         <div class="bar"></div>
                                         </div>
                                         <label>
                                             <span>确认收货</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+                                            <span>{{(order.createTime|cutStr)[0]}}</span>
+                                            <span>{{(order.createTime|cutStr)[1]}}</span>
                                         </label>
                                     </div>
                                     
-                                    <div class="todo last">
+                                    <div class="{{isCurrent(order.status,'评价晒单')}}">
                                         <div class="wrap">
                                         <div class="round">5</div>
                                         </div>
                                         <label>
                                             <span>评价晒单</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+                                            <span>{{(order.createTime|cutStr)[0]}}</span>
+                                            <span>{{(order.createTime|cutStr)[1]}}</span>
                                         </label>
                                     </div>
                                     </div>
                             </div>
                             <div class="order-state">
-                                <p>当前订单状态：<span class="red">已发货</span></p>
-                                <p>还剩06天00小时 自动确认收货</p>
+                                <p>当前订单状态：<span class="red">{{detailStatus[entity.payLog.status-1]}}</span></p>
+                                <p>{{getNumberOfDays(entity.payLog.payTime)}}</p>
                             </div>
                         </div>
                         <div class="order-info">
                             <h5>订单信息</h5>
-                            <p>收货地址：神茶减肥茶就观察及噶盘滚啊  </p>
-                            <p>订单单号：178789758976986</p>
-                            <p>下单时间：2017-06-04 09：03：03</p>
-                            <p>支付时间：2017-06-05  09：03：03</p>
-                            <p>支付方式：微信</p>
-                            <p>发货时间：201707-06-06 09：03：03</p>
+                            <p>收货地址：{{entity.orderList[0].receiverAreaName}}  </p>
+                            <p>订单单号：{{entity.orderList[0].orderIdStr}}</p>
+                            <p>下单时间：{{entity.orderList[0].createTime}}</p>
+                            <p>支付时间：{{entity.orderList[0].status >1 && entity.orderList[0].status != 6 ? entity.orderList[0].createTime:'未支付'}}</p>
+                            <p>支付方式：{{entity.orderList[0].status >=2 && entity.orderList[0].status != 6 ? paymentTypeStr[entity.orderList[0].paymentType]:"未支付"}}</p>
+							<p>发货时间：{{entity.orderList[0].consignTime != null?entity.orderList[0].consignTime:'未发货'}}</p>
                         </div>
                         <div class="order-goods">
                             <table class="sui-table">
@@ -271,34 +279,36 @@ $(function(){
                                         <th class="center" >状态</th>
                                     </thead>                                   
                              
-                                <tbody>                               
+                                <tbody>
                                     <tr>
-                                        <td colspan="5">订单编号：787587819591509</td>
+                                        <td colspan="5">订单编号：{{entity.payLog.outTradeNo}}</td>
                                     </tr>
-                                    <tr>
-                                        <td>
+
+                                    <tr ng-repeat="order in entity.orderList">
+
+                                        <td ng-repeat="orderItem in order.orderItems">
                                             <div class="typographic"><img src="img/goods.png" />
-                                                    <span>包邮 正品玛姬儿压缩面膜无纺布纸膜100粒 送泡瓶面膜刷喷瓶 新款</span>
-                                                    <span class="guige">规格：温泉喷雾150ml</span>
+                                                    <span>{{orderItem.title}}</span>
+                                                    <span class="guige">规格：{{orderItem.spec}}</span>
                                                 </div>
                                         </td>
-                                        <td>
+                                        <td ng-repeat="orderItem in order.orderItems">
                                             <ul class="unstyled">
-                                                    <li class="o-price">¥599.00</li>	
-                                                    <li>¥299.00</li>											
+                                                    <li class="o-price">{{}}</li>
+                                                    <li>￥{{orderItem.price}}</li>
                                                 </ul>
                                         </td>
-                                        <td>1</td>
+                                        <td>购买数量：{{orderItem.num}}</td>
                                         <td>无优惠</td>
-                                        <td>交易成功</td>
+                                        <td>{{waitStatusStr[order.status-1]}}</td>
                                     </tr>
                                 </tbody>
                             </table>
                             <div class="order-price">
-                                <p>商品总金额：￥1.8</p>
+                                <p>商品总金额：￥{{entity.payLog.totalFee/100}}</p>
                                 <p>运费金额：，免费用</p>
                                 <p>使用优惠券：无</p>
-                                <h4 class="red">实际支付：￥1.8</h4>
+                                <h4 class="red">实际支付：￥{{entity.payLog.totalFee/100}}</h4>
                             </div>
                             <div class="clearfix"></div>
                         </div>
@@ -528,6 +538,9 @@ $(function(){
 </div>
 <!--页面底部END-->
 
-undefined
+<script>
+
+
+</script>
 
 </html>
