@@ -3,7 +3,13 @@ import java.util.List;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbPayLog;
 
+import com.pinyougou.pojo.TbSalesreturn;
+import com.pinyougou.pojo.group.Order;
 import entity.PageResult;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * 服务层接口
  * @author Administrator
@@ -16,13 +22,23 @@ public interface OrderService {
 	 * @return
 	 */
 	public List<TbOrder> findAll();
-	
-	
+
+
 	/**
 	 * 返回分页列表
 	 * @return
 	 */
 	public PageResult findPage(int pageNum,int pageSize);
+
+
+	/**
+	 * 条件分页查询
+	 * @param order
+	 * @param page
+	 * @param rows
+	 * @return
+	 */
+	PageResult findByPage(TbOrder order, int page, int rows);
 	
 	
 	/**
@@ -42,7 +58,7 @@ public interface OrderService {
 	 * @param id
 	 * @return
 	 */
-	public TbOrder findOne(Long id);
+	public Order findOne(Long id);
 	
 	
 	/**
@@ -73,6 +89,23 @@ public interface OrderService {
 	 * @param transaction_id
 	 */
 	public void updateOrderStatus(String out_trade_no,String transaction_id);
-	
-	
+
+
+    void deleteOne(Long id);
+
+	public void updateStatus(Long id,String status);
+
+	/**
+	 * poi报表导出   wjk
+	 * @param order
+	 * @return
+	 */
+    void excel(TbOrder order);
+
+	/**
+	 * 返回退单个货商品详情   wjk
+	 * @param id
+	 * @return
+	 */
+	TbSalesreturn findReturnOne(String id);
 }

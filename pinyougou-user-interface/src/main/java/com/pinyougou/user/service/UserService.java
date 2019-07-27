@@ -88,7 +88,7 @@ public interface UserService {
 	* @Author: WangRui
 	* @Date: 2019/7/25
 	*/ 
-	public void updatePassword(TbUser user,String username);
+	public Result updatePassword(TbUser user,String username);
 	
 	
 	/***
