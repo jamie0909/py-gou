@@ -2,12 +2,15 @@ package com.pinyougou.order.service.impl;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.pinyougou.mapper.TbSalesreturnMapper;
+import com.pinyougou.pojo.*;
 import com.pinyougou.pojo.group.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,11 +22,7 @@ import com.github.pagehelper.PageHelper;
 import com.pinyougou.mapper.TbOrderItemMapper;
 import com.pinyougou.mapper.TbOrderMapper;
 import com.pinyougou.mapper.TbPayLogMapper;
-import com.pinyougou.pojo.TbOrder;
-import com.pinyougou.pojo.TbOrderExample;
 import com.pinyougou.pojo.TbOrderExample.Criteria;
-import com.pinyougou.pojo.TbOrderItem;
-import com.pinyougou.pojo.TbPayLog;
 import com.pinyougou.pojo.group.Cart;
 import com.pinyougou.order.service.OrderService;
 
@@ -31,12 +30,15 @@ import entity.PageResult;
 import util.ExcelOperateUtil;
 import util.IdWorker;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * 服务实现层
  * @author Administrator
  *
  */
-@Service
+@Service(timeout = 1200000)
 @Transactional
 public class OrderServiceImpl implements OrderService {
 
@@ -46,6 +48,8 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	private TbPayLogMapper payLogMapper;
 
+	@Autowired
+    private TbSalesreturnMapper salesreturnMapper;
 
 
 	/**
@@ -378,9 +382,18 @@ public class OrderServiceImpl implements OrderService {
 		List<TbOrder> orders = orderMapper.selectByExample(example);
 
 		System.out.println(orders);
-		ExcelOperateUtil.createExcel(orders);
-
+		try {
+			ExcelOperateUtil.createExcel(orders);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
+
+    @Override
+    public TbSalesreturn findReturnOne(String id) {
+
+        return salesreturnMapper.selectByPrimaryKey(id);
+    }
 
 
 }

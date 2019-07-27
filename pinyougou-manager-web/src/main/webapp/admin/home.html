@@ -12,11 +12,28 @@
     <link rel="stylesheet" href="../plugins/adminLTE/css/AdminLTE.css">
     <link rel="stylesheet" href="../plugins/adminLTE/css/skins/_all-skins.min.css">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../js/jedate/skin/jedate.css">
+
+
 	<script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
     <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script  src="../js/echarts.min.js"></script>
+    <script src="../js/jedate/dist/jedate.min.js"></script>
+
+    <!-- 引入angular的js -->
+    <script type="text/javascript" src="../plugins/angularjs/angular.min.js"></script>
+
+    <script type="text/javascript" src="../js/base.js"></script>
+    <script type="text/javascript" src="../js/controller/baseController.js"></script>
+    <script type="text/javascript" src="../js/controller/homeController.js"></script>
+    <script type="text/javascript" src="../js/service/homeService.js"></script>
+
+
+
+
 </head>
 
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini" ng-app="pinyougou" ng-controller="homeController">
 
    <!-- 内容区域 -->
 
@@ -103,8 +120,183 @@
                 <!-- /.row -->
             </section>
             <!-- 正文区域 /-->
+            <section >
+                <span class="datetxt">&nbsp; 开始日期：</span><input ng-model="entity.startT" type="text" class="dateinput dateicon" id="inpstart" placeholder="订单时间" readonly>
+                <span class="datetxt">结束日期：</span><input type="text" ng-model="entity.endT" class="dateinput dateicon" id="inpend" placeholder="订单时间" readonly>
+                <button ng-click="findByTime()">查询</button><button>导出Excel</button>
+                <script type="text/javascript">
+                    var start = {}, end = {};
+                    jeDate('#inpstart',{
+                        format: 'YYYY-MM-DD hh:mm:ss',
+                        minDate: '2014-06-16 23:59:59', //设定最小日期为当前日期
+                        maxDate: function (that) {
+                            //that 指向实例对象
+                            return jeDate.valText(that.valCell) == "" ? jeDate.nowDate({DD:0}) : start.maxDate;
+                        }, //设定最大日期为当前日期
+                        donefun: function(obj){
+                            end.minDate = obj.val; //开始日选好后，重置结束日的最小日期
+                            jeDate("#inpend",LinkageEndDate(false));
+                        }
+                    });
 
-        <!-- 内容区域 /-->
+
+                    jeDate('#inpend',LinkageEndDate);
+
+                    function LinkageEndDate(istg) {
+                        return {
+                            trigger : istg || "click",
+                            format: 'YYYY-MM-DD hh:mm:ss',
+                            minDate: function (that) {
+                                //that 指向实例对象
+                                var nowMinDate = jeDate.valText('#inpstart') == "" && jeDate.valText(that.valCell) == "";
+                                return nowMinDate ? '2014-06-16 23:59:59' : end.minDate ;
+                            }, //设定最小日期为当前日期
+                            maxDate: jeDate.nowDate({DD:0}), //设定最大日期为当前日期
+                            donefun: function(obj){
+                                start.maxDate = obj.val; //将结束日的初始值设定为开始日的最大日期
+                            }
+                        };
+                    }
+                </script>
+            </section>
+
+
+    <section>
+       <!-- 内容区域 /-->
+       <div id="container" style="height: 450%"></div>
+       <script type="text/javascript">
+           var dom = document.getElementById("container");
+           var myChart = echarts.init(dom);
+           var app = {};
+           option = null;
+           option = {
+               title: {
+                   text: '品优购订单统计概况',
+                   subtext: '黑马程序员*合肥中心',
+                   left: '50%',
+                   top:'0'
+               },
+               legend: {
+
+                   left: '3%',
+                   top:'7%',
+
+                   data:['待付款订单','待发货订单','已发货订单','已完成订单','已关闭订单'],
+
+               },
+               tooltip: {
+                   trigger: 'axis',
+                   showContent: true,
+               },
+               dataset: {
+                   source: [
+                       ['product', '1月1日', '1月2日', '1月3日', '1月4日', '1月5日', '1月6日','1月7日'],
+                       ['待付款订单', 41.1, 30.4, 65.1, 53.3, 22.8,33.9,34.3],
+                       ['待发货订单', 56.5, 30.1, 66.7, 73.1, 73.4, 55.1,56.4],
+                       ['已发货订单', 24.1, 67.2, 79.5, 86.4, 65.2, 82.5,38.4],
+                       ['已完成订单', 55.2, 67.1, 69.2, 72.4, 53.9, 39.1,45.5],
+                       ['已关闭订单', 25.2, 37.1, 49.2, 55.4, 53.9, 39.1,56.3],
+                   ]
+               },
+               toolbox: {
+                   orient: 'vartical',
+                   left:'95%',
+                   top:'42%',
+                   show: true,
+                   feature: {
+                       dataZoom: {
+                           yAxisIndex: 'none'
+                       },
+                       dataView: {readOnly: false},
+                       magicType: {type: ['line', 'bar']},
+                       restore: {},
+                       saveAsImage: {}
+                   }
+               },
+
+               xAxis: {
+                   type: 'category'
+               },
+               yAxis: {
+                   gridIndex: 0
+               },
+               grid: {
+                   top: '20%',
+                   left: '5%',
+                   right: '35%',
+                   bottom:'20%',
+               },
+               series: [{
+                   type: 'bar',
+                   stack: '状态',
+                   smooth: true,
+                   seriesLayoutBy: 'row'
+               },
+                   {
+                       type: 'bar',
+                       smooth: true,
+                       stack: '状态',
+                       seriesLayoutBy: 'row'
+                   },
+                   {
+                       type: 'bar',
+                       smooth: true,
+                       stack: '状态',
+                       seriesLayoutBy: 'row'
+
+                   },
+                   {
+                       type: 'bar',
+                       smooth: true,
+                       stack: '状态',
+                       seriesLayoutBy: 'row'
+                   },
+                   {
+                       type: 'bar',
+                       smooth: true,
+                       stack: '状态',
+                       seriesLayoutBy: 'row'
+                   },
+                   {
+                       type: 'pie',
+                       id: 'pie',
+                       radius: '40%',
+                       center: ['84%', '30%'],
+                       label: {
+                           formatter: '{b}: {@2012} ({d}%)'
+                       },
+                       encode: {
+                           itemName: 'product',
+                           value: '2012',
+                           tooltip: '2012'
+                       }
+                   }
+               ]
+           };
+           myChart.on('updateAxisPointer', function (event) {
+               var xAxisInfo = event.axesInfo[0];
+               if (xAxisInfo) {
+                   var dimension = xAxisInfo.value + 1;
+                   myChart.setOption({
+                       series: {
+                           id: 'pie',
+                           label: {
+                               formatter: '{b}: {@[' + dimension + ']} ({d}%)'
+                           },
+                           encode: {
+                               value: dimension,
+                               tooltip: dimension
+                           }
+                       }
+                   });
+               }
+           });
+           myChart.setOption(option);
+           if (option && typeof option === "object") {
+               myChart.setOption(option, true);
+           }
+       </script>
+    <!-- 内容区域 /-->
 </body>
-
+</section>
 </html>

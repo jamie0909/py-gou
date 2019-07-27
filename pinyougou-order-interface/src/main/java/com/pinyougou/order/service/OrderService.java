@@ -3,8 +3,13 @@ import java.util.List;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbPayLog;
 
+import com.pinyougou.pojo.TbSalesreturn;
 import com.pinyougou.pojo.group.Order;
 import entity.PageResult;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * 服务层接口
  * @author Administrator
@@ -90,5 +95,17 @@ public interface OrderService {
 
 	public void updateStatus(Long id,String status);
 
+	/**
+	 * poi报表导出   wjk
+	 * @param order
+	 * @return
+	 */
     void excel(TbOrder order);
+
+	/**
+	 * 返回退单个货商品详情   wjk
+	 * @param id
+	 * @return
+	 */
+	TbSalesreturn findReturnOne(String id);
 }

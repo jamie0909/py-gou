@@ -25,7 +25,7 @@ app.controller('orderController' ,function($scope,$controller,$http,orderService
     $scope.status = ["","未付款","已付款","未发货","已发货","交易成功","交易关闭","待评价","退货申请","退货完成"];
 
     //支付类型
-    $scope.payType = ["","在线支付","货到付款"];
+    $scope.payType = ["","微信支付","货到付款","支付宝支付"];
 
     //订单来源
     $scope.orderSource = ["","app端","pc端","M端","微信端","手机qq端"];
@@ -70,6 +70,15 @@ app.controller('orderController' ,function($scope,$controller,$http,orderService
         );
     }
 
+    //查询退货实体
+    $scope.findReturnOne=function(id){
+        orderService.findReturnOne(id).success(
+            function(response){
+                $scope.entityReturn= response;
+            }
+        );
+    }
+
 
     // 审核的方法:
     $scope.updateStatus = function(orderId,status){
@@ -97,16 +106,21 @@ app.controller('orderController' ,function($scope,$controller,$http,orderService
 
     //excel报表导出
     $scope.excelOperate = function(){
-        alert($scope.searchEntity);
         orderService.excelOperate($scope.searchEntity).success(function(response){
-            alert("11111111111");
-            if(response.flag){
-                alert(response.message);
-            }else{
-                alert(response.message);
+
+            if(confirm('确认把该搜索结果导出Excel表格 ？')){
+                $.messager.progress({
+                    title : '处理中',
+                    msg : '请稍后',
+                });
+                if(response.flag){
+                    alert(response.message);
+                }else{
+                    alert(response.message);
+                }
             }
+
+
         });
     }
-
-
 });
