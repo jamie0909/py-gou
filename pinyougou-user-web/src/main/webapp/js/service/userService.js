@@ -52,5 +52,15 @@ app.service('userService',function($http){
 
 
 
+    this.findUser=function(){
+        return  $http.post('../user/findUser.do');
+    }
+
+
+    this.checkCode=function (code,phone) {
+        return $http.get('../user/checkCode.do?code='+code+'&phone='+phone);
+    }
+
+
 	
 });

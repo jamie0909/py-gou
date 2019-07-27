@@ -50,7 +50,7 @@
 									订单状态:<input type="text" placeholder="订单状态" ng-model="searchEntity.status">
 									订单来源:<input type="text" placeholder="订单来源" ng-model="searchEntity.sourceType">
 									<input class="btn btn-default" ng-click="reloadList()" type="button" value="查询">
-									<input class="btn btn-default" ng-click="reloadList()" type="button" value="导出Excel">
+
                                 </div>
                             </div>
                             <!--工具栏/-->
@@ -98,8 +98,9 @@
 		                                      </span>
 										  </td>
 		                                  <td class="text-center">
-		                                  <button type="button" class="btn bg-olive btn-xs" ng-click="findById(entity.id)" data-toggle="modal" data-target="#editModal"  >订单详情</button>
-		                                  <button type="button" class="btn bg-olive btn-xs" ng-click="findById(entity.id)" data-toggle="modal" data-target="#editModal"  ng-if="entity.status==">订单发货</button>
+											  <button type="button" class="btn bg-olive btn-xs" ng-click="findOne(entity.orderId)" data-toggle="modal" data-target="#sellerModal">订单详情</button>
+											  <button type="button" class="btn bg-olive btn-xs" ng-click="updateStatus(entity.orderId,entity.status)" data-toggle="modal"  ng-if="entity.status=='3'">订单发货</button>
+											  <button type="button" class="btn bg-olive btn-xs" ng-click="deleOne(entity.orderId)" data-toggle="modal" >删除</button>
 		                                  </td>
 			                          </tr>
 									  
