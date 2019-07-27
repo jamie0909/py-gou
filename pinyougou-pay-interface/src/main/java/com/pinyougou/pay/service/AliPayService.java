@@ -11,4 +11,6 @@ public interface AliPayService {
      * @return
      */
     public Map createNative(String out_trade_no, String total_fee);
+
+    public Map queryPayStatus(String out_trade_no);
 }

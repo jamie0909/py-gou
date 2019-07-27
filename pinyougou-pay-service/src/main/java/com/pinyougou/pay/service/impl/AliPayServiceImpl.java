@@ -1,17 +1,22 @@
 package com.pinyougou.pay.service.impl;
 
+import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alipay.api.AlipayResponse;
+import com.alipay.api.domain.TradeFundBill;
 import com.alipay.api.response.AlipayTradePrecreateResponse;
+import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.demo.trade.config.Configs;
 import com.alipay.demo.trade.model.ExtendParams;
 import com.alipay.demo.trade.model.GoodsDetail;
 import com.alipay.demo.trade.model.builder.AlipayTradePrecreateRequestBuilder;
+import com.alipay.demo.trade.model.builder.AlipayTradeQueryRequestBuilder;
 import com.alipay.demo.trade.model.result.AlipayF2FPrecreateResult;
+import com.alipay.demo.trade.model.result.AlipayF2FQueryResult;
 import com.alipay.demo.trade.service.AlipayTradeService;
 import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
+import com.alipay.demo.trade.utils.Utils;
 import com.pinyougou.pay.service.AliPayService;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -74,7 +79,7 @@ public class AliPayServiceImpl implements AliPayService {
                 .setUndiscountableAmount(undiscountableAmount).setSellerId(sellerId).setBody(body)
                 .setOperatorId(operatorId).setStoreId(storeId).setExtendParams(extendParams)
                 .setTimeoutExpress(timeoutExpress)
-                //                .setNotifyUrl("http://www.test-notify-url.com")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+                .setNotifyUrl("http://jamie.natapp1.cc/pay/alipayCallBack.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setGoodsDetailList(goodsDetailList);
 
         /** 一定要在创建AlipayTradeService之前调用Configs.init()设置默认参数
@@ -102,6 +107,7 @@ public class AliPayServiceImpl implements AliPayService {
                 log.info("filePath:" + filePath);*/
                 //                ZxingUtils.getQRCodeImge(response.getQrCode(), 256, filePath);
 
+                System.out.println("code_url:"+response.getQrCode());
                 map.put("code_url", response.getQrCode());//生成支付二维码的链接
                 map.put("out_trade_no", out_trade_no);
                 map.put("total_fee", total_fee);
@@ -119,7 +125,55 @@ public class AliPayServiceImpl implements AliPayService {
                 log.error("不支持的交易状态，交易返回异常!!!");
                 break;
         }
-        return null;
+        System.out.println("阿里支付返回结果:"+map);
+        return map;
+
+    }
+
+    @Override
+    public Map queryPayStatus(String out_trade_no) {
+        // (必填) 商户订单号，通过此商户订单号查询当面付的交易状态
+        String outTradeNo = out_trade_no;
+
+        // 创建查询请求builder，设置请求参数
+        AlipayTradeQueryRequestBuilder builder = new AlipayTradeQueryRequestBuilder()
+                .setOutTradeNo(outTradeNo);
+
+        Configs.init("zfbinfo.properties");
+
+        /** 使用Configs提供的默认参数
+         *  AlipayTradeService可以使用单例或者为静态成员对象，不需要反复new
+         */
+        AlipayTradeService tradeService = new AlipayTradeServiceImpl.ClientBuilder().build();
+
+        AlipayF2FQueryResult result = tradeService.queryTradeResult(builder);
+        Map map=new HashMap<>();
+        switch (result.getTradeStatus()) {
+            case SUCCESS:
+                log.info("查询返回该订单支付成功: )");
+
+                AlipayTradeQueryResponse response = result.getResponse();
+                dumpResponse(response);
+
+                log.info(response.getTradeStatus());
+                map.put("trade_state",response.getTradeStatus());
+                map.put("totalAmount",response.getTotalAmount());
+                map.put("tradeNo",response.getTradeNo());
+                break;
+
+            case FAILED:
+                log.error("查询返回该订单支付失败或被关闭!!!");
+                break;
+
+            case UNKNOWN:
+                log.error("系统异常，订单支付状态未知!!!");
+                break;
+
+            default:
+                log.error("不支持的交易状态，交易返回异常!!!");
+                break;
+        }
+        return map;
     }
 
     // 简单打印应答

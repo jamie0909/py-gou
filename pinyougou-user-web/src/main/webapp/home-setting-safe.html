@@ -18,6 +18,20 @@
     <script type="text/javascript" src="js/controller/userController.js"></script>
     <script type="text/javascript" src="js/service/userService.js"></script>
 
+        <style type="text/css">
+        .show-green{
+            color: green;
+        }
+        .show-yellow{
+            color: orange;
+        }
+        .show-red{
+            color: red;
+        }
+        </style>
+
+
+
 </head>
 
 <body ng-app="pinyougou"  ng-controller="userController" ng-init="findUser()">
@@ -336,12 +350,35 @@ $(function(){
 
                                         </div>
                                     </div>
-                                    <div class="control-group">
+                                   <!-- <div class="control-group">
                                         <label for="inputPassword" class="control-label">密码：</label>
                                         <div class="controls">
-                                            <input class="fn-tinput" type="password" name="password" value="" placeholder="新密码" ng-model="entity.password" required id="password" data-rule-remote="php.php">
+                                            <input class="fn-tinput" type="password" name="password" value="" placeholder="原密码" ng-model="entity.oldPassword" required id="password" data-rule-remote="php.php">
                                         </div>
-                                    </div>
+                                    </div>-->
+
+
+
+
+									<div class="control-group">
+										<label for="inputPassword" class="control-label">新密码：</label>
+										<div class="controls">
+											<style type="text/css">
+												.show-green{
+													color: green;
+												}
+												.show-yellow{
+													color: orange;
+												}
+												.show-red{
+													color: red;
+												}
+											</style>
+											<input class="form-control" type="password" name="password"  value="" placeholder="请输入新的密码,6-16位数字或英文字母" ng-keyup="checkPassword(entity.password)" ng-model="entity.password" required id="password" data-rule-remote="php.php">
+											<p class="text-right grey show-{{teColor}}" ng-bind="safeMsg"></p>
+
+										</div>
+									</div>
                                     <div class="control-group">
                                         <label for="inputRepassword" class="control-label">重复密码：</label>
                                         <div class="controls">
@@ -396,11 +433,13 @@ $(function(){
                                             <input name="msgcode" type="text" id="msgcode">
                                         </div>
                                         <div class="controls">
-                                            <button class="sui-btn btn-info" ng-click="sendCode(entity)">发送</button>
+
+											<button class="yz-btn" ng-click="sendCode(entity)" ng-disabled="timer"><span ng-if="showTimer">{{timerCount}}</span>{{text}}</button>
                                         </div>
                                     </div>
                                     <div class="control-group next-btn">
                                         <a class="sui-btn btn-primary"  ng-click="nextTOPhone(entity)">下一步</a>
+
 
                                     </div>
                                 </form>

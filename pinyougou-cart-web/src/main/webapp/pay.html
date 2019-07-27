@@ -5,7 +5,7 @@
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
 		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
-		<title>微信支付页</title>
+		<title>支付页</title>
         <link rel="icon" href="/assets/img/favicon.ico">
 		
 	
@@ -61,23 +61,26 @@
 					<div class="clearfix"></div>
 				</div>				
 				<div class="checkout-steps">
-					<div class="fl weixin">微信支付</div>
+					<div class="fl weixin">{{paymentType_str}}支付</div>
                     <div class="fl sao"> 
                         <p class="red"></p>                      
                         <div class="fl code">
                             <img id="qrious">
                             <div class="saosao">
-                                <p>请使用微信扫一扫</p>
+                                <p>请使用{{paymentType_str}}扫一扫</p>
                                 <p>扫描二维码支付</p>
                             </div>
                         </div>
                         <div class="fl phone">
                             
                         </div>
+
                         
                     </div>
                     <div class="clearfix"></div>
-				    <p><a href="pay.html" target="_blank">> 其他支付方式</a></p>
+				    <!--<p><a href="pay.html" target="_blank">> 其他支付方式</a></p>-->
+					<p><a href="javascript:void(0)" ng-click="changeOtherPayType()"><font color="#0758a8">切换{{otherPaymentType_str}}支付方式</font></a></p>
+					<p><a href="javascript:void(0)" ng-click="changeDeliveryPayType()"><font color="#0758a8">切换货到付款方式</font></a></p>
 				</div>
 			</div>
 

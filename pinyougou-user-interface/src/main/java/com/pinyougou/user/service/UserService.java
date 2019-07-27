@@ -1,5 +1,9 @@
 package com.pinyougou.user.service;
 import java.util.List;
+
+import com.pinyougou.pojo.TbAreas;
+import com.pinyougou.pojo.TbCities;
+import com.pinyougou.pojo.TbProvinces;
 import com.pinyougou.pojo.TbUser;
 
 import entity.PageResult;
@@ -44,8 +48,7 @@ public interface UserService {
 	 * @return
 	 */
 	public TbUser findOne(Long id);
-	
-	
+
 	/**
 	 * 批量删除
 	 * @param ids
@@ -85,7 +88,7 @@ public interface UserService {
 	* @Author: WangRui
 	* @Date: 2019/7/25
 	*/ 
-	public void updatePassword(TbUser user,String username);
+	public Result updatePassword(TbUser user,String username);
 	
 	
 	/***
@@ -105,8 +108,27 @@ public interface UserService {
     * @return: com.pinyougou.pojo.TbUser
     * @Author: WangRui
     * @Date: 2019/7/25
-    */ 
+    */
+
 	TbUser findUser(String name);
+
+	/**
+	 * 查询所有省份
+	 * @return
+	 */
+	public List<TbProvinces> findProvince();
+
+	/**
+	 * 查询所有市
+	 * @return
+	 */
+	public List<TbCities> findCity(String pid);
+
+	/**
+	 * 查询所有区县
+	 * @return
+	 */
+	public List<TbAreas> findArea(String cid);
 
 
 }

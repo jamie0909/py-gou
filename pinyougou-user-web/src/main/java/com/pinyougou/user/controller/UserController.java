@@ -2,12 +2,19 @@ package com.pinyougou.user.controller;
 import java.util.List;
 
 
+import com.pinyougou.pojo.TbAreas;
+import com.pinyougou.pojo.TbCities;
+import com.pinyougou.pojo.TbProvinces;
+import com.pinyougou.pojo.*;
+import com.pinyougou.user.service.AddressService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.pinyougou.pojo.TbUser;
 import com.pinyougou.user.service.UserService;
 
 import entity.PageResult;
@@ -75,8 +82,19 @@ public class UserController {
 	 */
 	@RequestMapping("/update")
 	public Result update(@RequestBody TbUser user){
-		try {
-			userService.update(user);
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<TbUser> users = userService.findOne(name);
+        TbUser user1= users.get(0);
+        user1.setJob(user.getJob());
+        user1.setBirthday(user.getBirthday());
+        user1.setArea(user.getArea());
+        user1.setCitiy(user.getCitiy());
+        user1.setProvinces(user.getProvinces());
+        user1.setSex(user.getSex());
+        user1.setNickName(user.getNickName());
+        user1.setHeadPic(user.getHeadPic());
+        try {
+			userService.update(user1);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -90,8 +108,10 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping("/findOne")
-	public TbUser findOne(Long id){
-		return userService.findOne(id);		
+	public TbUser findOne(){
+		String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        TbUser user = userService.findUser(name);
+        return user;
 	}
 	
 	/**
@@ -149,20 +169,25 @@ public class UserController {
 	* @Date: 2019/7/25
 	*/
 	@RequestMapping("/updatePassword")
-	public Result updatePassword(@RequestBody TbUser user ){
+	public Result updatePassword(@RequestBody TbUser user,String username){
 		//获取到登录名
-		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		 username = SecurityContextHolder.getContext().getAuthentication().getName();
 		System.out.println("username"+username);
+
+
 		if(!username.equals(user.getUsername())){
 			return new Result(false, "用户名输入不正确");
 		}
-		try {
-			userService.updatePassword(user,username);
-			return new Result(true, "密码修改成功,请重新登陆");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new Result(false, "修改失败");
-		}
+        Result result = userService.updatePassword(user, username);
+
+        boolean flag = result.isFlag();
+        System.out.println("flag"+flag);
+        if (flag){
+            return new Result(true, result.getMessage());
+        }else{
+            return new Result(false, result.getMessage());
+        }
+
 	}
 
 
@@ -197,7 +222,11 @@ public class UserController {
 	@RequestMapping("/findUser.do")
 	public TbUser findUser(){
 		String username= SecurityContextHolder.getContext().getAuthentication().getName();
-		return userService.findUser(username);
+
+		 TbUser user=userService.findUser(username);
+		 user.setPassword("");
+        System.out.println("密码的为"+user.getPassword());
+		 return user;
 	}
 
 
@@ -221,7 +250,26 @@ public class UserController {
 		}
 	}
 
+    /**
+     * ==================================================================
+     * 查询省市区三级联动↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↑↑↑↑↑↑↑↑
+     */
+	@RequestMapping("/findProvince.do")
+	public List<TbProvinces> findProvince(){
+	    return userService.findProvince();
+    }
 
+    @RequestMapping("/findCity.do")
+    public List<TbCities> findCity(String provinceId){
+	    return userService.findCity(provinceId);
+    }
 
-
+    @RequestMapping("/findArea.do")
+    public List<TbAreas> findArea(String cityId){
+        return userService.findArea(cityId);
+    }
+    /**
+     * ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+     * ==================================================================
+     */
 }

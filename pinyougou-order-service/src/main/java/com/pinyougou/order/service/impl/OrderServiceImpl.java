@@ -2,14 +2,16 @@ package com.pinyougou.order.service.impl;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.excel.poi.ExcelBoot;
-import com.excel.poi.function.ExportFunction;
-import entity.OrderExcelEntity;
+import com.pinyougou.mapper.TbSalesreturnMapper;
+import com.pinyougou.pojo.*;
+import com.pinyougou.pojo.group.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,39 +22,43 @@ import com.github.pagehelper.PageHelper;
 import com.pinyougou.mapper.TbOrderItemMapper;
 import com.pinyougou.mapper.TbOrderMapper;
 import com.pinyougou.mapper.TbPayLogMapper;
-import com.pinyougou.pojo.TbOrder;
-import com.pinyougou.pojo.TbOrderExample;
 import com.pinyougou.pojo.TbOrderExample.Criteria;
-import com.pinyougou.pojo.TbOrderItem;
-import com.pinyougou.pojo.TbPayLog;
 import com.pinyougou.pojo.group.Cart;
 import com.pinyougou.order.service.OrderService;
 
 import entity.PageResult;
+import util.ExcelOperateUtil;
 import util.IdWorker;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 服务实现层
- *
  * @author Administrator
+ *
  */
-@Service
+@Service(timeout = 1200000)
 @Transactional
 public class OrderServiceImpl implements OrderService {
 
-    @Autowired
-    private TbOrderMapper orderMapper;
+	@Autowired
+	private TbOrderMapper orderMapper;
+	
+	@Autowired
+	private TbPayLogMapper payLogMapper;
 
-    @Autowired
-    private TbPayLogMapper payLogMapper;
+	@Autowired
+    private TbSalesreturnMapper salesreturnMapper;
 
-    /**
-     * 查询全部
-     */
-    @Override
-    public List<TbOrder> findAll() {
-        return orderMapper.selectByExample(null);
-    }
+
+	/**
+	 * 查询全部
+	 */
+	@Override
+	public List<TbOrder> findAll() {
+		return orderMapper.selectByExample(null);
+	}
 
     /**
      * 按分页查询
@@ -135,112 +141,121 @@ public class OrderServiceImpl implements OrderService {
             redisTemplate.boundHashOps("payLog").put(order.getUserId(), payLog);//放入缓存
         }
 
+		if ("3".equals(order.getPaymentType())) {
+			TbPayLog payLog = new TbPayLog();
+
+			payLog.setOutTradeNo(idWorker.nextId() + "");//支付订单号
+			payLog.setCreateTime(new Date());
+			payLog.setUserId(order.getUserId());//用户ID
+			payLog.setOrderList(orderIdList.toString().replace("[", "").replace("]", ""));//订单ID串
+			payLog.setTotalFee((long) (total_money * 100));//金额（分）
+			payLog.setTradeState("0");//交易状态
+			payLog.setPayType("3");//支付宝
+			payLogMapper.insert(payLog);
+
+			redisTemplate.boundHashOps("payLog").put(order.getUserId(), payLog);//放入缓存
+		}
 
         //3.清除redis中的购物车
         redisTemplate.boundHashOps("cartList").delete(order.getUserId());
     }
 
+	
+	/**
+	 * 修改
+	 */
+	@Override
+	public void update(TbOrder order){
+		orderMapper.updateByPrimaryKey(order);
+	}	
+	
+	/**
+	 * 根据ID获取实体
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public Order findOne(Long id){
+		Order order=new Order();
+		order.setTbOrder(orderMapper.selectByPrimaryKey(id));
+		order.setTbOrderItem(orderItemMapper.selectByPrimaryKey(id));
 
-    /**
-     * 修改
-     */
-    @Override
-    public void update(TbOrder order) {
-        orderMapper.updateByPrimaryKey(order);
-    }
+		return order;
+	}
 
-    /**
-     * 根据ID获取实体
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public TbOrder findOne(Long id) {
-        return orderMapper.selectByPrimaryKey(id);
-    }
-
-    /**
-     * 批量删除
-     */
-    @Override
-    public void delete(Long[] ids) {
-        for (Long id : ids) {
-            orderMapper.deleteByPrimaryKey(id);
-        }
-    }
-
-
-    /**
-     * 条件搜索--分页效果
-     *
-     * @param order
-     * @param pageNum  当前页码
-     * @param pageSize 每页记录数
-     * @return
-     */
-    @Override
-    public PageResult findPage(TbOrder order, int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-
-        TbOrderExample example = new TbOrderExample();
-        Criteria criteria = example.createCriteria();
-
-        if (order != null) {
-            if (order.getPaymentType() != null && order.getPaymentType().length() > 0) {
-                criteria.andPaymentTypeLike("%" + order.getPaymentType() + "%");
-            }
-            if (order.getPostFee() != null && order.getPostFee().length() > 0) {
-                criteria.andPostFeeLike("%" + order.getPostFee() + "%");
-            }
-            if (order.getStatus() != null && order.getStatus().length() > 0) {
-                criteria.andStatusLike("%" + order.getStatus() + "%");
-            }
-            if (order.getShippingName() != null && order.getShippingName().length() > 0) {
-                criteria.andShippingNameLike("%" + order.getShippingName() + "%");
-            }
-            if (order.getShippingCode() != null && order.getShippingCode().length() > 0) {
-                criteria.andShippingCodeLike("%" + order.getShippingCode() + "%");
-            }
-            if (order.getUserId() != null && order.getUserId().length() > 0) {
-                criteria.andUserIdLike("%" + order.getUserId() + "%");
-            }
-            if (order.getBuyerMessage() != null && order.getBuyerMessage().length() > 0) {
-                criteria.andBuyerMessageLike("%" + order.getBuyerMessage() + "%");
-            }
-            if (order.getBuyerNick() != null && order.getBuyerNick().length() > 0) {
-                criteria.andBuyerNickLike("%" + order.getBuyerNick() + "%");
-            }
-            if (order.getBuyerRate() != null && order.getBuyerRate().length() > 0) {
-                criteria.andBuyerRateLike("%" + order.getBuyerRate() + "%");
-            }
-            if (order.getReceiverAreaName() != null && order.getReceiverAreaName().length() > 0) {
-                criteria.andReceiverAreaNameLike("%" + order.getReceiverAreaName() + "%");
-            }
-            if (order.getReceiverMobile() != null && order.getReceiverMobile().length() > 0) {
-                criteria.andReceiverMobileLike("%" + order.getReceiverMobile() + "%");
-            }
-            if (order.getReceiverZipCode() != null && order.getReceiverZipCode().length() > 0) {
-                criteria.andReceiverZipCodeLike("%" + order.getReceiverZipCode() + "%");
-            }
-            if (order.getReceiver() != null && order.getReceiver().length() > 0) {
-                criteria.andReceiverLike("%" + order.getReceiver() + "%");
-            }
-            if (order.getInvoiceType() != null && order.getInvoiceType().length() > 0) {
-                criteria.andInvoiceTypeLike("%" + order.getInvoiceType() + "%");
-            }
-            if (order.getSourceType() != null && order.getSourceType().length() > 0) {
-                criteria.andSourceTypeLike("%" + order.getSourceType() + "%");
-            }
-            if (order.getSellerId() != null && order.getSellerId().length() > 0) {
-                criteria.andSellerIdLike("%" + order.getSellerId() + "%");
-            }
-
-        }
-
-        Page<TbOrder> page = (Page<TbOrder>) orderMapper.selectByExample(example);
-        return new PageResult(page.getTotal(), page.getResult());
-    }
+	/**
+	 * 批量删除
+	 */
+	@Override
+	public void delete(Long[] ids) {
+		for(Long id:ids){
+			orderMapper.deleteByPrimaryKey(id);
+		}
+	}
+	
+	
+		@Override
+	public PageResult findPage(TbOrder order, int pageNum, int pageSize) {
+		PageHelper.startPage(pageNum, pageSize);
+		
+		TbOrderExample example=new TbOrderExample();
+		Criteria criteria = example.createCriteria();
+		
+		if(order!=null){			
+						if(order.getPaymentType()!=null && order.getPaymentType().length()>0){
+				criteria.andPaymentTypeLike("%"+order.getPaymentType()+"%");
+			}
+			if(order.getPostFee()!=null && order.getPostFee().length()>0){
+				criteria.andPostFeeLike("%"+order.getPostFee()+"%");
+			}
+			if(order.getStatus()!=null && order.getStatus().length()>0){
+				criteria.andStatusLike("%"+order.getStatus()+"%");
+			}
+			if(order.getShippingName()!=null && order.getShippingName().length()>0){
+				criteria.andShippingNameLike("%"+order.getShippingName()+"%");
+			}
+			if(order.getShippingCode()!=null && order.getShippingCode().length()>0){
+				criteria.andShippingCodeLike("%"+order.getShippingCode()+"%");
+			}
+			if(order.getUserId()!=null && order.getUserId().length()>0){
+				criteria.andUserIdLike("%"+order.getUserId()+"%");
+			}
+			if(order.getBuyerMessage()!=null && order.getBuyerMessage().length()>0){
+				criteria.andBuyerMessageLike("%"+order.getBuyerMessage()+"%");
+			}
+			if(order.getBuyerNick()!=null && order.getBuyerNick().length()>0){
+				criteria.andBuyerNickLike("%"+order.getBuyerNick()+"%");
+			}
+			if(order.getBuyerRate()!=null && order.getBuyerRate().length()>0){
+				criteria.andBuyerRateLike("%"+order.getBuyerRate()+"%");
+			}
+			if(order.getReceiverAreaName()!=null && order.getReceiverAreaName().length()>0){
+				criteria.andReceiverAreaNameLike("%"+order.getReceiverAreaName()+"%");
+			}
+			if(order.getReceiverMobile()!=null && order.getReceiverMobile().length()>0){
+				criteria.andReceiverMobileLike("%"+order.getReceiverMobile()+"%");
+			}
+			if(order.getReceiverZipCode()!=null && order.getReceiverZipCode().length()>0){
+				criteria.andReceiverZipCodeLike("%"+order.getReceiverZipCode()+"%");
+			}
+			if(order.getReceiver()!=null && order.getReceiver().length()>0){
+				criteria.andReceiverLike("%"+order.getReceiver()+"%");
+			}
+			if(order.getInvoiceType()!=null && order.getInvoiceType().length()>0){
+				criteria.andInvoiceTypeLike("%"+order.getInvoiceType()+"%");
+			}
+			if(order.getSourceType()!=null && order.getSourceType().length()>0){
+				criteria.andSourceTypeLike("%"+order.getSourceType()+"%");
+			}
+			if(order.getSellerId()!=null && order.getSellerId().length()>0){
+				criteria.andSellerIdLike("%"+order.getSellerId()+"%");
+			}
+	
+		}
+		
+		Page<TbOrder> page= (Page<TbOrder>)orderMapper.selectByExample(example);		
+		return new PageResult(page.getTotal(), page.getResult());
+	}
 
 
     @Override
@@ -248,101 +263,151 @@ public class OrderServiceImpl implements OrderService {
         return (TbPayLog) redisTemplate.boundHashOps("payLog").get(userId);
     }
 
+	@Override
+	public void updateOrderStatus(String out_trade_no, String transaction_id) {
+		//1.修改支付日志的状态及相关字段
+		TbPayLog payLog = payLogMapper.selectByPrimaryKey(out_trade_no);
+		payLog.setPayTime(new Date());//支付时间
+		payLog.setTradeState("1");//交易成功
+		payLog.setTransactionId(transaction_id);//微信的交易流水号
+		
+		payLogMapper.updateByPrimaryKey(payLog);//修改
+		//2.修改订单表的状态
+		String orderList = payLog.getOrderList();// 订单ID 串
+		String[] orderIds = orderList.split(",");
+		
+		for(String orderId:orderIds){
+			TbOrder order = orderMapper.selectByPrimaryKey(Long.valueOf(orderId));
+			order.setStatus("2");//已付款状态
+			order.setPaymentTime(new Date());//支付时间
+			orderMapper.updateByPrimaryKey(order);			
+		}
+		
+		//3.清除缓存中的payLog
+		redisTemplate.boundHashOps("payLog").delete(payLog.getUserId());
+		
+	}
+
+	@Override
+	public void deleteOne(Long id) {
+		orderMapper.deleteByPrimaryKey(id);
+	}
+
+
+	@Override
+	public PageResult findByPage(TbOrder order, int pageNum, int pageSize) {
+
+		// 使用分页插件:
+		PageHelper.startPage(pageNum, pageSize);
+		// 进行条件查询:
+		TbOrderExample example = new TbOrderExample();
+		Criteria criteria = example.createCriteria();
+		// 设置条件:
+		if(order!=null) {
+			//通过电话或者收件人查询
+			if (order.getReceiver()!= null && order.getReceiver().length()>0) {
+
+				try {
+					new BigInteger(order.getReceiver());//能安全转换  说明纯数字
+
+					criteria.andReceiverMobileEqualTo(order.getReceiver());
+				} catch (NumberFormatException e) {//报错说明不是纯数字
+
+					criteria.andReceiverLike("%" + order.getReceiver() + "%");
+				}
+
+			}
+
+			//通过订单编号查询
+			if (order.getOrderId()!= null && !"".equals(order.getOrderId())) {
+				criteria.andOrderIdEqualTo(order.getOrderId());
+			}
+
+			//通过订单状态查询
+			if (order.getStatus()!= null &&order.getStatus().length()>0) {
+				criteria.andStatusEqualTo(order.getStatus());
+			}
+
+			//通过订单来源查询
+			if (order.getSourceType() != null && order.getSourceType().length()>0) {
+				criteria.andSourceTypeEqualTo(order.getSourceType());
+			}
+
+		}
+
+		Page<TbOrder> page = (Page<TbOrder>) orderMapper.selectByExample(example);
+
+		return new PageResult(page.getTotal(),page.getResult());
+
+
+	}
+
+
     @Override
-    public void updateOrderStatus(String out_trade_no, String transaction_id) {
-        //1.修改支付日志的状态及相关字段
-        TbPayLog payLog = payLogMapper.selectByPrimaryKey(out_trade_no);
-        payLog.setPayTime(new Date());//支付时间
-        payLog.setTradeState("1");//交易成功
-        payLog.setTransactionId(transaction_id);//微信的交易流水号
+    public void updateStatus(Long id, String status) {
 
-        payLogMapper.updateByPrimaryKey(payLog);//修改
-        //2.修改订单表的状态
-        String orderList = payLog.getOrderList();// 订单ID 串
-        String[] orderIds = orderList.split(",");
+            TbOrder order = orderMapper.selectByPrimaryKey(id);
 
-        for (String orderId : orderIds) {
-            TbOrder order = orderMapper.selectByPrimaryKey(Long.valueOf(orderId));
-            order.setStatus("2");//已付款状态
-            order.setPaymentTime(new Date());//支付时间
+            order.setStatus(status);
+
             orderMapper.updateByPrimaryKey(order);
-        }
-
-        //3.清除缓存中的payLog
-        redisTemplate.boundHashOps("payLog").delete(payLog.getUserId());
 
     }
 
+	@Override
+	public void excel(TbOrder order) {
 
-    /**
-     * 导出订单到Excel中
-     *
-     * @param order 查询参数对象
-     * @param page  当前页码
-     * @param rows  每页显示条数
-     */
+		// 进行条件查询:
+		TbOrderExample example = new TbOrderExample();
+		Criteria criteria = example.createCriteria();
+		// 设置条件:
+		if(order!=null) {
+			//通过电话或者收件人查询
+			if (order.getReceiver()!= null && order.getReceiver().length()>0) {
+
+				try {
+					new BigInteger(order.getReceiver());//能安全转换  说明纯数字
+
+					criteria.andReceiverMobileEqualTo(order.getReceiver());
+				} catch (NumberFormatException e) {//报错说明不是纯数字
+
+					criteria.andReceiverLike("%" + order.getReceiver() + "%");
+				}
+
+			}
+
+			//通过订单编号查询
+			if (order.getOrderId()!= null && !"".equals(order.getOrderId())) {
+				criteria.andOrderIdEqualTo(order.getOrderId());
+			}
+
+			//通过订单状态查询
+			if (order.getStatus()!= null &&order.getStatus().length()>0) {
+				criteria.andStatusEqualTo(order.getStatus());
+			}
+
+			//通过订单来源查询
+			if (order.getSourceType() != null && order.getSourceType().length()>0) {
+				criteria.andSourceTypeEqualTo(order.getSourceType());
+			}
+
+		}
+
+		List<TbOrder> orders = orderMapper.selectByExample(example);
+
+		System.out.println(orders);
+		try {
+			ExcelOperateUtil.createExcel(orders);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+
     @Override
-    public void exportOrderToExcel(TbOrder order, int page, int rows) throws Exception {
+    public TbSalesreturn findReturnOne(String id) {
 
-        ExcelBoot.ExportBuilder(new FileOutputStream(new File("F:\\exportExcelTest\\订单.xlsx")), "订单列表", OrderExcelEntity.class).exportStream(order, new ExportFunction<TbOrder, TbOrder>() {   //new ExportFunction<ParamEntity, ResultEntity>()
-
-                    /**
-                     * 查询出的订单结果封装到list集合里
-                     * @param order 查询条件对象
-                     * @param page  当前页数,从1开始
-                     * @param rows  每页条数,默认3000
-                     * @return
-                     */
-                    @Override
-                    public List<TbOrder> pageQuery(TbOrder order, int page, int rows) {
-                        /**
-                         *  1.将page和rows传入使用本组件的开发者自己项目的分页逻辑中
-                         *  2.调用使用本组件的开发者自己项目的分页查询方法
-                         */
-                        PageResult pageResult = findPage(order, page, rows);
-                        List<TbOrder> orderList = pageResult.getRows();
-
-                        return orderList;
-                    }
-
-                    /**
-                     * 将查询出来订单结果的字段进行适当转换
-                     * @param order
-                     * @return
-                     */
-                    @Override
-                    public OrderExcelEntity convert(TbOrder order) {
-                        // 转换为导出为Excel的实体类
-                        OrderExcelEntity orderExcelEntity = convertToOrderExcelEntity(order);
-                        return orderExcelEntity;
-                    }
-                });
-
-
+        return salesreturnMapper.selectByPrimaryKey(id);
     }
 
-    /**
-     * 导出Excel表专用的转换实体类的方法
-     * @param order
-     * @return
-     */
-    private OrderExcelEntity convertToOrderExcelEntity(TbOrder order){
-        OrderExcelEntity orderExcelEntity = new OrderExcelEntity();
-
-        orderExcelEntity.setOrderId(order.getOrderId());//订单编号
-        orderExcelEntity.setUserId(order.getUserId());//用户账号
-        orderExcelEntity.setReceiver(order.getReceiver());//收货人
-        orderExcelEntity.setReceiverMobile(order.getReceiverMobile());//收货人手机号
-        orderExcelEntity.setReceiverAreaName(order.getReceiverAreaName());//收货人地址
-        orderExcelEntity.setPayment(order.getPayment());//订单金额
-        orderExcelEntity.setPaymentType(order.getPaymentType());//支付类型
-        orderExcelEntity.setSourceType(order.getSourceType());//订单来源
-        orderExcelEntity.setStatus(order.getStatus());//订单状态
-        orderExcelEntity.setCreateTime(order.getCreateTime());//下单时间
-        orderExcelEntity.setUpdateTime(order.getUpdateTime());//跟新订单时间
-        orderExcelEntity.setSellerId(order.getSellerId());//商家
-
-        return orderExcelEntity;
-    }
 
 }
