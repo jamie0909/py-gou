@@ -474,7 +474,11 @@
       points = #{points,jdbcType=INTEGER},
       experience_value = #{experienceValue,jdbcType=INTEGER},
       birthday = #{birthday,jdbcType=TIMESTAMP},
-      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      area = #{area,jdbcType=VARCHAR},
+      citiy = #{citiy,jdbcType=VARCHAR},
+      provinces = #{provinces,jdbcType=VARCHAR},
+      job = #{job,jdbcType=VARCHAR}
+    where  username = #{username,jdbcType=VARCHAR}
   </update>
 </mapper>
