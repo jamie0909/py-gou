@@ -113,6 +113,11 @@ public interface UserService {
     */
 
 	TbUser findUser(String name);
+	
+	
+	  
+	
+
 
 	/**
 	 * 查询所有省份
