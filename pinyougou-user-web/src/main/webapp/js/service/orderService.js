@@ -45,11 +45,7 @@ app.service('orderService',function($http) {
         return $http.get('../user/sendEmail.do?orderId='+orderId);
     }
 
-
-    //查询订单详情
     this.findOrderListByOutOrderNo=function(outTradeNo){
         return $http.get('../order/findOrderListByOutOrderNo.do?outTradeNo='+outTradeNo);
     }
-
-
 });

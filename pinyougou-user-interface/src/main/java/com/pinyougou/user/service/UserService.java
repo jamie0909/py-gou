@@ -5,7 +5,6 @@ import com.pinyougou.pojo.TbAreas;
 import com.pinyougou.pojo.TbCities;
 import com.pinyougou.pojo.TbProvinces;
 
-import com.pinyougou.pojo.TbCities;
 import com.pinyougou.pojo.TbUser;
 
 import entity.PageResult;

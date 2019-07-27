@@ -8,7 +8,7 @@ import com.pinyougou.pojo.TbProvinces;
 import com.pinyougou.pojo.group.AddressList;
 import entity.PageResult;
 /**
- * 服务层接口
+ * 地址管理服务层接口
  * @author Administrator
  *
  */
