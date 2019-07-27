@@ -302,7 +302,7 @@ $(function(){
                         <div class="person-photo"><img src="img/_/photo.png" alt=""></div>
                         <div class="person-account">
                             <span class="name">{{entity.username}}</span>
-                            <span class="safe">账户安全</span>
+                            <span class="safe"><a href="logout/cas">退出登录 </a></span>
                         </div>
                         <div class="clearfix"></div>
                     </div>
@@ -344,7 +344,7 @@ $(function(){
                                     <div class="control-group">
                                         <label for="inputusername" class="control-label">用户名：</label>
                                         <div class="controls">
-                                            <input id="pwdid" class="fn-tinput" data-rule-remote="http://www.baidu.com" type="text" name="OldPassword" placeholder="输入昵称"
+                                            <input id="pwdid" class="fn-tinput" data-rule-remote="http://www.baidu.com" type="text" name="username" placeholder="输入昵称"
                                                 required data-msg-required="请输入昵称" minlength="6" ng-model="entity.username" value="{{loginName}}" data-msg-minlength="至少输入6个字符"
                                             />
 

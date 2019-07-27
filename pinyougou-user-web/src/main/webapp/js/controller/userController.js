@@ -42,6 +42,8 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
    */
     $scope.updatePassword=function(){
 
+
+
     //比较两次输入的密码是否一致
             if($scope.password!=$scope.entity.password){
                 alert("两次输入密码不一致，请重新输入");
@@ -59,14 +61,15 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
 
 
                        alert(response.message);
-                       location.href="home-index.html"
+                       location.href="logout/cas"
                    }else{
                        alert(response.message);
 
                    }
                }
            );
-        }
+        };
+
 
 
 
