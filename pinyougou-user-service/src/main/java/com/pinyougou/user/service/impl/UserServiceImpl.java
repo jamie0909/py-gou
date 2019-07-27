@@ -1,8 +1,5 @@
 package com.pinyougou.user.service.impl;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -279,18 +276,31 @@ public class UserServiceImpl implements UserService {
 				return message;
 			}
 		});
-		
-		
+
+		try {
+			//验证码有效期为一分钟
+			System.out.println("验证码调度器开始运行");
+			final Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    redisTemplate.boundHashOps("smscode").delete(phone);
+					System.out.println("一分钟已经到了,验证码从缓存中被删除");
+					timer.cancel();
+                }
+            },60*1000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
 	}
 
 	@Override
 	public boolean checkSmsCode(String phone, String code) {
-
-		System.out.println("你好");
-		System.out.println("你你你"+phone+"code"+code);
+		System.out.println("phone:"+phone+"code:"+code);
 		String systemcode= (String) redisTemplate.boundHashOps("smscode").get(phone);
-		System.out.println("你你你"+phone+"code"+code);
-		System.out.println("systemcode:"+systemcode);
+
 		if(systemcode==null){
 			return false;
 		}
