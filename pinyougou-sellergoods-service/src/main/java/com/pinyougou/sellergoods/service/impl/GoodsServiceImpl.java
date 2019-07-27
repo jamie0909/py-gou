@@ -284,4 +284,18 @@ public class GoodsServiceImpl implements GoodsService {
 		
 		return itemMapper.selectByExample(example);
 	}
+
+	/**
+	 * 商家更改商品上下架状态
+	 * @param id
+	 * @param status
+	 * by whk
+	 */
+    @Override
+    public void updateIsMarketableStatus(Long id, String status) {
+
+		TbGoods goods = goodsMapper.selectByPrimaryKey(id);
+		goods.setIsMarketable(status); //商品上下架状态
+		goodsMapper.updateByPrimaryKeySelective(goods); //更新数据
+	}
 }

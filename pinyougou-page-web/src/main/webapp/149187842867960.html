@@ -13,34 +13,37 @@
     <link rel="stylesheet" type="text/css" href="css/pages-zoom.css" />
     <link rel="stylesheet" type="text/css" href="css/widget-cartPanelView.css" />
     
-    
     <script type="text/javascript" src="plugins/angularjs/angular.min.js"> </script>
-	<script type="text/javascript" src="js/base.js"> </script>
-	<script type="text/javascript" src="js/controller/itemController.js"> </script> 
-	<script>
-		var skuList=[
-						  {
-			  	id:1369285,
-			  	title:'精品半身裙（秋款）1 移动3G 32G',
-			  	price:0.01,
-			  	spec:{"网络":"移动3G","机身内存":"32G"},
-			  }	
-		
-		];
-	
-	
-	
-	
-	
-	
-	</script>
-	    
-	    
-    
+    <script type="text/javascript" src="js/base.js"> </script>
+    <script type="text/javascript" src="js/controller/itemController.js"> </script>
+    <script>
+        var skuList=[
+                     {
+             id:1369282,
+             title:'精品半身裙（秋款打折） 移动4G 16G',
+             price:0.03,
+             spec:{"网络":"移动4G","机身内存":"16G"}
+           } ,
+           {
+             id:1369280,
+             title:'精品半身裙（秋款打折） 移动3G 16G',
+             price:0.01,
+             spec:{"网络":"移动3G","机身内存":"16G"}
+           } ,
+           {
+             id:1369281,
+             title:'精品半身裙（秋款打折） 移动3G 32G',
+             price:0.02,
+             spec:{"网络":"移动3G","机身内存":"32G"}
+           } ,
+        ];
+        
+    </script>
 </head>
 
 <body ng-app="pinyougou" ng-controller="itemController" ng-init="num=1;loadSku()">
-<!--页面顶部 开始-->  
+
+<!--页面顶部 开始-->
 <div id="nav-bottom">
 	<!--顶部-->
 	<div class="nav-top">
@@ -148,7 +151,6 @@
 	</div>
 </div>
 
-
 <!--页面顶部 结束-->
 	<div class="py-container">
 		<div id="item">
@@ -162,8 +164,9 @@
 					</li>
 					<li>
 						<a href="#">半身裙</a>
-					</li>
+					</li>	
 					
+					{{specificationItems}}				
 				</ul>
 			</div>
 			<!--product-info-->
@@ -173,7 +176,9 @@
 					<div class="zoom">
 						<!--默认第一个预览-->
 						<div id="preview" class="spec-preview">
-							<span class="jqzoom"><img jqimg="http://192.168.25.133/group1/M00/00/00/wKgZhV0eOK-AUx-BADAMRMEac3Q996.bmp" src="http://192.168.25.133/group1/M00/00/00/wKgZhV0eOK-AUx-BADAMRMEac3Q996.bmp" width="400px" height="400px" /></span>
+							<span class="jqzoom">
+							     <img jqimg="http://192.168.25.133/group1/M00/00/00/wKgZhVnGbYuAO6AHAAjlKdWCzvg253.jpg" src="http://192.168.25.133/group1/M00/00/00/wKgZhVnGbYuAO6AHAAjlKdWCzvg253.jpg" width="400px" height="400px" />
+							</span>
 						</div>
 						<!--下方的缩略图-->
 						<div class="spec-scroll">
@@ -181,8 +186,9 @@
 							<!--左右按钮-->
 							<div class="items">
 								<ul>
-									<li><img src="http://192.168.25.133/group1/M00/00/00/wKgZhV0eOK-AUx-BADAMRMEac3Q996.bmp" bimg="http://192.168.25.133/group1/M00/00/00/wKgZhV0eOK-AUx-BADAMRMEac3Q996.bmp" onmousemove="preview(this)" /></li>
-									<li><img src="http://192.168.25.133/group1/M00/00/00/wKgZhV0jZT-APg1kAAAy7acFSyM378.jpg" bimg="http://192.168.25.133/group1/M00/00/00/wKgZhV0jZT-APg1kAAAy7acFSyM378.jpg" onmousemove="preview(this)" /></li>
+									  <li><img src="http://192.168.25.133/group1/M00/00/00/wKgZhVnGbYuAO6AHAAjlKdWCzvg253.jpg" bimg="http://192.168.25.133/group1/M00/00/00/wKgZhVnGbYuAO6AHAAjlKdWCzvg253.jpg" onmousemove="preview(this)" /></li>
+									  <li><img src="http://192.168.25.133/group1/M00/00/00/wKgZhVnKX4yAbCC0AAFa4hmtWek406.jpg" bimg="http://192.168.25.133/group1/M00/00/00/wKgZhVnKX4yAbCC0AAFa4hmtWek406.jpg" onmousemove="preview(this)" /></li>
+									  <li><img src="http://192.168.25.133/group1/M00/00/00/wKgZhVnKX5WAOsqXAAETwD7A1Is409.jpg" bimg="http://192.168.25.133/group1/M00/00/00/wKgZhVnKX5WAOsqXAAETwD7A1Is409.jpg" onmousemove="preview(this)" /></li>
 								</ul>
 							</div>
 							<a class="next">&gt;</a>
@@ -193,7 +199,7 @@
 					<div class="sku-name">
 						<h4>{{sku.title}}</h4>
 					</div>
-					<div class="news"><span>打折促销啦啦拜拜</span></div>
+					<div class="news"><span>打折促销 </span></div>
 					<div class="summary">
 						<div class="summary-wrap">
 							<div class="fl title">
@@ -239,45 +245,44 @@
 					</div>
 					<div class="clearfix choose">
 						<div id="specification" class="summary-wrap clearfix">
-							<dl>
+							
+							  <dl>
 								<dt>
 									<div class="fl title">
 									<i>网络</i>
 								</div>
 								</dt>
 								
-								<dd><a href="javascript:;"
-								class="{{isSelected('网络','移动3G')?'selected':''}}"
-								 ng-click="selectSpecification('网络','移动3G')">移动3G
-								 <span title="点击取消选择">&nbsp;</span>
-								 </a></dd>
-								<dd><a href="javascript:;"
-								class="{{isSelected('网络','移动4G')?'selected':''}}"
-								 ng-click="selectSpecification('网络','移动4G')">移动4G
-								 <span title="点击取消选择">&nbsp;</span>
-								 </a></dd>
-								
-							</dl>
-							<dl>
+								  <dd><a href="javascript:;" 
+								        class="{{isSelected('网络','移动3G')?'selected':''}}" 
+								        ng-click="selectSpecification('网络','移动3G')">移动3G
+								        <span title="点击取消选择">&nbsp;</span>
+								        </a></dd>
+								  <dd><a href="javascript:;" 
+								        class="{{isSelected('网络','移动4G')?'selected':''}}" 
+								        ng-click="selectSpecification('网络','移动4G')">移动4G
+								        <span title="点击取消选择">&nbsp;</span>
+								        </a></dd>
+							  </dl>
+							
+							  <dl>
 								<dt>
 									<div class="fl title">
 									<i>机身内存</i>
 								</div>
 								</dt>
 								
-								<dd><a href="javascript:;"
-								class="{{isSelected('机身内存','16G')?'selected':''}}"
-								 ng-click="selectSpecification('机身内存','16G')">16G
-								 <span title="点击取消选择">&nbsp;</span>
-								 </a></dd>
-								<dd><a href="javascript:;"
-								class="{{isSelected('机身内存','32G')?'selected':''}}"
-								 ng-click="selectSpecification('机身内存','32G')">32G
-								 <span title="点击取消选择">&nbsp;</span>
-								 </a></dd>
-								
-							</dl>
-							
+								  <dd><a href="javascript:;" 
+								        class="{{isSelected('机身内存','16G')?'selected':''}}" 
+								        ng-click="selectSpecification('机身内存','16G')">16G
+								        <span title="点击取消选择">&nbsp;</span>
+								        </a></dd>
+								  <dd><a href="javascript:;" 
+								        class="{{isSelected('机身内存','32G')?'selected':''}}" 
+								        ng-click="selectSpecification('机身内存','32G')">32G
+								        <span title="点击取消选择">&nbsp;</span>
+								        </a></dd>
+							  </dl>
 							
 						</div>
 					
@@ -294,7 +299,7 @@
 							<div class="fl">
 								<ul class="btn-choose unstyled">
 									<li>
-										<a class="sui-btn  btn-danger addshopcar" ng-click="addToCart()">加入购物车</a>
+										<a  class="sui-btn  btn-danger addshopcar" ng-click="addToCart()">加入购物车</a>
 									</li>
 								</ul>
 							</div>
@@ -515,18 +520,18 @@
 						<div class="tab-content tab-wraped">
 							<div id="one" class="tab-pane active">
 								<ul class="goods-intro unstyled">
-									       <li>内存大小：128G</li>
-									       <li>颜色：啊色</li>
+									      <li>内存大小：20G</li>
+									      <li>颜色：灰色</li>
 								</ul>
 								<div class="intro-detail">
-									11<img src="http://192.168.25.133/group1/M00/00/00/wKgZhV0gBVuAZnABAAL5xYqmirI823.jpg" border="0" alt="" />谢
+									11<img src="http://localhost:9102/plugins/kindeditor/plugins/emoticons/images/10.gif" border="0" alt="" /><img src="http://localhost:9102/plugins/kindeditor/plugins/emoticons/images/20.gif" border="0" alt="" />
 								</div>
 							</div>
 							<div id="two" class="tab-pane">
-								<p>谢谢 阿瓦达</p>
+								<p>塑料袋</p>
 							</div>
 							<div id="three" class="tab-pane">
-								<p>有阿瓦达</p>
+								<p>无</p>
 							</div>
 							<div id="four" class="tab-pane">
 								<p>商品评价</p>
@@ -664,6 +669,7 @@
 		</div>
 	</div>
 	<!-- 底部栏位 -->
+	
 <!--页面底部  开始 -->
 <div class="clearfix footer">
 	<div class="py-container">
