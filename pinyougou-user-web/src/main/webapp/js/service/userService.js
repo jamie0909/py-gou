@@ -61,6 +61,18 @@ app.service('userService',function($http){
         return $http.get('../user/checkCode.do?code='+code+'&phone='+phone);
     }
 
+    //查询所有省市区
+    this.findPrv=function () {
+        return $http.get('../user/findProvince.do');
+    }
+	//查询所有城市
+    this.findCity=function (provinceId) {
+        return $http.get('../user/findCity.do?provinceId='+provinceId);
+    }
+	//查询所有区
+    this.findArea=function (cityId) {
+        return $http.get('../user/findArea.do?cityId='+cityId);
+    }
 
 	
 });

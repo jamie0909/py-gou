@@ -205,12 +205,14 @@ public class UserServiceImpl implements UserService {
 	    userMapper.updateByPrimaryKey(user);
 	}
 
-	@Override
+/*	@Override
 	public List<TbUser> findOne(String name) {
-		return null;
+		return null;*/
+/*
 	public TbUser findOne(Long id) {
 		return userMapper.selectByPrimaryKey(id);
 	}
+*/
 
 	/**
 	 * 根据ID获取实体
@@ -230,7 +232,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	
-		@Override
+	@Override
 	public PageResult findPage(TbUser user, int pageNum, int pageSize) {
 		PageHelper.startPage(pageNum, pageSize);
 		

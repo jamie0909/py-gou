@@ -1,5 +1,5 @@
  //控制层 
-app.controller('userController' ,function($scope,$controller ,userService,$interval,$timeout,$location){
+app.controller('userController' ,function($scope,$controller , $filter,userService,$interval,$timeout,$location,uploadService){
 	
 	//注册用户
 	$scope.reg=function(){
@@ -255,9 +255,94 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
 
     };
 
+    $scope.prvList={};
+    $scope.cityList={}
+    $scope.areaList={};
 
 
+    // 查询省级列表
+    $scope.findProvince = function(){
+        userService.findPrv().success(function(response){
+            $scope.prvList = response;
+        });
+    }
 
+    // 查询市列表
+    $scope.$watch("entity.provinces",function(newValue,oldValue){
+        userService.findCity(newValue).success(function(response){
+            $scope.cityList = response;
+            $scope.areaList={};
+
+        });
+    });
+
+    // 查询区域列表
+    $scope.$watch("entity.citiy",function(newValue,oldValue){
+        userService.findArea(newValue).success(function(response){
+            $scope.areaList = response;
+        });
+    });
+
+    /**
+     * 查询用户信息，用于回显
+     * by：马
+     */
+    $scope.findOne=function(){
+        userService.findOne().success(
+            function(response){
+                $scope.entity= response;
+                if ($scope.entity.birthday!=null){
+                    $scope.birthday=$scope.entity.birthday.split(" ")[0]+"";
+                }
+            }
+        );
+    }
+    /**
+     * 修改个人信息
+     * by:马
+     */
+    $scope.updateInfo=function () {
+        if($scope.birthday!=null){
+            $scope.entity.birthday=$scope.birthday;
+            $scope.today = new  Date();
+            $scope.timeString = $filter('date')($scope.today, 'yyyyMMdd');
+            var now=parseInt($scope.timeString);
+            $scope.date =$scope.birthday.split("-")[0]+
+                $scope.birthday.split("-")[1]+
+                $scope.birthday.split("-")[2];
+            var time=parseInt($scope.date);
+            if(time>now){
+                alert("您的出生日期不合法哦~")
+                return;
+            }
+
+            userService.update($scope.entity).success(
+                function (response) {
+                    alert(response.message);
+                });
+        }else {
+            alert("生日不能为空");
+        }
+
+    }
+
+    /**
+     * 创建一个职业数组
+     * @type {string[]}
+     */
+    $scope.names = ["程序员", "测试", "UI设计","架构师"];
+
+    $scope.uploadFile = function(){
+        // 调用uploadService的方法完成文件的上传
+        uploadService.uploadFile().success(function(response){
+            if(response.flag){
+                // 获得url
+                $scope.entity.headPic =  response.message;
+            }else{
+                alert(response.message);
+            }
+        });
+    }
 
 
 

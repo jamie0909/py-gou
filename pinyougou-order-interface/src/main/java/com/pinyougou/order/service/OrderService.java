@@ -1,5 +1,7 @@
 package com.pinyougou.order.service;
 import java.util.List;
+import java.util.Map;
+
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbPayLog;
 
@@ -7,8 +9,7 @@ import com.pinyougou.pojo.TbSalesreturn;
 import com.pinyougou.pojo.group.Order;
 import entity.PageResult;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * 服务层接口
@@ -107,5 +108,13 @@ public interface OrderService {
 	 * @param id
 	 * @return
 	 */
+
 	TbSalesreturn findReturnOne(String id);
+
+
+	/**
+	 * 查询每种状态的的数量
+	 */
+	public Map<String,Integer> findCountOfEveryStatus();
+
 }

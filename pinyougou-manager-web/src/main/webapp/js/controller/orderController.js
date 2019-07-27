@@ -91,6 +91,32 @@ app.controller('orderController' ,function($scope,$controller,$http,orderService
         });
     }
 
+    $scope.findCountOfEveryStatus=function(){
+        alert($sccop.date);
+        orderService.findCountOfEveryStatus().success(
+            function(response){
+                $scope.map=response;
+            }
+        );
+    }
+
+
+    $scope.map = [];
+
+//查询每个状态的订单数量
+    $scope.findCountOfEveryStatus = function () {
+        orderService.findCountOfEveryStatus().success(
+            function (response) {
+                $scope.map = response;
+                alert($scope.map);
+                /*  for(var i = 1;i < $scope.map.size();i++){
+                      option.dataset.source[i] = ['',$scope.map.];
+                  }
+                  */
+            }
+        );
+    }
+
 
     $scope.searchEntity={};
 
@@ -119,8 +145,6 @@ app.controller('orderController' ,function($scope,$controller,$http,orderService
                     alert(response.message);
                 }
             }
-
-
         });
     }
 });

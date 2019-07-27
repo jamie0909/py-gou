@@ -1,13 +1,10 @@
 package com.pinyougou.order.service.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
+
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import com.pinyougou.mapper.TbSalesreturnMapper;
 import com.pinyougou.pojo.*;
@@ -30,8 +27,7 @@ import entity.PageResult;
 import util.ExcelOperateUtil;
 import util.IdWorker;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * 服务实现层
@@ -409,5 +405,34 @@ public class OrderServiceImpl implements OrderService {
         return salesreturnMapper.selectByPrimaryKey(id);
     }
 
+	/**
+	 * 查询每种订单状态的数量
+	 * @return
+	 */
+	@Override
+	public Map<String, Integer> findCountOfEveryStatus() {
+		Map<String, Integer> map = new HashMap<>(); //定义一个map集合封装每种状态的订单数
+
+		map.put("待付款",countOfEveryStatus("1"));
+		map.put("待发货",countOfEveryStatus("3"));
+		map.put("已发货",countOfEveryStatus("4"));
+		map.put("已完成",countOfEveryStatus("5"));
+		map.put("已关闭",countOfEveryStatus("6"));
+
+		return map;
+	}
+
+	/**
+	 * 封装example查询条件
+	 * @param status
+	 * @return
+	 */
+	private Integer countOfEveryStatus(String status) {
+		TbOrderExample orderExample = new TbOrderExample();
+		Criteria criteria = orderExample.createCriteria();
+		criteria.andStatusEqualTo(status);
+		return orderMapper.countByExample(orderExample);
+
+	}
 
 }

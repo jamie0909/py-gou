@@ -83,8 +83,7 @@ public class UserController {
 	@RequestMapping("/update")
 	public Result update(@RequestBody TbUser user){
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<TbUser> users = userService.findOne(name);
-        TbUser user1= users.get(0);
+		TbUser user1 = userService.findUser(name);
         user1.setJob(user.getJob());
         user1.setBirthday(user.getBirthday());
         user1.setArea(user.getArea());

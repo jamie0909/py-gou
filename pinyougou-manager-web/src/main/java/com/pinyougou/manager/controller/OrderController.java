@@ -1,9 +1,6 @@
 package com.pinyougou.manager.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.order.service.OrderService;
 import com.pinyougou.pojo.TbSalesreturn;
@@ -18,6 +15,7 @@ import util.ExcelOperateUtil;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/order")
@@ -154,5 +152,16 @@ public class OrderController {
         return orderService.findReturnOne(id);
     }
 
+    /**
+     * controller层查询每种状态订单数
+     *
+     * @return
+     */
+    @RequestMapping("/findCountOfEveryStatus")
+    public Map findCountOfEveryStatus() {
+        Map<String, Integer> map = orderService.findCountOfEveryStatus();
+        return map;
+
+    }
 
 }

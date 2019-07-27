@@ -39,4 +39,13 @@ app.service("orderService",function($http){
         return $http.post("../order/excel.do",searchEntity);
     }
 
+    this.findCountOfEveryStatus=function(){
+        return $http.get('../order/findCountOfEveryStatus.do');
+    }
+
+    //查询每个状态的订单数量
+    this.findCountOfEveryStatus = function () {
+        return $http.post('../order/findCountOfEveryStatus.do');
+    }
+
 });
