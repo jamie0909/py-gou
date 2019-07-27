@@ -271,7 +271,7 @@ $(function(){
 													<li><a ng-click="updateStatusStr(orderEntity.payLog.outTradeNo,'7')" href="#" class="sui-btn btn-info">确认收货</a></li>
 												</ul>
 												<ul class="unstyled" ng-if="orderEntity.payLog.status == '1'">
-													<li><a href="pay.html#?out_trade_no={{orderEntity.payLog.outTradeNo}}" class="sui-btn btn-info">立即付款</a></li>
+													<li><a href="http://localhost:9107/pay.html#?out_trade_no={{orderEntity.payLog.outTradeNo}}&type=1" class="sui-btn btn-info">立即付款</a></li>
 													<li><a ng-click="updateStatusStr(orderEntity.payLog.outTradeNo,'6')" href="">取消订单</a></li>
 												</ul>
 												<ul class="unstyled" ng-if="orderEntity.payLog.status == '2'||orderEntity.payLog.status == '3'">

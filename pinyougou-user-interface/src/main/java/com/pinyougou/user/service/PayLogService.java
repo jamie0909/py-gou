@@ -65,4 +65,6 @@ public interface PayLogService {
 	public Map findOrderListfromPayLog(int pageNum, int pageSize, String status, String userId);
 
     OrderEntity findOrderListByOutTradeNo(String outTradeNo);
+
+    String findTotalFeeByOutTradeNo(String out_trade_no);
 }

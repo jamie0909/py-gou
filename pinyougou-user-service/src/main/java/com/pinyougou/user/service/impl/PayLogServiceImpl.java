@@ -302,7 +302,11 @@ public class PayLogServiceImpl implements PayLogService {
 		return orderEntity;
 	}
 
-
+	@Override
+	public String findTotalFeeByOutTradeNo(String out_trade_no) {
+		TbPayLog payLog = payLogMapper.selectByPrimaryKey(out_trade_no);
+		return payLog.getTotalFee()+"";
+	}
 
 
 }

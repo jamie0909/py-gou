@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.pinyougou.pay.service.AliPayService;
+import com.pinyougou.user.service.PayLogService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,12 +29,21 @@ public class PayController {
 
 	@Reference
 	private AliPayService aliPayService;
-	
+
+	@Reference
+	private PayLogService payLogService;
+
+
 	@Reference
 	private OrderService orderService;
 	
 	@RequestMapping("/createNative")
-	public Map createNative(){
+	public Map createNative(String out_trade_no){
+		if (out_trade_no!=null){
+			String totalFeeByOutTradeNo = payLogService.findTotalFeeByOutTradeNo(out_trade_no);
+			return weixinPayService.createNative(out_trade_no,totalFeeByOutTradeNo);
+		}
+
 		//1.获取当前登录用户
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		//2.提取支付日志（从缓存 ）
@@ -48,11 +58,16 @@ public class PayController {
 	}
 
 	@RequestMapping("/createAliPayNative")
-	public Map createAliPayNative(){
+	public Map createAliPayNative(String out_trade_no){
+		if (out_trade_no!=null){
+			String totalFeeByOutTradeNo = payLogService.findTotalFeeByOutTradeNo(out_trade_no);
+			return weixinPayService.createNative(out_trade_no,totalFeeByOutTradeNo);
+		}
 		//1.获取当前登录用户
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		//2.提取支付日志（从缓存 ）
 		TbPayLog payLog = orderService.searchPayLogFromRedis(username);
+
 		//3.调用微信支付接口
 		//System.out.println(payLog);
 		if(payLog!=null){

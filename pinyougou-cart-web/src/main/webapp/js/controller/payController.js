@@ -2,6 +2,7 @@ app.controller('payController' ,function($scope ,$location,payService){
 	
 	
 	$scope.createNative=function(){
+        var out_trade_no=$location.search()['out_trade_no'];
 		var paymentType=$location.search()['type'];
 		$scope.paymentType_str='微信';
 		$scope.otherPaymentType_str='支付宝';
@@ -9,7 +10,8 @@ app.controller('payController' ,function($scope ,$location,payService){
 			$scope.paymentType_str='支付宝';
             $scope.otherPaymentType_str='微信';
 		}
-		payService.createNative(paymentType).success(
+
+		payService.createNative(out_trade_no,paymentType).success(
 			function(response){
 				
 				//显示订单号和金额
@@ -67,12 +69,12 @@ app.controller('payController' ,function($scope ,$location,payService){
 	$scope.changeOtherPayType=function () {
 		$scope.paymentType=$location.search()['type'];
 		if ($scope.paymentType=='1'){
-            location.href="pay-other.html#?type=3";
+            location.href="pay-other.html#?type=3&out_trade_no="+$scope.out_trade_no;
             return;
 		}
 
          if($scope.paymentType=='3'){
-             location.href="pay.html#?type=1";
+             location.href="pay.html#?type=1&out_trade_no="+$scope.out_trade_no;
              return;
         }
 

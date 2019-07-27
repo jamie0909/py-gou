@@ -269,6 +269,7 @@ public class OrderServiceImpl implements OrderService {
 		TbPayLog payLog = payLogMapper.selectByPrimaryKey(out_trade_no);
 		payLog.setPayTime(new Date());//支付时间
 		payLog.setTradeState("1");//交易成功
+		payLog.setStatus("2");
 		payLog.setTransactionId(transaction_id);//微信的交易流水号
 		
 		payLogMapper.updateByPrimaryKey(payLog);//修改
