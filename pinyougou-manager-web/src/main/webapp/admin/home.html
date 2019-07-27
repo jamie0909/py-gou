@@ -12,8 +12,13 @@
     <link rel="stylesheet" href="../plugins/adminLTE/css/AdminLTE.css">
     <link rel="stylesheet" href="../plugins/adminLTE/css/skins/_all-skins.min.css">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../js/jedate/skin/jedate.css">
+
+
 	<script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
     <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script  src="../js/echarts.min.js"></script>
+    <script src="../js/jedate/dist/jedate.min.js"></script>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -103,8 +108,182 @@
                 <!-- /.row -->
             </section>
             <!-- 正文区域 /-->
+            <section >
+                <span class="datetxt">&nbsp; 开始日期：</span><input type="text" class="dateinput dateicon" id="inpstart" readonly>
+                <span class="datetxt">结束日期：</span><input type="text" class="dateinput dateicon" id="inpend" readonly>
+                <button>查询</button><button>导出Excel</button>
+                <script type="text/javascript">
+                    var start = {}, end = {};
+                    jeDate('#inpstart',{
+                        format: 'YYYY-MM-DD hh:mm:ss',
+                        minDate: '2014-06-16 23:59:59', //设定最小日期为当前日期
+                        maxDate: function (that) {
+                            //that 指向实例对象
+                            return jeDate.valText(that.valCell) == "" ? jeDate.nowDate({DD:0}) : start.maxDate;
+                        }, //设定最大日期为当前日期
+                        donefun: function(obj){
+                            end.minDate = obj.val; //开始日选好后，重置结束日的最小日期
+                            jeDate("#inpend",LinkageEndDate(false));
+                        }
+                    });
+                    jeDate('#inpend',LinkageEndDate);
 
-        <!-- 内容区域 /-->
+                    function LinkageEndDate(istg) {
+                        return {
+                            trigger : istg || "click",
+                            format: 'YYYY-MM-DD hh:mm:ss',
+                            minDate: function (that) {
+                                //that 指向实例对象
+                                var nowMinDate = jeDate.valText('#inpstart') == "" && jeDate.valText(that.valCell) == "";
+                                return nowMinDate ? jeDate.nowDate({DD:0}) : end.minDate ;
+                            }, //设定最小日期为当前日期
+                            maxDate: '2019-07-26 23:59:59', //设定最大日期为当前日期
+                            donefun: function(obj){
+                                start.maxDate = obj.val; //将结束日的初始值设定为开始日的最大日期
+                            }
+                        };
+                    }
+                </script>
+            </section>
+
+
+    <section>
+       <!-- 内容区域 /-->
+       <div id="container" style="height: 450%"></div>
+       <script type="text/javascript">
+           var dom = document.getElementById("container");
+           var myChart = echarts.init(dom);
+           var app = {};
+           option = null;
+           option = {
+               title: {
+                   text: '品优购订单统计概况',
+                   subtext: '黑马程序员*合肥中心',
+                   left: '50%',
+                   top:'0'
+               },
+               legend: {
+
+                   left: '3%',
+                   top:'7%',
+
+                   data:['待付款订单','待发货订单','已发货订单','已完成订单','已关闭订单'],
+
+               },
+               tooltip: {
+                   trigger: 'axis',
+                   showContent: true,
+               },
+               dataset: {
+                   source: [
+                       ['product', '2019年1月1日', '2019年1月2日', '2019年1月3日', '2019年1月4日', '2019年1月5日', '2019年1月6日','2019年1月7日'],
+                       ['待付款订单', 41, 30, 65, 57, 22,33,34],
+                       ['待发货订单', 56, 30, 66, 73, 73, 55,56],
+                       ['已发货订单', 24, 67, 79.5, 45, 65, 65,38],
+                       ['已完成订单', 55, 67, 69.2, 72, 53, 39,45],
+                       ['已关闭订单', 25, 37, 49.2, 55, 53, 39,56],
+                   ]
+               },
+               toolbox: {
+                   orient: 'vartical',
+                   left:'95%',
+                   top:'42%',
+                   show: true,
+                   feature: {
+                       dataZoom: {
+                           yAxisIndex: 'none'
+                       },
+                       dataView: {readOnly: false},
+                       magicType: {type: ['line', 'bar']},
+                       restore: {},
+                       saveAsImage: {}
+                   }
+               },
+
+               xAxis: {
+                   type: 'category'
+               },
+               yAxis: {
+                   gridIndex: 0
+               },
+               grid: {
+                   top: '20%',
+                   left: '5%',
+                   right: '35%',
+                   bottom:'25%',
+               },
+               series: [{
+                   type: 'bar',
+                   stack: '状态',
+                   smooth: true,
+                   seriesLayoutBy: 'row'
+               },
+                   {
+                       type: 'bar',
+                       smooth: true,
+                       stack: '状态',
+                       seriesLayoutBy: 'row'
+                   },
+                   {
+                       type: 'bar',
+                       smooth: true,
+                       stack: '状态',
+                       seriesLayoutBy: 'row'
+
+                   },
+                   {
+                       type: 'bar',
+                       smooth: true,
+                       stack: '状态',
+                       seriesLayoutBy: 'row'
+                   },
+                   {
+                       type: 'bar',
+                       smooth: true,
+                       stack: '状态',
+                       seriesLayoutBy: 'row'
+                   },
+                   {
+                       type: 'pie',
+                       id: 'pie',
+                       radius: '40%',
+                       center: ['84%', '30%'],
+                       label: {
+                           formatter: '{b}: {@2012} ({d}%)'
+                       },
+                       encode: {
+                           itemName: 'product',
+                           value: '2012',
+                           tooltip: '2012'
+                       }
+                   }
+               ]
+           };
+           myChart.on('updateAxisPointer', function (event) {
+               var xAxisInfo = event.axesInfo[0];
+               if (xAxisInfo) {
+                   var dimension = xAxisInfo.value + 1;
+                   myChart.setOption({
+                       series: {
+                           id: 'pie',
+                           label: {
+                               formatter: '{b}: {@[' + dimension + ']} ({d}%)'
+                           },
+                           encode: {
+                               value: dimension,
+                               tooltip: dimension
+                           }
+                       }
+                   });
+               }
+           });
+           myChart.setOption(option);
+           if (option && typeof option === "object") {
+               myChart.setOption(option, true);
+           }
+       </script>
+    <!-- 内容区域 /-->
+    </section>
 </body>
 
 </html>
