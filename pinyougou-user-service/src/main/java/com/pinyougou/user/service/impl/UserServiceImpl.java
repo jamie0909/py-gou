@@ -1,8 +1,5 @@
 package com.pinyougou.user.service.impl;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -11,12 +8,16 @@ import javax.jms.Message;
 import javax.jms.Session;
 
 
+import com.pinyougou.mapper.TbAreasMapper;
+import com.pinyougou.mapper.TbCitiesMapper;
+import com.pinyougou.mapper.TbProvincesMapper;
+import com.pinyougou.pojo.*;
+import entity.Result;
 import com.pinyougou.mapper.TbOrderMapper;
 import com.pinyougou.mapper.TbSellerMapper;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbSeller;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.ibatis.annotations.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -28,8 +29,6 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinyougou.mapper.TbUserMapper;
-import com.pinyougou.pojo.TbUser;
-import com.pinyougou.pojo.TbUserExample;
 import com.pinyougou.pojo.TbUserExample.Criteria;
 import com.pinyougou.user.service.UserService;
 
@@ -57,15 +56,60 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public TbUser findUser(String name) {
 		TbUserExample example = new TbUserExample();
-		example.createCriteria().andUsernameEqualTo(name);
+        Criteria criteria = example.createCriteria();
+        criteria.andUsernameEqualTo(name);
 		List<TbUser> users = userMapper.selectByExample(example);
 		return users.get(0);
 	}
 
 
+    @Autowired
+    private TbProvincesMapper provincesMapper;
 
+    @Autowired
+    private TbCitiesMapper citiesMapper;
 
-	/***
+    @Autowired
+    private TbAreasMapper areasMapper;
+
+    /**
+     * 查询所有省份
+     *
+     * @return
+     */
+    @Override
+    public List<TbProvinces> findProvince() {
+
+        return provincesMapper.selectByExample(null);
+    }
+
+    /**
+     * 查询所有市
+     *
+     * @param
+     * @return
+     */
+    @Override
+    public List<TbCities> findCity(String provinceId) {
+        TbCitiesExample example=new TbCitiesExample();
+        TbCitiesExample.Criteria criteria = example.createCriteria();
+        criteria.andProvinceidEqualTo(provinceId);
+        return citiesMapper.selectByExample(example);
+    }
+    /**
+     * 查询所有区县
+     *
+     * @param
+     * @return
+     */
+    @Override
+    public List<TbAreas> findArea(String cityId) {
+        TbAreasExample example = new TbAreasExample();
+        TbAreasExample.Criteria criteria = example.createCriteria();
+        criteria.andCityidEqualTo(cityId);
+        return areasMapper.selectByExample(example);
+    }
+    /***
 	 * @Description: 修改用户的密码
 	 * @Param: [user]
 	 * @return: void
@@ -74,7 +118,7 @@ public class UserServiceImpl implements UserService {
 	 */
 
 	@Override
-	public void updatePassword(TbUser user,String username) {
+	public Result updatePassword(TbUser user, String username) {
 
 
   		TbUserExample example = new TbUserExample();
@@ -84,23 +128,22 @@ public class UserServiceImpl implements UserService {
 
 		List<TbUser> tbUsers = userMapper.selectByExample(example);
 
-		System.out.println("tbUsers"+tbUsers.get(0).toString());
-		System.out.println("修改前的密码为"+tbUsers.get(0).getPassword());
+		String ordPassword = tbUsers.get(0).getPassword();
+		System.out.println("旧密码:"+ordPassword);
+		System.out.println("未加密的新密码"+user.getPassword());
 
-		System.out.println("从前端传来的密码为"+user.getPassword());
-
-		String password = DigestUtils.md5Hex(user.getPassword());
-		System.out.println("加密后的密码为"+password);
-		tbUsers.get(0).setPassword(password);
-
-
-		 tbUsers.get(0).setUpdated(new Date());
-	 	 System.out.println("修改时间为"+new Date());
-		 System.out.println("修改密码重新加密成功");
-	     userMapper.updateByPrimaryKey(tbUsers.get(0));
-
-
-		 System.out.println("密码更新完成");
+		String newPassword = DigestUtils.md5Hex(user.getPassword());
+		System.out.println("newPassword:"+newPassword);
+        System.out.println(!ordPassword.equals(newPassword));
+		if (!ordPassword.equals(newPassword)){
+			tbUsers.get(0).setPassword(newPassword);
+			tbUsers.get(0).setUpdated(new Date());
+			userMapper.updateByPrimaryKey(tbUsers.get(0));
+            System.out.println("前后的密码不相同");
+			return new Result(true,"密码修改成功");
+		}else{
+			return new Result(false,"新旧密码相同,请重新输入");
+		}
 
 
 	}
@@ -168,21 +211,23 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void update(TbUser user){
-		userMapper.updateByPrimaryKey(user);
+
+	    userMapper.updateByPrimaryKey(user);
+	}
+
+	@Override
+	public List<TbUser> findOne(String name) {
+		return null;
+	public TbUser findOne(Long id) {
+		return userMapper.selectByPrimaryKey(id);
 	}
 
 	/**
 	 * 根据ID获取实体
-	 * @param name
+	 * @param id
 	 * @return
 	 */
-	@Override
-	public List<TbUser> findOne(String name){
-	    TbUserExample example=new TbUserExample();
-        Criteria criteria = example.createCriteria();
-        criteria.andUsernameEqualTo(name);
-        return userMapper.selectByExample(example);
-	}
+
 
 	/**
 	 * 批量删除
@@ -271,10 +316,8 @@ public class UserServiceImpl implements UserService {
 		System.out.println("验证码："+smscode);
 		
 		//2.将验证码放入redis
-		redisTemplate.boundHashOps("smscode").put(phone,smscode);
-		System.out.println("验证码已放入缓存中");
+		redisTemplate.boundHashOps("smscode").put(phone, smscode);
 		//3.将短信内容发送给activeMQ
-
 		
 		jmsTemplate.send(smsDestination, new MessageCreator() {
 			
@@ -290,8 +333,24 @@ public class UserServiceImpl implements UserService {
 				return message;
 			}
 		});
-		
-		
+
+		try {
+			//验证码有效期为一分钟
+			System.out.println("验证码调度器开始运行");
+			final Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    redisTemplate.boundHashOps("smscode").delete(phone);
+					System.out.println("一分钟已经到了,验证码从缓存中被删除");
+					timer.cancel();
+                }
+            },60*1000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
 	}
 
 	@Override
@@ -300,8 +359,7 @@ public class UserServiceImpl implements UserService {
 		System.out.println("你好");
 		System.out.println("你你你"+phone+"code"+code);
 		String systemcode= (String) redisTemplate.boundHashOps("smscode").get(phone);
-		System.out.println("你你你"+phone+"code"+code);
-		System.out.println("systemcode:"+systemcode);
+
 		if(systemcode==null){
 			return false;
 		}

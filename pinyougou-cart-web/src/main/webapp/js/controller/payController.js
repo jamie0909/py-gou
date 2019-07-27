@@ -59,20 +59,33 @@ app.controller('payController' ,function($scope ,$location,payService){
 	}
 
 	//获取支付方式
-	$scope.getPay_str=function(){
+	$scope.getPayStr=function(){
 		return $location.search()['pay_str'];
 	}
 
 
-	$scope.changePayType=function () {
+	$scope.changeOtherPayType=function () {
+		$scope.paymentType=$location.search()['type'];
 		if ($scope.paymentType=='1'){
             location.href="pay-other.html#?type=3";
             return;
 		}
+
          if($scope.paymentType=='3'){
-             location.href="pay-other.html#?type=1";
+             location.href="pay.html#?type=1";
              return;
         }
 
+    }
+
+    $scope.changeDeliveryPayType=function () {
+
+		//alert('订单编号:'+$scope.out_trade_no);
+		//$scope.out_trade_no=$location.search()['out_trade_type'];
+		location.href="pay-deliverypay.html#?out_trade_no="+$scope.out_trade_no+"&money="+$scope.money;
+    }
+
+    $scope.getTradeNo=function () {
+		$scope.out_trade_no=$location.search()['out_trade_no'];
     }
 });

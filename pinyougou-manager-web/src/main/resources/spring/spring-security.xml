@@ -11,7 +11,8 @@
 	<http pattern="/img/**" security="none"/>
 	<http pattern="/js/**" security="none"/>
 	<http pattern="/plugins/**" security="none"/>
-	
+
+
 	<!-- use-expressions:设置是否启动SpEL表达式，默认值是true。 -->
 	<http use-expressions="false">
 		<!-- 

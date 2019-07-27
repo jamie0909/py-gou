@@ -32,10 +32,6 @@
 
 
 
-
-
-
-
 </head>
 <body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="orderController">
   <!-- .box-body -->
@@ -86,7 +82,7 @@
 									</select>
 
 									<input class="btn btn-default" ng-click="reloadList()" type="button" value="查询">
-									<input class="btn btn-default" ng-click="reloadList()" type="button" value="导出Excel">
+									<input class="btn btn-default" ng-click="excelOperate()" type="button" value="导出Excel">
                                 </div>
                             </div>
                             <!--工具栏/-->
@@ -135,7 +131,7 @@
 										  </td>
 		                                  <td  class="text-center">
 		                                  <button type="button" class="btn bg-olive btn-xs" ng-click="findOne(entity.orderId)" data-toggle="modal" data-target="#sellerModal">订单详情</button>
-		                                  <button type="button" class="btn bg-olive btn-xs" ng-click="updateStatus(entity.orderId,entity.status+1)" data-toggle="modal"  ng-if="entity.status=='3'">订单发货</button>
+		                                  <button type="button" class="btn bg-olive btn-xs" ng-click="updateStatus(entity.orderId,entity.status)" data-toggle="modal"  ng-if="entity.status=='3'">订单发货</button>
 		                                  <button type="button" class="btn bg-olive btn-xs" ng-click="deleOne(entity.orderId)" data-toggle="modal" >删除</button>
 		                                  </td>
 			                          </tr>

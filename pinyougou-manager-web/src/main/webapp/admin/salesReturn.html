@@ -72,7 +72,7 @@
 									</select>
 
 									<input class="btn btn-default" ng-click="reloadList()" type="button" value="查询">
-									<input class="btn btn-default" ng-click="reloadList()" type="button" value="导出Excel">
+
                                 </div>
                             </div>
                             <!--工具栏/-->
@@ -120,9 +120,9 @@
 		                                      </span>
 										  </td>
 		                                  <td  class="text-center">
-		                                  <button type="button" class="btn bg-olive btn-xs" ng-click="findOne(entity.orderId)" data-toggle="modal" data-target="#sellerModal">退款详情</button>
+		                                  <button type="button" class="btn bg-olive btn-xs" ng-click="findReturnOne(entity.orderId)" data-toggle="modal" data-target="#sellerModal">退款详情</button>
 		                                  <button type="button" class="btn bg-olive btn-xs" ng-click="findById(entity.id)" data-toggle="modal" data-target="#editModal" ng-if="entity.status=='3'">订单发货</button>
-		                                  <button type="button" class="btn bg-olive btn-xs" ng-click="" data-toggle="modal">通过申请</button>
+		                                  <button type="button" class="btn bg-olive btn-xs" ng-click="updateStatus(entity.orderId,entity.status)" data-toggle="modal">通过申请</button>
 		                                  </td>
 			                          </tr>
 									  
@@ -158,7 +158,6 @@
 					  <li><a href="#linkman" data-toggle="tab">买家信息</a></li>
 					  <li><a href="#certificate" data-toggle="tab">退款商品信息</a></li>
 					  <li><a href="#ceo" data-toggle="tab">退款理由</a></li>
-					  <li><a href="#bank" data-toggle="tab">备注</a></li>
 				  </ul>
 
 				  <!-- 选项卡开始 -->
@@ -168,36 +167,28 @@
 						  <table class="table table-bordered table-striped"  width="800px">
 							  <tr>
 								  <td>商家ID</td>
-								  <td>{{entity.sellerId}}</td>
+								  <td>{{entityReturn.sellerId}}</td>
 							  </tr>
 
                               <tr>
-                                  <td>商品id</td>
-                                  <td>{{entity.orderId}}</td>
+                                  <td>用户id</td>
+                                  <td>{{entityReturn.userId}}</td>
                               </tr>
                               <tr>
-                                  <td>SPU_ID</td>
-                                  <td>{{entity.orderId}}</td>
+                                  <td>退款开始时间</td>
+                                  <td>{{entityReturn.startTime}}</td>
                               </tr>
 							  <tr>
-								  <td>订单编号</td>
-								  <td>{{entity.orderId}}</td>
+								  <td>退款理由</td>
+								  <td>{{entityReturn.reason}}</td>
 							  </tr>
                               <tr>
-                                  <td>商品单价</td>
-                                  <td>{{entity.orderId}}</td>
-                              </tr>
-                              <tr>
-                                  <td>商品购买数量</td>
-                                  <td>{{entity.orderId}}</td>
+                                  <td>订单总额</td>
+                                  <td>{{entityReturn.totalFee}}</td>
                               </tr>
 							  <tr>
-								  <td>订单总金额</td>
-								  <td>{{entity.mobile}}</td>
-							  </tr>
-							  <tr>
-								  <td>订单邮费</td>
-								  <td>{{entity.telephone}}</td>
+								  <td>退款预计结束</td>
+								  <td>{{entityReturn.endTime}}</td>
 							  </tr>
 
 						  </table>
@@ -207,19 +198,19 @@
 						  <table class="table table-bordered table-striped" >
 							  <tr>
 								  <td>买家ID</td>
-								  <td>{{entity.linkmanName}}</td>
+								  <td>{{entityReturn.linkmanName}}</td>
 							  </tr>
 							  <tr>
 								  <td>买家昵称</td>
-								  <td>{{entity.linkmanQq}}</td>
+								  <td>{{entityReturn.linkmanQq}}</td>
 							  </tr>
 							  <tr>
 								  <td>买家留言</td>
-								  <td>{{entity.linkmanMobile}}</td>
+								  <td>{{entityReturn.linkmanMobile}}</td>
 							  </tr>
 							  <tr>
 								  <td>买家是否已评价</td>
-								  <td>{{entity.linkmanEmail}}</td>
+								  <td>{{entityReturn.linkmanEmail}}</td>
 							  </tr>
 						  </table>
 					  </div>

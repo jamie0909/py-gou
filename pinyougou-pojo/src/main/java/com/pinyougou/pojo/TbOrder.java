@@ -1,11 +1,14 @@
 package com.pinyougou.pojo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-public class TbOrder implements Serializable {
+public class TbOrder implements Serializable{
 
     private Long orderId;
 
@@ -15,9 +18,11 @@ public class TbOrder implements Serializable {
 
     private String paymentType;
 
-    private String postFee;
-
     private String status;
+
+    private String sourceType;
+
+    private String postFee;
 
     private Date createTime;
 
@@ -54,8 +59,6 @@ public class TbOrder implements Serializable {
     private Date expire;
 
     private String invoiceType;
-
-    private String sourceType;
 
     private String sellerId;
 
@@ -279,4 +282,5 @@ public class TbOrder implements Serializable {
     public void setOrderIdStr(String orderIdStr) {
         this.orderIdStr = orderIdStr;
     }
+
 }

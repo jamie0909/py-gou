@@ -1,5 +1,6 @@
 package com.pinyougou.pay.service.impl;
 
+import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alipay.api.AlipayResponse;
 import com.alipay.api.domain.TradeFundBill;
@@ -16,7 +17,6 @@ import com.alipay.demo.trade.service.AlipayTradeService;
 import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
 import com.alipay.demo.trade.utils.Utils;
 import com.pinyougou.pay.service.AliPayService;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
