@@ -12,7 +12,7 @@ public class TbAddress implements Serializable{
 
     private String cityId;
 
-    private String townId;
+    private String areaId;
 
     private String mobile;
 
@@ -27,6 +27,8 @@ public class TbAddress implements Serializable{
     private Date createDate;
 
     private String alias;
+
+    private String email;
 
     public Long getId() {
         return id;
@@ -60,12 +62,12 @@ public class TbAddress implements Serializable{
         this.cityId = cityId == null ? null : cityId.trim();
     }
 
-    public String getTownId() {
-        return townId;
+    public String getAreaId() {
+        return areaId;
     }
 
-    public void setTownId(String townId) {
-        this.townId = townId == null ? null : townId.trim();
+    public void setAreaId(String areaId) {
+        this.areaId = areaId == null ? null : areaId.trim();
     }
 
     public String getMobile() {
@@ -122,5 +124,32 @@ public class TbAddress implements Serializable{
 
     public void setAlias(String alias) {
         this.alias = alias == null ? null : alias.trim();
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email == null ? null : email.trim();
+    }
+
+    @Override
+    public String toString() {
+        return "TbAddress{" +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
+                ", provinceId='" + provinceId + '\'' +
+                ", cityId='" + cityId + '\'' +
+                ", areaId='" + areaId + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", address='" + address + '\'' +
+                ", contact='" + contact + '\'' +
+                ", isDefault='" + isDefault + '\'' +
+                ", notes='" + notes + '\'' +
+                ", createDate=" + createDate +
+                ", alias='" + alias + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

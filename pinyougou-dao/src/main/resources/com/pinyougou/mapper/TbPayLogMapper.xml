@@ -11,6 +11,7 @@
     <result column="trade_state" property="tradeState" jdbcType="VARCHAR" />
     <result column="order_list" property="orderList" jdbcType="VARCHAR" />
     <result column="pay_type" property="payType" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -72,7 +73,7 @@
   </sql>
   <sql id="Base_Column_List" >
     out_trade_no, create_time, pay_time, total_fee, user_id, transaction_id, trade_state, 
-    order_list, pay_type
+    order_list, pay_type, status
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.pinyougou.pojo.TbPayLogExample" >
     select
@@ -107,12 +108,12 @@
   <insert id="insert" parameterType="com.pinyougou.pojo.TbPayLog" >
     insert into tb_pay_log (out_trade_no, create_time, pay_time, 
       total_fee, user_id, transaction_id, 
-      trade_state, order_list, pay_type
-      )
+      trade_state, order_list, pay_type, 
+      status)
     values (#{outTradeNo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{payTime,jdbcType=TIMESTAMP}, 
       #{totalFee,jdbcType=BIGINT}, #{userId,jdbcType=VARCHAR}, #{transactionId,jdbcType=VARCHAR}, 
-      #{tradeState,jdbcType=VARCHAR}, #{orderList,jdbcType=VARCHAR}, #{payType,jdbcType=VARCHAR}
-      )
+      #{tradeState,jdbcType=VARCHAR}, #{orderList,jdbcType=VARCHAR}, #{payType,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.pinyougou.pojo.TbPayLog" >
     insert into tb_pay_log
@@ -144,6 +145,9 @@
       <if test="payType != null" >
         pay_type,
       </if>
+      <if test="status != null" >
+        status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="outTradeNo != null" >
@@ -172,6 +176,9 @@
       </if>
       <if test="payType != null" >
         #{payType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -211,6 +218,9 @@
       <if test="record.payType != null" >
         pay_type = #{record.payType,jdbcType=VARCHAR},
       </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -226,7 +236,8 @@
       transaction_id = #{record.transactionId,jdbcType=VARCHAR},
       trade_state = #{record.tradeState,jdbcType=VARCHAR},
       order_list = #{record.orderList,jdbcType=VARCHAR},
-      pay_type = #{record.payType,jdbcType=VARCHAR}
+      pay_type = #{record.payType,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -258,6 +269,9 @@
       <if test="payType != null" >
         pay_type = #{payType,jdbcType=VARCHAR},
       </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
     </set>
     where out_trade_no = #{outTradeNo,jdbcType=VARCHAR}
   </update>
@@ -270,7 +284,8 @@
       transaction_id = #{transactionId,jdbcType=VARCHAR},
       trade_state = #{tradeState,jdbcType=VARCHAR},
       order_list = #{orderList,jdbcType=VARCHAR},
-      pay_type = #{payType,jdbcType=VARCHAR}
+      pay_type = #{payType,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
     where out_trade_no = #{outTradeNo,jdbcType=VARCHAR}
   </update>
 </mapper>

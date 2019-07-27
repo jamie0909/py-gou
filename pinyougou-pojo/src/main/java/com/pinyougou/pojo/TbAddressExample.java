@@ -375,73 +375,73 @@ public class TbAddressExample {
             return (Criteria) this;
         }
 
-        public Criteria andTownIdIsNull() {
-            addCriterion("town_id is null");
+        public Criteria andAreaIdIsNull() {
+            addCriterion("area_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andTownIdIsNotNull() {
-            addCriterion("town_id is not null");
+        public Criteria andAreaIdIsNotNull() {
+            addCriterion("area_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTownIdEqualTo(String value) {
-            addCriterion("town_id =", value, "townId");
+        public Criteria andAreaIdEqualTo(String value) {
+            addCriterion("area_id =", value, "areaId");
             return (Criteria) this;
         }
 
-        public Criteria andTownIdNotEqualTo(String value) {
-            addCriterion("town_id <>", value, "townId");
+        public Criteria andAreaIdNotEqualTo(String value) {
+            addCriterion("area_id <>", value, "areaId");
             return (Criteria) this;
         }
 
-        public Criteria andTownIdGreaterThan(String value) {
-            addCriterion("town_id >", value, "townId");
+        public Criteria andAreaIdGreaterThan(String value) {
+            addCriterion("area_id >", value, "areaId");
             return (Criteria) this;
         }
 
-        public Criteria andTownIdGreaterThanOrEqualTo(String value) {
-            addCriterion("town_id >=", value, "townId");
+        public Criteria andAreaIdGreaterThanOrEqualTo(String value) {
+            addCriterion("area_id >=", value, "areaId");
             return (Criteria) this;
         }
 
-        public Criteria andTownIdLessThan(String value) {
-            addCriterion("town_id <", value, "townId");
+        public Criteria andAreaIdLessThan(String value) {
+            addCriterion("area_id <", value, "areaId");
             return (Criteria) this;
         }
 
-        public Criteria andTownIdLessThanOrEqualTo(String value) {
-            addCriterion("town_id <=", value, "townId");
+        public Criteria andAreaIdLessThanOrEqualTo(String value) {
+            addCriterion("area_id <=", value, "areaId");
             return (Criteria) this;
         }
 
-        public Criteria andTownIdLike(String value) {
-            addCriterion("town_id like", value, "townId");
+        public Criteria andAreaIdLike(String value) {
+            addCriterion("area_id like", value, "areaId");
             return (Criteria) this;
         }
 
-        public Criteria andTownIdNotLike(String value) {
-            addCriterion("town_id not like", value, "townId");
+        public Criteria andAreaIdNotLike(String value) {
+            addCriterion("area_id not like", value, "areaId");
             return (Criteria) this;
         }
 
-        public Criteria andTownIdIn(List<String> values) {
-            addCriterion("town_id in", values, "townId");
+        public Criteria andAreaIdIn(List<String> values) {
+            addCriterion("area_id in", values, "areaId");
             return (Criteria) this;
         }
 
-        public Criteria andTownIdNotIn(List<String> values) {
-            addCriterion("town_id not in", values, "townId");
+        public Criteria andAreaIdNotIn(List<String> values) {
+            addCriterion("area_id not in", values, "areaId");
             return (Criteria) this;
         }
 
-        public Criteria andTownIdBetween(String value1, String value2) {
-            addCriterion("town_id between", value1, value2, "townId");
+        public Criteria andAreaIdBetween(String value1, String value2) {
+            addCriterion("area_id between", value1, value2, "areaId");
             return (Criteria) this;
         }
 
-        public Criteria andTownIdNotBetween(String value1, String value2) {
-            addCriterion("town_id not between", value1, value2, "townId");
+        public Criteria andAreaIdNotBetween(String value1, String value2) {
+            addCriterion("area_id not between", value1, value2, "areaId");
             return (Criteria) this;
         }
 
@@ -922,6 +922,76 @@ public class TbAddressExample {
 
         public Criteria andAliasNotBetween(String value1, String value2) {
             addCriterion("alias not between", value1, value2, "alias");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailIsNull() {
+            addCriterion("email is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailIsNotNull() {
+            addCriterion("email is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailEqualTo(String value) {
+            addCriterion("email =", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailNotEqualTo(String value) {
+            addCriterion("email <>", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailGreaterThan(String value) {
+            addCriterion("email >", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailGreaterThanOrEqualTo(String value) {
+            addCriterion("email >=", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailLessThan(String value) {
+            addCriterion("email <", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailLessThanOrEqualTo(String value) {
+            addCriterion("email <=", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailLike(String value) {
+            addCriterion("email like", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailNotLike(String value) {
+            addCriterion("email not like", value, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailIn(List<String> values) {
+            addCriterion("email in", values, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailNotIn(List<String> values) {
+            addCriterion("email not in", values, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailBetween(String value1, String value2) {
+            addCriterion("email between", value1, value2, "email");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmailNotBetween(String value1, String value2) {
+            addCriterion("email not between", value1, value2, "email");
             return (Criteria) this;
         }
     }

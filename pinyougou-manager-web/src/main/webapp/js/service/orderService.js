@@ -25,9 +25,18 @@ app.service("orderService",function($http){
         return $http.get('../order/findOne.do?id='+id);
     }
 
+    //查询退货的实体 wjk
+    this.findReturnOne=function(id){
+        return $http.get('../order/findReturnOne.do?id='+id);
+    }
+
 
     this.updateStatus = function(id,status){
         return $http.get('../order/updateStatus.do?id='+id+"&status="+status);
+    }
+    //excel
+    this.excelOperate = function(searchEntity){
+        return $http.post("../order/excel.do",searchEntity);
     }
 
 });
