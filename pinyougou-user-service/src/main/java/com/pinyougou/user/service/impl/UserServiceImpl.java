@@ -223,12 +223,6 @@ public class UserServiceImpl implements UserService {
 //		return userMapper.selectByPrimaryKey(id);
 //	}
 
-	/*	TbUserExample example = new TbUserExample();
-		Criteria criteria = example.createCriteria();
-		criteria.andUsernameEqualTo(name);
-		List<TbUser> users = userMapper.selectByExample(example);
-		return users;
-	}*/
 	/**
 	 * 根据ID获取实体
 	 * @param id

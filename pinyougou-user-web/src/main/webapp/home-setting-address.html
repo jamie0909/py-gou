@@ -368,7 +368,7 @@ $(function(){
 											<div class="control-group">
 												<label class="control-label">收货人：</label>
 												<div class="controls">
-													<input type="text" required="required" name="user"  ng-model="Add.contact" class="input-medium">
+													<input type="text" placeholder="请输入收货人" required="required" name="user"  ng-model="Add.contact" class="input-medium">
 
 													<span style="color:red" ng-show="myForm02.user.$dirty && myForm02.user.$invalid">
 														<span ng-show="myForm02.user.$error.required">收货人没填，赶紧填</span></span>
@@ -397,19 +397,19 @@ $(function(){
 											<div class="control-group">
 												<label class="control-label">详细地址：</label>
 												<div class="controls">
-													<input type="text" ng-model="Add.address" class="input-large">
+													<input type="text" placeholder="请输入详细地址" ng-model="Add.address" class="input-large">
 												</div>
 											</div>
 											<div class="control-group">
 												<label class="control-label">联系电话：</label>
 												<div class="controls">
-													<input type="text" ng-model="Add.mobile" class="input-medium">
+													<input type="text" placeholder="请输入联系电话 " ng-model="Add.mobile" class="input-medium">
 												</div>
 											</div>
 											<div class="control-group">
 												<label class="control-label">邮箱：</label>
 												<div class="controls">
-													<input type="email" name="myEmail01" ng-model="Add.email" class="input-medium" placeholder="请输入邮箱">
+													<input type="email"  name="myEmail01" ng-model="Add.email" class="input-medium" placeholder="请输入邮箱">
 													<!-- ng-show:类似avalon的ms-if的用法，如果校验不通过则返回true,显示提示内容，数据校验不太精确 -->
 													<span ng-show="myForm02.myEmail01.$error.email" style="color: red">邮箱填的不对!</span><br>
 
@@ -418,7 +418,7 @@ $(function(){
 											<div class="control-group">
 												<label class="control-label">地址别名：</label>
 												<div class="controls">
-													<input ng-model="Add.alias" type="text" class="input-medium">
+													<input ng-model="Add.alias" placeholder="地址别名(可选)" type="text" class="input-medium">
 												</div>
 												<div class="othername">
 													建议填写常用地址：<a href="#" ng-click="update_Alias('家里')" class="sui-btn btn-default">家里</a>　<a href="#" ng-click="update_Alias('父母家')" class="sui-btn btn-default">父母家</a>　<a href="#" ng-click="update_Alias('公司')" class="sui-btn btn-default">公司</a>

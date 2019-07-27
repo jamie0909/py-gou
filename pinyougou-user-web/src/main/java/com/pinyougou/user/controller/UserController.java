@@ -119,7 +119,7 @@ public class UserController {
         TbUser user = userService.findUser(name);
         return user;
 	}
-	
+
 	/**
 	 * 批量删除
 	 * @param ids
