@@ -1,5 +1,5 @@
  //控制层 
-app.controller('userController' ,function($scope,$controller ,userService,$interval,$timeout){
+app.controller('userController' ,function($scope,$controller ,userService,$interval,$timeout,$location){
 	
 	//注册用户
 	$scope.reg=function(){
@@ -44,10 +44,10 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
     $scope.updatePassword=function(){
 
     //比较两次输入的密码是否一致
-            if($scope.newPassword!=$scope.entity.newPassword){
+            if($scope.password!=$scope.entity.password){
                 alert("两次输入密码不一致，请重新输入");
-                $scope.entity.newPassword="";
-                $scope.newPassword="";
+                $scope.entity.password="";
+                $scope.password="";
                 return ;
             }
 
@@ -57,10 +57,13 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
                    if(response.success){
                        //重新查询
                       // $scope.reloadList();
+
+
                        alert(response.message);
-                       location.href="login"
+                       location.href="home-index.html"
                    }else{
                        alert(response.message);
+
                    }
                }
            );
@@ -89,13 +92,41 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
     $scope.endTOPhone=function () {
         var code=$("#msgcode").val();
         var phone=$("#inputphone").val();
-        userService.checkCode(code,phone).success(function (response) {
-            if(response.success){
-                location.href="home-setting-address-complete.html";
-            }else{
-                alert(response.message);
-            }
-        })
+
+        userService.findUser().success(
+            function(response){
+                $scope.entity=response;
+
+
+                if (phone==$scope.entity.phone){
+                    alert("手机号码不能与原手机号码一样")
+        }else{
+                    userService.checkCode(code,phone).success(
+                        function (response) {
+
+                            if(response.success){
+                                location.href="home-setting-address-complete.html";
+                            }else{
+                                alert("执行了")
+                                alert(response.message);
+                            }
+                        })
+                }
+            });
+
+          /* userService.checkCode(code,phone).success(
+            function (response) {
+
+                if(response.success){
+                    location.href="home-setting-address-complete.html";
+                }else{
+                    alert("执行了")
+                    alert(response.message);
+                }
+            })*/
+
+
+
     }
     /***
     * @Description: 登陆的用户
@@ -103,13 +134,20 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
     * @return: 
     * @Author: WangRui
     * @Date: 2019/7/25
-    */ 
+    */
+
+
+
+
+
       $scope.findUser=function(){
-        userService.findUser().success(
-            function(response){
-                $scope.entity=response;
-            }
-        ) ;
+
+          userService.findUser().success(
+              function(response){
+                  $scope.entity=response;
+
+
+              });
      };
 
 
@@ -137,13 +175,7 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
                     $scope.showTimer = false;
                     $scope.timerCount = $scope.timeout / 1000;
                 }, $scope.timeout);
-                //发送验证码
 
-
-                    if($scope.entity.phone==null || $scope.entity.phone==""){
-                        alert("请填写手机号码");
-                        return ;
-                    }
 
                     userService.sendCode($scope.entity.phone).success(
                         function(response){
@@ -156,7 +188,7 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
 
 
 
-    //第一个验证码发送
+    //第二个验证码发送
     $scope.sendCode2 = function(){
 
         $scope.showTimer = true;
@@ -173,14 +205,15 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
             $scope.timerCount = $scope.timeout / 1000;
         }, $scope.timeout);
         //发送验证码
+        var phone=$("#inputphone").val();
 
-
-        if($scope.entity.phone==null || $scope.entity.phone==""){
+        if(phone==null || phone==""){
             alert("请填写手机号码");
             return ;
         }
 
-        userService.sendCode($scope.entity.phone).success(
+
+        userService.sendCode(phone).success(
             function(response){
                 alert(response.message);
             }
@@ -190,12 +223,16 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
 
 
 
+    
+    /***
+    * @Description: 
+    * @Param: 
+    * @return: 
+    * @Author: WangRui
+    * @Date: 2019/7/26
+    */ 
     $scope.checkPassword = function(password){
-//$scope.safeMsg = "安全强度：*";
-//$scope.teColor = "red";
-
-
-        var lowTest1 = /^\d{1,6}$/; //纯数字
+  var lowTest1 = /^\d{1,6}$/; //纯数字
         var lowTest2 = /^[a-zA-Z]{1,6}$/; //纯字母
         var halfTest = /^[A-Za-z0-9]{1,6}$/;
         var halfTest2 = /^[A-Za-z0-9]{6,8}$/;
