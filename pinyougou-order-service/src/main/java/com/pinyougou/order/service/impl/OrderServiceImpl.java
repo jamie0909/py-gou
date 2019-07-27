@@ -355,7 +355,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 	@Override
-	public void excel(TbOrder order) {
+	public List<TbOrder> excel(TbOrder order) {
 
 		// 进行条件查询:
 		TbOrderExample example = new TbOrderExample();
@@ -396,11 +396,7 @@ public class OrderServiceImpl implements OrderService {
 		List<TbOrder> orders = orderMapper.selectByExample(example);
 
 		System.out.println(orders);
-		try {
-			ExcelOperateUtil.createExcel(orders);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		return orders;
 	}
 
     @Override

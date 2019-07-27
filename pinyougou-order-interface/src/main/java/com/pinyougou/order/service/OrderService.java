@@ -100,7 +100,7 @@ public interface OrderService {
 	 * @param order
 	 * @return
 	 */
-    void excel(TbOrder order);
+    List<TbOrder> excel(TbOrder order);
 
 	/**
 	 * 返回退单个货商品详情   wjk
