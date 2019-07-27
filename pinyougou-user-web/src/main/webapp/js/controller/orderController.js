@@ -181,7 +181,7 @@ app.controller('orderController' ,function($scope,$controller ,$location  ,order
 
     $scope.detailStatus = ["无","提交订单","付款成功","已发货","确认收货","交易关闭","评价晒单"];
 
-    $scope.paymentTypeStr = ["在线支付","货到付款",""];
+    $scope.paymentTypeStr = ["","微信支付","货到付款","支付宝支付"];
 
     $scope.findOrder = function () {
 		orderService.findOne($location.search()['orderId']).success(
@@ -291,7 +291,7 @@ app.controller('orderController' ,function($scope,$controller ,$location  ,order
                     $scope.closeTime = $scope.entity.orderList[0].closeTime.split(" ");
                 }
 
-                $scope.statusNum = parseInt($scope.entity.payLog.status)-1;
+                $scope.statusNum = parseInt($scope.entity.payLog.status);
 
 
             }

@@ -17,7 +17,6 @@ app.controller('payController' ,function($scope ,$location,payService){
 				//显示订单号和金额
 				$scope.money= (response.total_fee/100).toFixed(2);
 				$scope.out_trade_no=response.out_trade_no;
-				
 				//生成二维码
 				 var qr=new QRious({
 					    element:document.getElementById('qrious'),
@@ -43,7 +42,7 @@ app.controller('payController' ,function($scope ,$location,payService){
                     $scope.pay_str='支付宝';
                 }
 				if(response.success){
-					location.href="paysuccess.html#?money="+$scope.money+"&pay_str="+$scope.pay_str;
+					location.href="paysuccess.html#?money="+$scope.money+"&pay_str="+$scope.pay_str+"&out_trade_no="+$scope.out_trade_no;
 				}else{
 					if(response.message=='二维码超时'){
 						$scope.createNative();//重新生成二维码

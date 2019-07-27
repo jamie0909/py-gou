@@ -19,7 +19,7 @@
     
 </head>
 
-	<body ng-app="pinyougou" ng-controller="payController">
+	<body ng-app="pinyougou" ng-controller="payController" ng-init="getTradeNo()">
 		<!--head-->
 		<div class="top">
 			<div class="py-container">
@@ -58,7 +58,7 @@
 					<div class="paydetail">
 						<p>支付方式：<font color="#0758a8">{{getPayStr()}}支付</font></p>
 						<p>支付金额：<b><font color="red">￥{{getMoney()}}</font></b></p>
-					<p class="button"><a href="home-orderDetail.html" class="sui-btn btn-xlarge btn-danger">查看订单</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.html" class="sui-btn btn-xlarge ">继续购物</a></p>
+					<p class="button"><a href="http://localhost:9106/home-orderDetail.html#?outTradeNo={{out_trade_no}}" class="sui-btn btn-xlarge btn-danger">查看订单</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="index.html" class="sui-btn btn-xlarge ">继续购物</a></p>
 				    </div>
 				</div>
 				

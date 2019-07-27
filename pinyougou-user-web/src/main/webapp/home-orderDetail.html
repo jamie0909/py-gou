@@ -263,10 +263,10 @@ $(function(){
                         <div class="order-info">
                             <h5>订单信息</h5>
                             <p>收货地址：{{entity.orderList[0].receiverAreaName}}  </p>
-                            <p>订单单号：{{entity.orderList[0].orderIdStr}}</p>
+                            <p>订单单号：{{entity.payLog.outTradeNo}}</p>
                             <p>下单时间：{{entity.orderList[0].createTime}}</p>
                             <p>支付时间：{{entity.orderList[0].status >1 && entity.orderList[0].status != 6 ? entity.orderList[0].createTime:'未支付'}}</p>
-                            <p>支付方式：{{entity.orderList[0].status >=2 && entity.orderList[0].status != 6 ? paymentTypeStr[entity.orderList[0].paymentType]:"未支付"}}</p>
+                            <p>支付方式：{{entity.orderList[0].status >=1 && entity.orderList[0].status != 6 ? paymentTypeStr[entity.orderList[0].paymentType]:"未支付"}}</p>
 							<p>发货时间：{{entity.orderList[0].consignTime != null?entity.orderList[0].consignTime:'未发货'}}</p>
                         </div>
                         <div class="order-goods">

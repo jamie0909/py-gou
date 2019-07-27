@@ -39,16 +39,17 @@ public class PayController {
 	
 	@RequestMapping("/createNative")
 	public Map createNative(String out_trade_no){
-		if (out_trade_no!=null){
-			String totalFeeByOutTradeNo = payLogService.findTotalFeeByOutTradeNo(out_trade_no);
-			return weixinPayService.createNative(out_trade_no,totalFeeByOutTradeNo);
-		}
+
 
 		//1.获取当前登录用户
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		//2.提取支付日志（从缓存 ）
 		TbPayLog payLog = orderService.searchPayLogFromRedis(username);
+        if (out_trade_no!=null&&payLog==null){
 
+            String totalFeeByOutTradeNo = payLogService.findTotalFeeByOutTradeNo(out_trade_no);
+            return weixinPayService.createNative(out_trade_no,totalFeeByOutTradeNo);
+        }
 		//3.调用微信支付接口
 		if(payLog!=null){
 			return weixinPayService.createNative(payLog.getOutTradeNo(), payLog.getTotalFee()+"");		
@@ -59,15 +60,15 @@ public class PayController {
 
 	@RequestMapping("/createAliPayNative")
 	public Map createAliPayNative(String out_trade_no){
-		if (out_trade_no!=null){
-			String totalFeeByOutTradeNo = payLogService.findTotalFeeByOutTradeNo(out_trade_no);
-			return weixinPayService.createNative(out_trade_no,totalFeeByOutTradeNo);
-		}
+
 		//1.获取当前登录用户
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		//2.提取支付日志（从缓存 ）
 		TbPayLog payLog = orderService.searchPayLogFromRedis(username);
-
+        if (out_trade_no!=null&&payLog==null){
+            String totalFeeByOutTradeNo = payLogService.findTotalFeeByOutTradeNo(out_trade_no);
+            return weixinPayService.createNative(out_trade_no,totalFeeByOutTradeNo);
+        }
 		//3.调用微信支付接口
 		//System.out.println(payLog);
 		if(payLog!=null){
