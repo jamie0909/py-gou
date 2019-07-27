@@ -32,6 +32,7 @@
   	<module>pinyougou-order-service</module>
   	<module>pinyougou-pay-interface</module>
   	<module>pinyougou-pay-service</module>
+	  <module>pinyougou-springtask</module>
   </modules>
   
   	<!-- 集中定义依赖版本号 -->

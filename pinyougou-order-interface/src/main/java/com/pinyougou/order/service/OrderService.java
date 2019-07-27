@@ -101,14 +101,13 @@ public interface OrderService {
 	 * @param order
 	 * @return
 	 */
-    void excel(TbOrder order);
+    List<TbOrder> excel(TbOrder order);
 
 	/**
 	 * 返回退单个货商品详情   wjk
 	 * @param id
 	 * @return
 	 */
-
 	TbSalesreturn findReturnOne(String id);
 
 
@@ -116,5 +115,7 @@ public interface OrderService {
 	 * 查询每种状态的的数量
 	 */
 	public Map<String,Integer> findCountOfEveryStatus();
+
+
 
 }

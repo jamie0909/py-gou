@@ -3,14 +3,21 @@ package com.pinyougou.pojo;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class TbOrderItem implements Serializable{
-    private Long id;
+public class TbOrderItem implements Serializable {
+
+
+    protected Long id;
+
+    private String idStr;
 
     private Long itemId;
 
     private Long goodsId;
 
+
     private Long orderId;
+
+    private String orderIdStr;
 
     private String title;
 
@@ -23,6 +30,16 @@ public class TbOrderItem implements Serializable{
     private String picPath;
 
     private String sellerId;
+
+    private String spec;
+
+    public String getSpec() {
+        return spec;
+    }
+
+    public void setSpec(String spec) {
+        this.spec = spec;
+    }
 
     public Long getId() {
         return id;
@@ -102,5 +119,27 @@ public class TbOrderItem implements Serializable{
 
     public void setSellerId(String sellerId) {
         this.sellerId = sellerId == null ? null : sellerId.trim();
+    }
+
+    public String getIdStr() {
+        if (id==null){
+            return "";
+        }
+        return id.toString();
+    }
+
+    public void setIdStr(String idStr) {
+        this.idStr = idStr;
+    }
+
+    public String getOrderIdStr() {
+        if (orderId==null){
+            return "";
+        }
+        return orderId.toString();
+    }
+
+    public void setOrderIdStr(String orderIdStr) {
+        this.orderIdStr = orderIdStr;
     }
 }

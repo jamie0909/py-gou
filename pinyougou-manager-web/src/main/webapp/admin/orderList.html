@@ -17,7 +17,7 @@
     <!-- 引入分页相关的JS和CSS -->
     <script type="text/javascript" src="../plugins/angularjs/pagination.js"></script>
     <link rel="stylesheet" href="../plugins/angularjs/pagination.css">
-    
+
     <script type="text/javascript" src="../js/base_pagination.js"></script>
     <script type="text/javascript" src="../js/controller/baseController.js"></script>
     <script type="text/javascript" src="../js/controller/orderController.js"></script>
@@ -55,12 +55,12 @@
                             </div>
                             <div class="box-tools pull-right">
                                 <div class="has-feedback">
-									收货人:<input type="text" placeholder="收货人姓名/手机号码" ng-model="searchEntity.receiver">
-									订单编号:<input type="text" placeholder="订单编号" ng-model="searchEntity.orderId">
+									收货人:<input type="text" id="receiver" placeholder="收货人姓名/手机号码" ng-model="searchEntity.receiver">
+									订单编号:<input type="text" id="orderId" placeholder="订单编号" ng-model="searchEntity.orderId">
 
 
 									订单状态
-									<select select2 ng-model="searchEntity.status" placeholder="订单状态">
+									<select select2 ng-model="searchEntity.status" id="status" placeholder="订单状态">
 										<option value="1">未付款</option>
 										<option value="2">已付款</option>
 										<option value="3">未发货</option>
@@ -73,7 +73,7 @@
 									</select>
 
 									订单来源
-									<select select2 ng-model="searchEntity.sourceType" placeholder="订单来源">
+									<select select2 ng-model="searchEntity.sourceType" id="sourceType" placeholder="订单来源">
 										<option value="1">app端</option>
 										<option value="2">pc端</option>
 										<option value="3">M端</option>
@@ -81,8 +81,19 @@
 										<option value="5">手机qq端</option>
 									</select>
 
-									<input class="btn btn-default" ng-click="reloadList()" type="button" value="查询">
-									<input class="btn btn-default" ng-click="excelOperate()" type="button" value="导出Excel">
+									<!--<input class="btn btn-default" ng-click="excelOperate()" type="button" value="导出Excel">-->
+									<input class="btn btn-default" id="search" ng-click="reloadList()" type="button" value="查询">
+									<input class="btn btn-default" id="export" type="button" value="导出Excel">
+									<script type="text/javascript">
+                                        $("#export").click(function(){
+                                            var receiver = $("#receiver").val();
+                                            var receiverMobile = $("#receiverMobile").val();
+                                            var orderId = $("#orderId").val();
+                                            var status = $("#status").val();
+                                            var sourceType = $("#sourceType").val();
+                                            window.location.href="../order/excel.do?receiver="+encodeURI(encodeURI(receiver))+"&receiverMobile="+receiverMobile+"&orderId="+orderId+"&status="+status+"&sourceType="+sourceType;
+                                        });
+									</script>
                                 </div>
                             </div>
                             <!--工具栏/-->
@@ -110,7 +121,7 @@
 			                          <tr ng-repeat="entity in list">
 			                              <td><input  type="checkbox" ng-click="updateSelection($event,entity.orderId)"></td>
 				                          <td>{{entity.orderId}}</td>
-				                         <td>{{entity.userId}}</td>
+				                          <td>{{entity.userId}}</td>
 				                          <td>{{entity.receiver}}</td>
 				                          <td>{{entity.receiverMobile}}</td>
 				                          <td>{{entity.payment}}</td>
@@ -135,17 +146,17 @@
 		                                  <button type="button" class="btn bg-olive btn-xs" ng-click="deleOne(entity.orderId)" data-toggle="modal" >删除</button>
 		                                  </td>
 			                          </tr>
-									  
+
 			                      </tbody>
 			                  </table>
-			                  <!--数据列表/-->                        
-							  
-							 
+			                  <!--数据列表/-->
+
+
                         </div>
                         <!-- 数据表格 /-->
                         <!-- 分页 -->
 						<tm-pagination conf="paginationConf"></tm-pagination>
-                        
+
                      </div>
                      {{selectIds}}
                     <!-- /.box-body -->
@@ -336,6 +347,6 @@
 
 
 
-   
+
 </body>
 </html>

@@ -47,9 +47,7 @@ public interface UserService {
 	 * @param id
 	 * @return
 	 */
-
-/*	public TbUser findOne(Long id);*/
-
+	public TbUser findOne(Long id);
 
 	/**
 	 * 批量删除
@@ -132,5 +130,11 @@ public interface UserService {
 	 */
 	public List<TbAreas> findArea(String cid);
 
+	/**
+	 *
+	 * @param orderId
+	 * @return
+	 */
 
+	String getEmailFromOrderId(String orderId);
 }

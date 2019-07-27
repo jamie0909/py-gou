@@ -265,6 +265,7 @@ public class OrderServiceImpl implements OrderService {
 		TbPayLog payLog = payLogMapper.selectByPrimaryKey(out_trade_no);
 		payLog.setPayTime(new Date());//支付时间
 		payLog.setTradeState("1");//交易成功
+		payLog.setStatus("2");
 		payLog.setTransactionId(transaction_id);//微信的交易流水号
 		
 		payLogMapper.updateByPrimaryKey(payLog);//修改
@@ -351,7 +352,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 	@Override
-	public void excel(TbOrder order) {
+	public List<TbOrder> excel(TbOrder order) {
 
 		// 进行条件查询:
 		TbOrderExample example = new TbOrderExample();
@@ -392,11 +393,7 @@ public class OrderServiceImpl implements OrderService {
 		List<TbOrder> orders = orderMapper.selectByExample(example);
 
 		System.out.println(orders);
-		try {
-			ExcelOperateUtil.createExcel(orders);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		return orders;
 	}
 
     @Override

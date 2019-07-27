@@ -3,6 +3,7 @@
 
 <head>
 	<meta charset="utf-8" />
+    <!--<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />-->
 	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 	<title>产品详情页</title>
@@ -13,42 +14,33 @@
     <link rel="stylesheet" type="text/css" href="css/pages-zoom.css" />
     <link rel="stylesheet" type="text/css" href="css/widget-cartPanelView.css" />
     
-    
     <script type="text/javascript" src="plugins/angularjs/angular.min.js"> </script>
-	<script type="text/javascript" src="js/base.js"> </script>
-	<script type="text/javascript" src="js/controller/itemController.js"> </script> 
-	<script>
-		var skuList=[
-			<#list itemList as item>
-			  {
-			  	id:${item.id?c},
-			  	title:'${item.title}',
-			  	price:${item.price?c},
-			  	spec:${item.spec},
-			  }	
-			</#list>
-		
-		];
-	
-	
-	
-	
-	
-	
-	</script>
-	    
-	    
-    
+    <script type="text/javascript" src="js/base.js"> </script>
+    <script type="text/javascript" src="js/controller/itemController.js"> </script>
+    <script>
+        var skuList=[
+          <#list itemList as item>
+           {
+             id:${item.id?c},
+             title:'${item.title}',
+             price:${item.price?c},
+             spec:${item.spec}
+           } ,
+          </#list>   
+        ];
+        
+    </script>
 </head>
 
 <body ng-app="pinyougou" ng-controller="itemController" ng-init="num=1;loadSku()">
-<!--页面顶部 开始-->  
+
+<!--页面顶部 开始-->
 <#include "head.ftl">
-<#-- 图片列表 -->
+<#--图片列表-->
 <#assign imageList=goodsDesc.itemImages?eval>
-<#-- 扩展属性 -->
+<#--扩展属性-->
 <#assign customAttributeList=goodsDesc.customAttributeItems?eval>
-<#-- 规格列表 -->
+<#--规格-->
 <#assign specificationList=goodsDesc.specificationItems?eval>
 
 
@@ -65,8 +57,8 @@
 					</li>
 					<li>
 						<a href="#">${itemCat3}</a>
-					</li>
-					
+					</li>	
+							
 				</ul>
 			</div>
 			<!--product-info-->
@@ -76,9 +68,11 @@
 					<div class="zoom">
 						<!--默认第一个预览-->
 						<div id="preview" class="spec-preview">
-							<#if (imageList?size>0)>
-							<span class="jqzoom"><img jqimg="${imageList[0].url}" src="${imageList[0].url}" width="400px" height="400px" /></span>
-							</#if>
+							<span class="jqzoom">
+							 <#if (imageList?size>0)>
+							     <img jqimg="${imageList[0].url}" src="${imageList[0].url}" width="400px" height="400px" />
+							 </#if>
+							</span>
 						</div>
 						<!--下方的缩略图-->
 						<div class="spec-scroll">
@@ -86,9 +80,9 @@
 							<!--左右按钮-->
 							<div class="items">
 								<ul>
-									<#list imageList as item>
-									<li><img src="${item.url}" bimg="${item.url}" onmousemove="preview(this)" /></li>
-									</#list>
+								   <#list imageList as item>
+									  <li><img src="${item.url}" bimg="${item.url}" onmousemove="preview(this)" /></li>
+								   </#list>
 								</ul>
 							</div>
 							<a class="next">&gt;</a>
@@ -99,7 +93,7 @@
 					<div class="sku-name">
 						<h4>{{sku.title}}</h4>
 					</div>
-					<div class="news"><span>${goods.caption}</span></div>
+					<div class="news"><span>${goods.caption} </span></div>
 					<div class="summary">
 						<div class="summary-wrap">
 							<div class="fl title">
@@ -146,7 +140,8 @@
 					<div class="clearfix choose">
 						<div id="specification" class="summary-wrap clearfix">
 							<#list specificationList as spec>
-							<dl>
+							
+							  <dl>
 								<dt>
 									<div class="fl title">
 									<i>${spec.attributeName}</i>
@@ -154,16 +149,14 @@
 								</dt>
 								
 								<#list spec.attributeValue as item>
-								<dd><a href="javascript:;"
-								class="{{isSelected('${spec.attributeName}','${item}')?'selected':''}}"
-								 ng-click="selectSpecification('${spec.attributeName}','${item}')">${item}
-								 <span title="点击取消选择">&nbsp;</span>
-								 </a></dd>
+								  <dd><a href="javascript:;" 
+								        class="{{isSelected('${spec.attributeName}','${item}')?'selected':''}}" 
+								        ng-click="selectSpecification('${spec.attributeName}','${item}')">${item}
+								        <span title="点击取消选择">&nbsp;</span>
+								        </a></dd>
 								</#list>
-								
-							</dl>
+							  </dl>
 							</#list>
-							
 							
 						</div>
 					
@@ -180,7 +173,7 @@
 							<div class="fl">
 								<ul class="btn-choose unstyled">
 									<li>
-										<a class="sui-btn  btn-danger addshopcar" ng-click="addToCart()">加入购物车</a>
+										<a  class="sui-btn  btn-danger addshopcar" ng-click="addToCart()">加入购物车</a>
 									</li>
 								</ul>
 							</div>
@@ -401,11 +394,11 @@
 						<div class="tab-content tab-wraped">
 							<div id="one" class="tab-pane active">
 								<ul class="goods-intro unstyled">
-									<#list customAttributeList as item>
-										<#if item.value??>
-									       <li>${item.text}：${item.value}</li>
-									    </#if>
-									</#list>
+								   <#list customAttributeList as item>
+								      <#if item.value??>
+									      <li>${item.text}：${item.value}</li>
+									  </#if>
+								   </#list>	
 								</ul>
 								<div class="intro-detail">
 									${goodsDesc.introduction}
@@ -553,6 +546,7 @@
 		</div>
 	</div>
 	<!-- 底部栏位 -->
+	
 <!--页面底部  开始 -->
 <#include "foot.ftl">
 <!--页面底部  结束 -->

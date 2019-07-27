@@ -13,6 +13,10 @@ import com.pinyougou.mapper.TbCitiesMapper;
 import com.pinyougou.mapper.TbProvincesMapper;
 import com.pinyougou.pojo.*;
 import entity.Result;
+import com.pinyougou.mapper.TbOrderMapper;
+import com.pinyougou.mapper.TbSellerMapper;
+import com.pinyougou.pojo.TbOrder;
+import com.pinyougou.pojo.TbSeller;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +46,12 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private TbUserMapper userMapper;
 
+
+	@Autowired
+	private TbOrderMapper orderMapper;
+
+	@Autowired
+	TbSellerMapper sellerMapper;
 
 	@Override
 	public TbUser findUser(String name) {
@@ -214,6 +224,12 @@ public class UserServiceImpl implements UserService {
 	}
 */
 
+	/*	TbUserExample example = new TbUserExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andUsernameEqualTo(name);
+		List<TbUser> users = userMapper.selectByExample(example);
+		return users;
+	}*/
 	/**
 	 * 根据ID获取实体
 	 * @param id
@@ -232,7 +248,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	
-	@Override
+		@Override
 	public PageResult findPage(TbUser user, int pageNum, int pageSize) {
 		PageHelper.startPage(pageNum, pageSize);
 		
@@ -320,7 +336,11 @@ public class UserServiceImpl implements UserService {
 				message.setString("template_code", template_code);//验证码
 				message.setString("sign_name", sign_name);//签名
 				Map map=new HashMap();
+
 				map.put("number", smscode);
+
+				map.put("code", smscode);
+
 				message.setString("param", JSON.toJSONString(map));
 				return message;
 			}
@@ -360,6 +380,14 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		return true;
+	}
+
+	@Override
+	public String getEmailFromOrderId(String orderId) {
+		TbOrder order = orderMapper.selectByPrimaryKey(Long.parseLong(orderId));
+		String sellerId = order.getSellerId();
+		TbSeller tbSeller = sellerMapper.selectByPrimaryKey(sellerId);
+		return tbSeller.getEmail();
 	}
 
 

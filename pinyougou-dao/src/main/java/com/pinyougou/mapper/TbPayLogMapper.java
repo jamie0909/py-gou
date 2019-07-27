@@ -2,8 +2,9 @@ package com.pinyougou.mapper;
 
 import com.pinyougou.pojo.TbPayLog;
 import com.pinyougou.pojo.TbPayLogExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface TbPayLogMapper {
     int countByExample(TbPayLogExample example);

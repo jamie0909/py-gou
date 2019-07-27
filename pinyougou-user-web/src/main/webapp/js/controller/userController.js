@@ -20,7 +20,6 @@ app.controller('userController' ,function($scope,$controller , $filter,userServi
 	}
 	//发送验证码
 	$scope.sendCode=function(){
-		alert("执行了");
 		if($scope.entity.phone==null || $scope.entity.phone==""){
 			alert("请填写手机号码");
 			return ;
@@ -43,6 +42,8 @@ app.controller('userController' ,function($scope,$controller , $filter,userServi
    */
     $scope.updatePassword=function(){
 
+
+
     //比较两次输入的密码是否一致
             if($scope.password!=$scope.entity.password){
                 alert("两次输入密码不一致，请重新输入");
@@ -60,14 +61,15 @@ app.controller('userController' ,function($scope,$controller , $filter,userServi
 
 
                        alert(response.message);
-                       location.href="home-index.html"
+                       location.href="logout/cas"
                    }else{
                        alert(response.message);
 
                    }
                }
            );
-        }
+        };
+
 
 
 
@@ -130,8 +132,8 @@ app.controller('userController' ,function($scope,$controller , $filter,userServi
     }
     /***
     * @Description: 登陆的用户
-    * @Param: 
-    * @return: 
+    * @Param:
+    * @return:
     * @Author: WangRui
     * @Date: 2019/7/25
     */
@@ -346,4 +348,5 @@ app.controller('userController' ,function($scope,$controller , $filter,userServi
 
 
 
-});	
+
+});
