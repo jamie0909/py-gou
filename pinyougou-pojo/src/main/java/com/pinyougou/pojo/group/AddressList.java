@@ -6,6 +6,7 @@ import com.pinyougou.pojo.TbCities;
 import com.pinyougou.pojo.TbProvinces;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @program: pinyougou-parent
@@ -15,13 +16,13 @@ import java.io.Serializable;
  */
 public class AddressList implements Serializable {
 
-    private TbAddress address;
+    private TbAddress address;//地址对象
 
-    private TbProvinces provinces;
+    private TbProvinces provinces;//省
 
-    private TbCities cities;
+    private TbCities cities;//城市
 
-    private TbAreas areas;
+    private TbAreas areas;//区域
 
     public TbAddress getAddress() {
         return address;

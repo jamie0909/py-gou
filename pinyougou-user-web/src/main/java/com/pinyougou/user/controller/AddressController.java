@@ -1,9 +1,6 @@
 package com.pinyougou.user.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.pinyougou.pojo.TbAddress;
 import com.pinyougou.pojo.TbAreas;
 import com.pinyougou.pojo.TbCities;
@@ -15,11 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 
 /**
  * @program: pinyougou-parent
- * @description:
+ * @description:地址管理控制层
  * @author: Mr.Cai
  * @create: 2019-07-25 14:19
  */
@@ -39,7 +37,7 @@ public class AddressController {
     }
 
     /**
-     * 查询所有省份信息
+     * 查询所有省份列表
      * @return
      */
     @RequestMapping("/findAllProvinces")
@@ -67,27 +65,29 @@ public class AddressController {
         return addressService.findAreaListByCityId(cityId);
     }
 
+    /**
+     * 新增地址方法
+     * @param address
+     * @return
+     */
     @RequestMapping("/add")
     public Result add(@RequestBody TbAddress address){
 
-
-
-        String string = JSON.toJSONString(address);
-        System.out.println(string);
-        String contact1 = address.getContact();
-
+        if(address==null){
+            return  new Result(false,"地址输入无效或为空，请重新输入");
+        }
 
         try {
             String userId = SecurityContextHolder.getContext().getAuthentication().getName();
             address.setUserId(userId);
-            address.setIsDefault("0");
+            address.setCreateDate(new Date());//创建时间
+            address.setIsDefault("0");//设置默认状态
             List<TbAddress> addList = addressService.findAll();
             String username = address.getContact();
             for (TbAddress tbAddress : addList) {
                 String contact = tbAddress.getContact();
-               if(username.equals(contact)||username==null||username.equals("")){
-
-                   return  new Result(false,"用户名已存在或无效");
+               if(contact.equals(username)||username==null||username.equals("")){
+                   return  new Result(false,"收货人已存在或无效，请重新输入");
                }
             }
 
@@ -100,13 +100,12 @@ public class AddressController {
             return new Result(false,"添加失败");
         }
     }
-    @RequestMapping("/updateStatus")
-    public void updateStatus(long id, String isDefault){
 
-        addressService.updateStatus(id,isDefault);
-    }
-
-    //删除
+    /**
+     *根据id删除地址
+     * @param ids
+     * @return
+     */
     @RequestMapping("/delete")
     public Result delete(Long [] ids){
         try {
@@ -118,8 +117,45 @@ public class AddressController {
         }
     }
 
+    /**
+     * 修改地址
+     * @param tbAddress
+     * @return
+     */
+    @RequestMapping("/update")
+    public Result update(@RequestBody TbAddress tbAddress){
+        try {
+            addressService.update(tbAddress);
+            return new Result(true, "修改成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "修改失败");
+        }
+    }
+
+    /**
+     * 根据id查询实体类(回显)
+     * @param id
+     * @return
+     */
     @RequestMapping("/findOne")
     public TbAddress findOne(Long id){
         return addressService.findOne(id);
+    }
+
+    /**
+     * 修改默认状态
+     * @param id
+     * @param isDefault
+     */
+    @RequestMapping("/updateStatus")
+    public Result updateStatus(long id, String isDefault){
+        try {
+            addressService.updateStatus(id,isDefault);
+            return new Result(true, "设置成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "设置失败");
+        }
     }
 }

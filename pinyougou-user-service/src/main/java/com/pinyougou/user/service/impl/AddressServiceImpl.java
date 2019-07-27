@@ -26,88 +26,17 @@ public class AddressServiceImpl implements AddressService {
 
 	@Autowired
 	private TbAddressMapper addressMapper;
-	
-	/**
-	 * 查询全部
-	 */
-	@Override
-	public List<TbAddress> findAll() {
-		List<TbAddress> addresses = addressMapper.selectByExample(null);
-		for (TbAddress address : addresses) {
-			String mobile = address.getMobile();
-			String phoneNumber = mobile.substring(0, 3) + "****" + mobile.substring(7, mobile.length());
-			address.setMobile(phoneNumber);
-			addressMapper.updateByPrimaryKey(address);
-		}
 
-		return addressMapper.selectByExample(null);
-	}
 
-	/**
-	 * 按分页查询
-	 */
 	@Override
-	public PageResult findPage(int pageNum, int pageSize) {
-		PageHelper.startPage(pageNum, pageSize);		
-		Page<TbAddress> page=   (Page<TbAddress>) addressMapper.selectByExample(null);
-		return new PageResult(page.getTotal(), page.getResult());
-	}
-
-	/**
-	 * 增加
-	 */
-	@Override
-	public void add(TbAddress address) {
-		TbProvinces provinces=new TbProvinces();
-		TbCities cities=new TbCities();
-		String provinceId = address.getProvinceId();
-		String cityId = address.getCityId();
-		System.out.println(provinceId);
-		System.out.println(cityId);
-		provinces.setProvince(provinceId);
-		cities.setCity(cityId);
-		addressMapper.insert(address);		
-	}
-
-	
-	/**
-	 * 修改
-	 */
-	@Override
-	public void update(TbAddress address){
-		addressMapper.updateByPrimaryKey(address);
-	}	
-	
-	/**
-	 * 根据ID获取实体
-	 * @param id
-	 * @return
-	 */
-	@Override
-	public TbAddress findOne(Long id){
-		return addressMapper.selectByPrimaryKey(id);
-	}
-
-	/**
-	 * 批量删除
-	 */
-	@Override
-	public void delete(Long[] ids) {
-		for(Long id:ids){
-			addressMapper.deleteByPrimaryKey(id);
-		}		
-	}
-	
-	
-		@Override
 	public PageResult findPage(TbAddress address, int pageNum, int pageSize) {
 		PageHelper.startPage(pageNum, pageSize);
-		
+
 		TbAddressExample example=new TbAddressExample();
 		Criteria criteria = example.createCriteria();
-		
-		if(address!=null){			
-						if(address.getUserId()!=null && address.getUserId().length()>0){
+
+		if(address!=null){
+			if(address.getUserId()!=null && address.getUserId().length()>0){
 				criteria.andUserIdLike("%"+address.getUserId()+"%");
 			}
 			if(address.getProvinceId()!=null && address.getProvinceId().length()>0){
@@ -116,8 +45,8 @@ public class AddressServiceImpl implements AddressService {
 			if(address.getCityId()!=null && address.getCityId().length()>0){
 				criteria.andCityIdLike("%"+address.getCityId()+"%");
 			}
-			if(address.getTownId()!=null && address.getTownId().length()>0){
-				criteria.andTownIdLike("%"+address.getTownId()+"%");
+			if(address.getAreaId()!=null && address.getAreaId().length()>0){
+				criteria.andAreaIdLike("%"+address.getAreaId()+"%");
 			}
 			if(address.getMobile()!=null && address.getMobile().length()>0){
 				criteria.andMobileLike("%"+address.getMobile()+"%");
@@ -137,21 +66,64 @@ public class AddressServiceImpl implements AddressService {
 			if(address.getAlias()!=null && address.getAlias().length()>0){
 				criteria.andAliasLike("%"+address.getAlias()+"%");
 			}
-	
+
 		}
-		
-		Page<TbAddress> page= (Page<TbAddress>)addressMapper.selectByExample(example);		
+
+		Page<TbAddress> page= (Page<TbAddress>)addressMapper.selectByExample(example);
 		return new PageResult(page.getTotal(), page.getResult());
 	}
 
 	@Override
 	public List<TbAddress> findListByUserId(String userId) {
-		
+
 		TbAddressExample example=new TbAddressExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andUserIdEqualTo(userId);
 		return addressMapper.selectByExample(example);
 	}
+
+	/**
+	 * 按分页查询
+	 */
+	@Override
+	public PageResult findPage(int pageNum, int pageSize) {
+		PageHelper.startPage(pageNum, pageSize);
+		Page<TbAddress> page=   (Page<TbAddress>) addressMapper.selectByExample(null);
+		return new PageResult(page.getTotal(), page.getResult());
+	}
+
+	//===============用户地址管理功能开始位置================
+	//===============功能包括查询用户所有地址列表=============
+	//===============新增收货地址(省市区三级联动)=============
+	//===============修改，删除，设置默认地址等===============
+
+	/**
+	 * 返回全部地址列表
+	 */
+	@Override
+	public List<TbAddress> findAll() {
+		List<TbAddress> addresses = addressMapper.selectByExample(null);
+		for (TbAddress address : addresses) {
+			String mobile = address.getMobile();
+			String phoneNumber = mobile.substring(0, 3) + "****" + mobile.substring(7, mobile.length());
+			address.setMobile(phoneNumber);
+		}
+		return addresses;
+	}
+	private void saveToRedis(){
+		List<TbAddress> addresse = findAll();
+	}
+
+	/**
+	 * 查询所有省份列表
+	 * @return
+	 */
+	@Override
+	public List<TbProvinces> findAllProvinces() {
+
+		return provincesMapper.selectByExample(null);
+	}
+
 	@Autowired
 	private TbProvincesMapper provincesMapper;
 
@@ -160,17 +132,13 @@ public class AddressServiceImpl implements AddressService {
 
 	@Autowired
 	private TbAreasMapper areasMapper;
-
-
-	@Override
-	public List<TbProvinces> findAllProvinces() {
-
-		return provincesMapper.selectByExample(null);
-	}
-
+	/**
+	 * 根据省id查询城市列表
+	 * @param provinceId
+	 * @return
+	 */
 	@Override
 	public List<TbCities> findCityListByProvinceId(String provinceId) {
-
 
 		TbCitiesExample example=new TbCitiesExample();
 
@@ -181,6 +149,11 @@ public class AddressServiceImpl implements AddressService {
 		return citiesMapper.selectByExample(example);
 	}
 
+	/**
+	 * 根据城市id查询区域列表
+	 * @param cityId
+	 * @return
+	 */
 	@Override
 	public List<TbAreas> findAreaListByCityId(String cityId) {
 
@@ -194,27 +167,57 @@ public class AddressServiceImpl implements AddressService {
 		return areasMapper.selectByExample(example);
 	}
 
+	/**
+	 * 增加
+	 */
 	@Override
-	public List<AddressList> findAddressAndCountry() {
-
-		List<TbAddress> address = findAll();//查询所有地址
-
-
-
-		return null;
+	public void add(TbAddress address) {
+		addressMapper.insert(address);		
 	}
 
+	/**
+	 * 批量删除
+	 */
+	@Override
+	public void delete(Long[] ids) {
+		for(Long id:ids){
+			addressMapper.deleteByPrimaryKey(id);
+		}
+	}
+
+	/**
+	 * 修改
+	 */
+	@Override
+	public void update(TbAddress address){
+		addressMapper.updateByPrimaryKey(address);
+	}	
+	
+	/**
+	 * 根据ID获取实体
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public TbAddress findOne(Long id){
+		return addressMapper.selectByPrimaryKey(id);
+	}
+
+	/**
+	 * 设置默认地址
+	 * @param id
+	 * @param isDefault
+	 */
 	@Override
 	public void updateStatus(long id, String isDefault) {
 		TbAddress address=new TbAddress();
 		address.setId(id);
 		address.setIsDefault(isDefault);
-
-		System.out.println(address.getContact());
+		System.out.println(id);
 		System.out.println(address.getIsDefault());
 
 		addressMapper.updateByPrimaryKeySelective(address);
 	}
-
+	//===============用户地址管理功能结束位置===============
 
 }

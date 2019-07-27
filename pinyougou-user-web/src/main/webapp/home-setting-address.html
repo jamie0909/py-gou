@@ -17,6 +17,40 @@
 	<script type="text/javascript" src="js/base.js"></script>
 	<script type="text/javascript" src="js/service/addressService.js"></script>
 	<script type="text/javascript" src="js/controller/addressController.js"></script>
+
+	<script>
+			window.onload=function () {
+                //手机号正则校验
+                var checkPhone = function checkPhone(){
+                    var phone = document.getElementById("phone").value;
+                    if(!(/^1[34578]\d{9}$/.test(phone))){
+                        alert("手机号码有误，请重填");
+                        return false;
+                    }else {
+                        return true;
+                    }
+                };
+
+                //邮箱正则校验
+                var checkEmail = function checkEmail() {
+                    var email = document.getElementById("email").value;
+                    var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+                    if(!reg.test(email)){
+                        //alert("邮箱格式不正确");
+                        return false;
+                    }else {
+                        return true;
+                    }
+                }
+                //绑定事件
+                document.getElementById("phone").onblur = checkPhone;
+                document.getElementById("email").onblur = checkEmail;
+
+
+			}
+
+
+	</script>
 </head>
 
 <body ng-app="pinyougou" ng-controller="addressController" ng-init="findAllAddress();findAllProvinces()">
@@ -198,7 +232,7 @@ $(function(){
                     <div class="body userAddress">
                         <div class="address-title">
                             <span class="title">地址管理</span>
-                            <a data-toggle="modal" data-target=".edit" data-keyboard="false"  ng-click='entity={}' class="sui-btn  btn-info add-new">添加新地址</a>
+                            <a data-toggle="modal" data-target=".edit" data-keyboard="false"  ng-click="entity={};Add.id=null" class="sui-btn  btn-info add-new">添加新地址</a>
                             <span class="clearfix"></span>
                         </div>
                         <div class="address-detail">
@@ -224,19 +258,15 @@ $(function(){
 										<td>{{add.alias}}</td>
                                         <td>
                                             <a ng-click="findOne(add.id)" data-toggle="modal" data-target=".div" data-keyboard="false" >编辑</a>
-                                            <a ng-click="delete(add.id)">删除</a>
-											<!--{{status[1]}}-->
-											<!--<ng-if {{status[add.isDefault]}}="{{status[1]}}?'<a></a>':''">-->
-                                            <!--<a ng-if=""{{status[add.isDefault]}}==></a>-->
-											<!--</ng-if>-->
+                                            <a ng-if="add.isDefault=='0'" ng-click="delete(add.id)">删除</a>
 
 
-
-                                            <a class="{{add.isDefault==1?'':''}}">{{status[add.isDefault]}}</a>
-
+											<span class="base" ng-if="add.isDefault=='1'">默认地址</span>
+									     	<a ng-if="add.isDefault=='0'||add.isDefault==null" ng-click="updateStatus(add.id,'1')">设置默认</a>
+											<span class="base" ng-if="add.isDefault=='1'"></span>
+											<span class="base" ng-if="add.isDefault=='1'"> <input type="button" value="可修改"  ng-click="updateStatus(add.id,'0')"/></span>
                                         </td>
                                     </tr>
-                                    
                                 </tbody>
                             </table>                          
                         </div>
@@ -249,11 +279,15 @@ $(function(){
                                         <h4 id="myModalLabel" class="modal-title">新增地址</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="" class="sui-form form-horizontal">
+                                        <form name="myForm01" action="" class="sui-form form-horizontal">
                                             <div class="control-group">
                                             <label class="control-label">收货人：</label>
                                             <div class="controls">
-                                                <input type="text" ng-model="entity.contact" class="input-medium">
+                                                <input name="userName" required="required" placeholder="请输入收货人" pattern="^\w{2,20}$" type="text" ng-model="entity.contact" class="input-medium">
+												<div class="alert alert-danger" ng-show="myForm01.contact.$error.pattern">
+													用户名必须为2-20个字母、数字或下划线
+												</div>
+
 
 											</div>
                                         </div>
@@ -263,15 +297,15 @@ $(function(){
                                                 <div data-toggle="distpicker" >
                                                 <div class="form-group area">
 
-                                                    <select class="form-control" ng-model="entity.provinces.provinceid" ng-options="item.provinceid
+                                                    <select class="form-control" ng-model="entity.provinceId" ng-options="item.provinceid
 						    							as item.province for item in provinceList" id="province1"></select>
                                                 </div>
                                                 <div class="form-group area" >
-                                                    <select class="form-control" ng-model="entity.cities.city" ng-options="item.cityid
+                                                    <select class="form-control" ng-model="entity.cityId" ng-options="item.cityid
 						    							as item.city for item in cityList" id="city1"></select>
                                                 </div>
                                                 <div class="form-group area">
-                                                    <select class="form-control" ng-model="entity.areas.area" ng-options="item.id
+                                                    <select class="form-control" ng-model="entity.areaId" ng-options="item.areaid
 						    							as item.area for item in areaList" id="district1"></select>
                                                 </div>
                                             </div>
@@ -280,28 +314,33 @@ $(function(){
                                         <div class="control-group">
                                             <label class="control-label">详细地址：</label>
                                             <div class="controls">
-                                                <input type="text" ng-model="entity.address" class="input-large">
+                                                <input type="text" placeholder="请输入详细地址" ng-model="entity.address" class="input-large">
                                             </div>
                                         </div>
                                         <div class="control-group">
                                             <label class="control-label">联系电话：</label>
                                             <div class="controls">
-                                                <input type="text" ng-model="entity.mobile" class="input-medium">
+                                                <input value="手机号格式错误" id="phone" placeholder="请输入联系电话" ng-model="entity.mobile" class="input-medium">
                                             </div>
                                         </div>
                                         <div class="control-group">
                                             <label class="control-label">邮箱：</label>
                                             <div class="controls">
-                                                <input type="text" ng-model="entity.email" class="input-medium">
+                                                <input type="email" id="email" name="myEmail01"  ng-model="entity.email" class="input-medium"  placeholder="请输入邮箱">
+
+												<!-- ng-show:类似avalon的ms-if的用法，如果校验不通过则返回true,显示提示内容，数据校验不太精确 -->
+												<span ng-show="myForm01.myEmail01.$error.email" style="color: red">邮箱地址不合法!</span><br>
+												<span hidden>{{myForm01.myEmail01.$error.email}}</span>
+
                                             </div>
                                         </div>
                                         <div class="control-group">
                                             <label class="control-label">地址别名：</label>
                                             <div class="controls">
-                                                <input ng-model="entity.alias" type="text" class="input-medium">
+                                                <input placeholder="地址别名(可选)"  ng-model="entity.alias" type="text" class="input-medium">
                                             </div>
                                             <div class="othername">
-                                                建议填写常用地址：<a href="#" class="sui-btn btn-default">家里</a>　<a href="#" class="sui-btn btn-default">父母家</a>　<a href="#" class="sui-btn btn-default">公司</a>
+                                                建议填写常用地址：<a href="#" ng-click="updateAlias('家里')" class="sui-btn btn-default">家里</a>　<a href="#"  ng-click="updateAlias('父母家')" class="sui-btn btn-default">父母家</a>　<a href="#" ng-click="updateAlias('公司')" class="sui-btn btn-default">公司</a>
                                             </div>
                                         </div>
                                         
@@ -327,7 +366,7 @@ $(function(){
 
 									<div class="modal-body">
 
-										<form action="" class="sui-form form-horizontal">
+										<form name="myForm02" action="" class="sui-form form-horizontal">
 											<div class="control-group">
 												<label class="control-label">收货人：</label>
 												<div class="controls">
@@ -340,15 +379,15 @@ $(function(){
 													<div data-toggle="distpicker" >
 														<div class="form-group area">
 
-															<select class="form-control" ng-model="entity.provinces.provinceid" ng-options="item.provinceid
+															<select class="form-control" ng-model="Add.provinceId" ng-options="item.provinceid
 						    							as item.province for item in provinceList" id="province1"></select>
 														</div>
 														<div class="form-group area" >
-															<select class="form-control" ng-model="entity.cities.city" ng-options="item.cityid
+															<select class="form-control" ng-model="Add.cityId" ng-options="item.cityid
 						    							as item.city for item in cityList" id="city1"></select>
 														</div>
 														<div class="form-group area">
-															<select class="form-control" ng-model="entity.areas.area" ng-options="item.id
+															<select class="form-control" ng-model="Add.areaId" ng-options="item.areaid
 						    							as item.area for item in areaList" id="district1"></select>
 														</div>
 													</div>
@@ -369,7 +408,10 @@ $(function(){
 											<div class="control-group">
 												<label class="control-label">邮箱：</label>
 												<div class="controls">
-													<input type="text" ng-model="Add.email" class="input-medium">
+													<input type="email" name="myEmail01" ng-model="Add.email" class="input-medium" placeholder="请输入邮箱">
+													<!-- ng-show:类似avalon的ms-if的用法，如果校验不通过则返回true,显示提示内容，数据校验不太精确 -->
+													<span ng-show="myForm02.myEmail01.$error.email" style="color: red">邮箱地址不合法!</span><br>
+
 												</div>
 											</div>
 											<div class="control-group">
@@ -378,7 +420,7 @@ $(function(){
 													<input ng-model="Add.alias" type="text" class="input-medium">
 												</div>
 												<div class="othername">
-													建议填写常用地址：<a href="#" class="sui-btn btn-default">家里</a>　<a href="#" class="sui-btn btn-default">父母家</a>　<a href="#" class="sui-btn btn-default">公司</a>
+													建议填写常用地址：<a href="#" ng-click="update_Alias('家里')" class="sui-btn btn-default">家里</a>　<a href="#" ng-click="update_Alias('父母家')" class="sui-btn btn-default">父母家</a>　<a href="#" ng-click="update_Alias('公司')" class="sui-btn btn-default">公司</a>
 												</div>
 											</div>
 
@@ -387,7 +429,7 @@ $(function(){
 
 									</div>
 									<div class="modal-footer">
-										<button type="button" ng-click="update()" data-ok="modal" class="sui-btn btn-primary btn-large">确定</button>
+										<button type="button" ng-click="add()" data-ok="modal" class="sui-btn btn-primary btn-large">确定</button>
 										<button type="button" data-dismiss="modal" class="sui-btn btn-default btn-large">取消</button>
 									</div>
 								</div>
