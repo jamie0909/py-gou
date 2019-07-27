@@ -183,6 +183,7 @@ public class UserController {
 	public  Result updatePhone(String phone){
 		//获取到登录名
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
 		try {
 			userService.updatePhone(username,phone);
 			return new Result(true, "手机号修改成功");

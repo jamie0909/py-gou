@@ -1,5 +1,5 @@
  //控制层 
-app.controller('userController' ,function($scope,$controller ,userService,$interval,$timeout){
+app.controller('userController' ,function($scope,$controller ,userService,$interval,$timeout,$location){
 	
 	//注册用户
 	$scope.reg=function(){
@@ -99,19 +99,34 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
 
 
                 if (phone==$scope.entity.phone){
-                    alert("手机号码不能与原手机号码相同")
-                    return;
-                }
+                    alert("手机号码不能与原手机号码一样")
+        }else{
+                    userService.checkCode(code,phone).success(
+                        function (response) {
 
+                            if(response.success){
+                                location.href="home-setting-address-complete.html";
+                            }else{
+                                alert("执行了")
+                                alert(response.message);
+                            }
+                        })
+                }
             });
 
-        userService.checkCode(code,phone).success(function (response) {
-            if(response.success){
-                location.href="home-setting-address-complete.html";
-            }else{
-                alert(response.message);
-            }
-        })
+          /* userService.checkCode(code,phone).success(
+            function (response) {
+
+                if(response.success){
+                    location.href="home-setting-address-complete.html";
+                }else{
+                    alert("执行了")
+                    alert(response.message);
+                }
+            })*/
+
+
+
     }
     /***
     * @Description: 登陆的用户
@@ -130,6 +145,7 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
           userService.findUser().success(
               function(response){
                   $scope.entity=response;
+
 
               });
      };
@@ -159,13 +175,7 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
                     $scope.showTimer = false;
                     $scope.timerCount = $scope.timeout / 1000;
                 }, $scope.timeout);
-                //发送验证码
 
-
-                    if($scope.entity.phone==null || $scope.entity.phone==""){
-                        alert("请填写手机号码");
-                        return ;
-                    }
 
                     userService.sendCode($scope.entity.phone).success(
                         function(response){
@@ -178,7 +188,7 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
 
 
 
-    //第一个验证码发送
+    //第二个验证码发送
     $scope.sendCode2 = function(){
 
         $scope.showTimer = true;
@@ -195,14 +205,15 @@ app.controller('userController' ,function($scope,$controller ,userService,$inter
             $scope.timerCount = $scope.timeout / 1000;
         }, $scope.timeout);
         //发送验证码
+        var phone=$("#inputphone").val();
 
-
-        if($scope.entity.phone==null || $scope.entity.phone==""){
+        if(phone==null || phone==""){
             alert("请填写手机号码");
             return ;
         }
 
-        userService.sendCode($scope.entity.phone).success(
+
+        userService.sendCode(phone).success(
             function(response){
                 alert(response.message);
             }
