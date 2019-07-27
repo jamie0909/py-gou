@@ -3,7 +3,7 @@ package com.pinyougou.pojo;
 import java.io.Serializable;
 import java.util.Date;
 
-public class TbPayLog implements Serializable{
+public class TbPayLog implements Serializable {
     private String outTradeNo;
 
     private Date createTime;
@@ -21,6 +21,8 @@ public class TbPayLog implements Serializable{
     private String orderList;
 
     private String payType;
+
+    private String status;
 
     public String getOutTradeNo() {
         return outTradeNo;
@@ -92,5 +94,13 @@ public class TbPayLog implements Serializable{
 
     public void setPayType(String payType) {
         this.payType = payType == null ? null : payType.trim();
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
     }
 }

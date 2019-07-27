@@ -2,6 +2,7 @@ package com.pinyougou.user.controller;
 import java.util.List;
 
 
+import com.pinyougou.order.service.OrderServiceHu;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import com.pinyougou.user.service.UserService;
 
 import entity.PageResult;
 import entity.Result;
+import util.MailUtils;
 import util.PhoneFormatCheckUtils;
 /**
  * controller
@@ -22,7 +24,12 @@ import util.PhoneFormatCheckUtils;
 @RequestMapping("/user")
 public class UserController {
 
-	@Reference
+
+	@Reference(timeout = 60000)
+	OrderServiceHu orderService;
+
+
+	@Reference(timeout = 50000)
 	private UserService userService;
 	
 	/**
@@ -223,6 +230,21 @@ public class UserController {
 			return new Result(false, "输入错误,请重新验证");
 		}
 	}
+
+	@RequestMapping("/sendEmail")
+	public Result sendEmail(String orderId){
+
+		try {
+			String emailFromOrderId = userService.getEmailFromOrderId(orderId);
+
+			MailUtils.sendMail(emailFromOrderId,"您有一个订单"+orderId+"在催着发货","快发货啊！");
+			return new Result(true, "提醒成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Result(false, "提醒失败");
+		}
+	}
+
 
 
 

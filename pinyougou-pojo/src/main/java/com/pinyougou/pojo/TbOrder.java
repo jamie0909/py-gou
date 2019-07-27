@@ -3,57 +3,63 @@ package com.pinyougou.pojo;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
-public class TbOrder implements Serializable{
-    private Long orderId;//订单id
+public class TbOrder implements Serializable {
 
-    private BigDecimal payment;//实付金额(精确到两位小数)
+    private Long orderId;
 
-    private String paymentType;//支付类型(1:在线支付,2:货到付款)
+    private String orderIdStr;
 
-    private String postFee;//邮费(精确到两位小数)
+    private BigDecimal payment;
 
-    private String status;//状态：1、未付款，2、已付款，3、未发货，4、已发货，5、交易成功，6、交易关闭,7、待评价
+    private String paymentType;
 
-    private Date createTime;//订单创建时间
+    private String postFee;
 
-    private Date updateTime;//订单更新时间
+    private String status;
 
-    private Date paymentTime;//付款时间
+    private Date createTime;
 
-    private Date consignTime;//发货时间
+    private Date updateTime;
 
-    private Date endTime;//交易完成时间
+    private Date paymentTime;
 
-    private Date closeTime;//交易关闭时间
+    private Date consignTime;
 
-    private String shippingName;//物流名称
+    private Date endTime;
 
-    private String shippingCode;//物流单号
+    private Date closeTime;
 
-    private String userId;//用户id
+    private String shippingName;
 
-    private String buyerMessage;//买家留言
+    private String shippingCode;
 
-    private String buyerNick;//买家昵称
+    private String userId;
 
-    private String buyerRate;//买家是否已经评价
+    private String buyerMessage;
 
-    private String receiverAreaName;//收货人地区名称(省，市，县)街道
+    private String buyerNick;
 
-    private String receiverMobile;//收货人手机
+    private String buyerRate;
 
-    private String receiverZipCode;//收货人邮编
+    private String receiverAreaName;
 
-    private String receiver;//收货人
+    private String receiverMobile;
 
-    private Date expire;//过期时间，定期清理
+    private String receiverZipCode;
 
-    private String invoiceType;//发票类型(普通发票，电子发票，增值税发票)
+    private String receiver;
 
-    private String sourceType;//订单来源：1:app端，2：pc端，3：M端，4：微信端，5：手机qq端
+    private Date expire;
 
-    private String sellerId;//商家ID
+    private String invoiceType;
+
+    private String sourceType;
+
+    private String sellerId;
+
+    List<TbOrderItem> OrderItems;
 
     public Long getOrderId() {
         return orderId;
@@ -239,6 +245,14 @@ public class TbOrder implements Serializable{
         this.invoiceType = invoiceType == null ? null : invoiceType.trim();
     }
 
+    public List<TbOrderItem> getOrderItems() {
+        return OrderItems;
+    }
+
+    public void setOrderItems(List<TbOrderItem> orderItems) {
+        OrderItems = orderItems;
+    }
+
     public String getSourceType() {
         return sourceType;
     }
@@ -253,5 +267,16 @@ public class TbOrder implements Serializable{
 
     public void setSellerId(String sellerId) {
         this.sellerId = sellerId == null ? null : sellerId.trim();
+    }
+
+    public String getOrderIdStr() {
+        if (orderId != null){
+            return orderId.toString();
+        }
+        return null;
+    }
+
+    public void setOrderIdStr(String orderIdStr) {
+        this.orderIdStr = orderIdStr;
     }
 }

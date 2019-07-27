@@ -107,5 +107,11 @@ public interface UserService {
     */ 
 	TbUser findUser(String name);
 
+	/**
+	 *
+	 * @param orderId
+	 * @return
+	 */
 
+	String getEmailFromOrderId(String orderId);
 }

@@ -29,38 +29,9 @@ app.service('userService',function($http){
 	this.search=function(page,rows,searchEntity){
 		return $http.post('../user/search.do?page='+page+"&rows="+rows, searchEntity);
 	}
-
-
-
 	//发送验证码
-	this.sendCode=function(phone,code){
+	this.sendCode=function(phone){
 		return $http.get('../user/sendCode.do?phone='+phone);
 	}
-
-	
-	/***
-	* @Description: 修改用户的登陆密码
-	* @Param: 
-	* @return: 
-	* @Author: WangRui
-	* @Date: 2019/7/25
-	*/
-
-    this.updatePassword=function(entity){
-        return  $http.post('../user/updatePassword.do',entity );
-    }
-
-
-
-    this.findUser=function(){
-        return  $http.post('../user/findUser.do');
-    }
-
-
-    this.checkCode=function (code,phone) {
-        return $http.get('../user/checkCode.do?code='+code+'&phone='+phone);
-    }
-
-
 	
 });
