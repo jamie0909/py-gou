@@ -4,8 +4,10 @@ app.controller('payController' ,function($scope ,$location,payService){
 	$scope.createNative=function(){
 		var paymentType=$location.search()['type'];
 		$scope.paymentType_str='微信';
+		$scope.otherPaymentType_str='支付宝';
 		if(paymentType=='3'){
 			$scope.paymentType_str='支付宝';
+            $scope.otherPaymentType_str='微信';
 		}
 		payService.createNative(paymentType).success(
 			function(response){
@@ -22,19 +24,24 @@ app.controller('payController' ,function($scope ,$location,payService){
 						level:'H'
 			     });
 				 $scope.paymentType=paymentType;
-				 queryPayStatus();//调用查询
+				 $scope.queryPayStatus();//调用查询
 				
 			}	
 		);	
 	}
 	
 	//调用查询
-	queryPayStatus=function(paymentType){
+	$scope.queryPayStatus=function(paymentType){
 		payService.queryPayStatus($scope.out_trade_no,$scope.paymentType).success(
 			function(response){
-				//alert(response.message);
+				if($scope.paymentType=='1'){
+					$scope.pay_str='微信';
+				}
+                if($scope.paymentType=='3'){
+                    $scope.pay_str='支付宝';
+                }
 				if(response.success){
-					location.href="paysuccess.html#?money="+$scope.money;
+					location.href="paysuccess.html#?money="+$scope.money+"&pay_str="+$scope.pay_str;
 				}else{
 					if(response.message=='二维码超时'){
 						$scope.createNative();//重新生成二维码
@@ -50,5 +57,22 @@ app.controller('payController' ,function($scope ,$location,payService){
 	$scope.getMoney=function(){
 		return $location.search()['money'];
 	}
-	
+
+	//获取支付方式
+	$scope.getPay_str=function(){
+		return $location.search()['pay_str'];
+	}
+
+
+	$scope.changePayType=function () {
+		if ($scope.paymentType=='1'){
+            location.href="pay-other.html#?type=3";
+            return;
+		}
+         if($scope.paymentType=='3'){
+             location.href="pay-other.html#?type=1";
+             return;
+        }
+
+    }
 });
