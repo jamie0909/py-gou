@@ -127,7 +127,6 @@ app.controller("addressController",function ($scope,addressService,$location) {
     //8.修改回显三级联动
     // 查询城市下拉列表(根据省份id)
 
-
     $scope.$watch('Add.provinceId',function (newValue,oldValue) {
         addressService.findCityListByProvinceId(newValue).success(
             function (response) {
@@ -167,5 +166,6 @@ app.controller("addressController",function ($scope,addressService,$location) {
     $scope.entity={alias:''};
     $scope.update_Alias=function (address) {
         $scope.Add.alias=address;
-    }
+    };
+
 });

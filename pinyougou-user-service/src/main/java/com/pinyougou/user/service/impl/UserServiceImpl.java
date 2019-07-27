@@ -329,11 +329,11 @@ public class UserServiceImpl implements UserService {
 				message.setString("template_code", template_code);//验证码
 				message.setString("sign_name", sign_name);//签名
 				Map map=new HashMap();
-<<<<<<< Updated upstream
+
 				map.put("number", smscode);
-=======
+
 				map.put("code", smscode);
->>>>>>> Stashed changes
+
 				message.setString("param", JSON.toJSONString(map));
 				return message;
 			}

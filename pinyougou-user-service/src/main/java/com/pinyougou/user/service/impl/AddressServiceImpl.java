@@ -17,7 +17,7 @@ import com.pinyougou.user.service.AddressService;
 import entity.PageResult;
 
 /**
- * 服务实现层
+ * 地址管理服务实现层
  * @author Administrator
  *
  */
