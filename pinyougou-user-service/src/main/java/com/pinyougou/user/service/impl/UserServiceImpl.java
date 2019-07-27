@@ -215,12 +215,13 @@ public class UserServiceImpl implements UserService {
 	    userMapper.updateByPrimaryKey(user);
 	}
 
-	@Override
-	public List<TbUser> findOne(String name) {
-		return null;
-	public TbUser findOne(Long id) {
-		return userMapper.selectByPrimaryKey(id);
-	}
+//	@Override
+//	public List<TbUser> findOne(String name) {
+//		return null;
+//	}
+//	public TbUser findOne(Long id) {
+//		return userMapper.selectByPrimaryKey(id);
+//	}
 
 	/**
 	 * 根据ID获取实体

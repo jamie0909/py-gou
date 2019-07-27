@@ -49,7 +49,7 @@ public interface UserService {
 	 * @param id
 	 * @return
 	 */
-	public TbUser findOne(Long id);
+	//	public List<TbUser> findOne(Long id);
 
 	/**
 	 * 批量删除

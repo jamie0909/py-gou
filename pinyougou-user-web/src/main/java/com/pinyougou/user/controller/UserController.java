@@ -6,8 +6,7 @@ import com.pinyougou.pojo.TbAreas;
 import com.pinyougou.pojo.TbCities;
 import com.pinyougou.pojo.TbProvinces;
 import com.pinyougou.pojo.*;
-import com.pinyougou.user.service.AddressService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 
 import com.pinyougou.order.service.OrderServiceHu;
@@ -87,27 +86,27 @@ public class UserController {
 	 * @param user
 	 * @return
 	 */
-	@RequestMapping("/update")
-	public Result update(@RequestBody TbUser user){
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<TbUser> users = userService.findOne(name);
-        TbUser user1= users.get(0);
-        user1.setJob(user.getJob());
-        user1.setBirthday(user.getBirthday());
-        user1.setArea(user.getArea());
-        user1.setCitiy(user.getCitiy());
-        user1.setProvinces(user.getProvinces());
-        user1.setSex(user.getSex());
-        user1.setNickName(user.getNickName());
-        user1.setHeadPic(user.getHeadPic());
-        try {
-			userService.update(user1);
-			return new Result(true, "修改成功");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new Result(false, "修改失败");
-		}
-	}	
+//	@RequestMapping("/update")
+//	public Result update(@RequestBody TbUser user){
+//        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+//        List<TbUser> users = userService.findOne(user.getId());
+//        TbUser user1= users.get(0);
+//        user1.setJob(user.getJob());
+//        user1.setBirthday(user.getBirthday());
+//        user1.setArea(user.getArea());
+//        user1.setCitiy(user.getCitiy());
+//        user1.setProvinces(user.getProvinces());
+//        user1.setSex(user.getSex());
+//        user1.setNickName(user.getNickName());
+//        user1.setHeadPic(user.getHeadPic());
+//        try {
+//			userService.update(user1);
+//			return new Result(true, "修改成功");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return new Result(false, "修改失败");
+//		}
+//	}
 	
 	/**
 	 * 获取实体

@@ -3,7 +3,7 @@ package com.pinyougou.pojo;
 import java.io.Serializable;
 import java.util.Date;
 
-public class TbPayLog implements Serializable {
+public class TbPayLog implements Serializable{
     private String outTradeNo;
 
     private Date createTime;
