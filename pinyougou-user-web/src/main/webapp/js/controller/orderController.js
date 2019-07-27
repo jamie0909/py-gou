@@ -173,13 +173,13 @@ app.controller('orderController' ,function($scope,$controller ,$location  ,order
     $scope.orderItems = [];
 
     //定义一个订单状态数组,索引与状态码一致
-    $scope.orderStatus = ['无', '提交订单未付款', '付款成功', '未发货', '已发货', '交易成功确认收货', '交易关闭', '待评价', '评价晒单'];
+    $scope.orderStatus = ['无', '提交订单','付款成功', '已发货','确认收货','交易关闭','评价晒单'];
 
    // $scope.orderStatusStr = ["未付款","已付款","未发货","已发货","交易成功","交易关闭","待评价"];
 
     $scope.waitStatusStr = ["等待买家付款","买家已付款","买家已付款","物流指派中","交易成功","交易关闭","待评价","已申请退货","退货成功"];
 
-    $scope.detailStatus = ["提交订单","付款成功","付款成功","已发货","确认收货","交易关闭","评价晒单"];
+    $scope.detailStatus = ["无","提交订单","付款成功","已发货","确认收货","交易关闭","评价晒单"];
 
     $scope.paymentTypeStr = ["在线支付","货到付款",""];
 
@@ -204,7 +204,7 @@ app.controller('orderController' ,function($scope,$controller ,$location  ,order
 
 
     $scope.isCurrent = function (status,comparedStatus) {
-        if($scope.detailStatus[status-1] == comparedStatus){
+        if($scope.detailStatus[status] == comparedStatus){
             return "current";
         }
         return "todo";
@@ -291,7 +291,7 @@ app.controller('orderController' ,function($scope,$controller ,$location  ,order
                     $scope.closeTime = $scope.entity.orderList[0].closeTime.split(" ");
                 }
 
-                $scope.statusNum = parseInt($scope.entity.payLog.status)+1;
+                $scope.statusNum = parseInt($scope.entity.payLog.status)-1;
 
 
             }
