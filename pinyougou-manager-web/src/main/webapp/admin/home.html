@@ -19,9 +19,23 @@
     <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
     <script  src="../js/echarts.min.js"></script>
     <script src="../js/jedate/dist/jedate.min.js"></script>
+    <script  src="../js/echarts.min.js"></script>
+    <script src="../js/jedate/dist/jedate.min.js"></script>
+
+    <!-- 引入angular的js -->
+    <script type="text/javascript" src="../plugins/angularjs/angular.min.js"></script>
+
+    <script type="text/javascript" src="../js/base.js"></script>
+    <script type="text/javascript" src="../js/controller/baseController.js"></script>
+    <script type="text/javascript" src="../js/controller/homeController.js"></script>
+    <script type="text/javascript" src="../js/service/homeService.js"></script>
+
+
+
+
 </head>
 
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini" ng-app="pinyougou" ng-controller="homeController">
 
    <!-- 内容区域 -->
 
@@ -109,9 +123,9 @@
             </section>
             <!-- 正文区域 /-->
             <section >
-                <span class="datetxt">&nbsp; 开始日期：</span><input type="text" class="dateinput dateicon" id="inpstart" readonly>
-                <span class="datetxt">结束日期：</span><input type="text" class="dateinput dateicon" id="inpend" readonly>
-                <button>查询</button><button>导出Excel</button>
+                <span class="datetxt">&nbsp; 开始日期：</span><input ng-model="entity.startT" type="text" class="dateinput dateicon" id="inpstart" placeholder="订单时间" readonly>
+                <span class="datetxt">结束日期：</span><input type="text" ng-model="entity.endT" class="dateinput dateicon" id="inpend" placeholder="订单时间" readonly>
+                <button ng-click="findByTime()">查询</button><button>导出Excel</button>
                 <script type="text/javascript">
                     var start = {}, end = {};
                     jeDate('#inpstart',{
@@ -126,6 +140,8 @@
                             jeDate("#inpend",LinkageEndDate(false));
                         }
                     });
+
+
                     jeDate('#inpend',LinkageEndDate);
 
                     function LinkageEndDate(istg) {
@@ -135,9 +151,9 @@
                             minDate: function (that) {
                                 //that 指向实例对象
                                 var nowMinDate = jeDate.valText('#inpstart') == "" && jeDate.valText(that.valCell) == "";
-                                return nowMinDate ? jeDate.nowDate({DD:0}) : end.minDate ;
+                                return nowMinDate ? '2014-06-16 23:59:59' : end.minDate ;
                             }, //设定最小日期为当前日期
-                            maxDate: '2019-07-26 23:59:59', //设定最大日期为当前日期
+                            maxDate: jeDate.nowDate({DD:0}), //设定最大日期为当前日期
                             donefun: function(obj){
                                 start.maxDate = obj.val; //将结束日的初始值设定为开始日的最大日期
                             }
@@ -176,12 +192,12 @@
                },
                dataset: {
                    source: [
-                       ['product', '2019年1月1日', '2019年1月2日', '2019年1月3日', '2019年1月4日', '2019年1月5日', '2019年1月6日','2019年1月7日'],
-                       ['待付款订单', 41, 30, 65, 57, 22,33,34],
-                       ['待发货订单', 56, 30, 66, 73, 73, 55,56],
-                       ['已发货订单', 24, 67, 79.5, 45, 65, 65,38],
-                       ['已完成订单', 55, 67, 69.2, 72, 53, 39,45],
-                       ['已关闭订单', 25, 37, 49.2, 55, 53, 39,56],
+                       ['product', '1月1日', '1月2日', '1月3日', '1月4日', '1月5日', '1月6日','1月7日'],
+                       ['待付款订单', 41.1, 30.4, 65.1, 53.3, 22.8,33.9,34.3],
+                       ['待发货订单', 56.5, 30.1, 66.7, 73.1, 73.4, 55.1,56.4],
+                       ['已发货订单', 24.1, 67.2, 79.5, 86.4, 65.2, 82.5,38.4],
+                       ['已完成订单', 55.2, 67.1, 69.2, 72.4, 53.9, 39.1,45.5],
+                       ['已关闭订单', 25.2, 37.1, 49.2, 55.4, 53.9, 39.1,56.3],
                    ]
                },
                toolbox: {
@@ -210,7 +226,7 @@
                    top: '20%',
                    left: '5%',
                    right: '35%',
-                   bottom:'25%',
+                   bottom:'20%',
                },
                series: [{
                    type: 'bar',
@@ -283,7 +299,6 @@
            }
        </script>
     <!-- 内容区域 /-->
-    </section>
 </body>
-
+</section>
 </html>

@@ -89,10 +89,11 @@ public class UserController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping("/findOne")
+/*	@RequestMapping("/findOne")
 	public TbUser findOne(Long id){
-		return userService.findOne(id);		
-	}
+		return userService.findOne(id);
+	}*/
+
 	
 	/**
 	 * 批量删除
@@ -149,20 +150,25 @@ public class UserController {
 	* @Date: 2019/7/25
 	*/
 	@RequestMapping("/updatePassword")
-	public Result updatePassword(@RequestBody TbUser user ){
+	public Result updatePassword(@RequestBody TbUser user,String username){
 		//获取到登录名
-		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		 username = SecurityContextHolder.getContext().getAuthentication().getName();
 		System.out.println("username"+username);
+
+
 		if(!username.equals(user.getUsername())){
 			return new Result(false, "用户名输入不正确");
 		}
-		try {
-			userService.updatePassword(user,username);
-			return new Result(true, "密码修改成功,请重新登陆");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new Result(false, "修改失败");
-		}
+        Result result = userService.updatePassword(user, username);
+
+        boolean flag = result.isFlag();
+        System.out.println("flag"+flag);
+        if (flag){
+            return new Result(true, result.getMessage());
+        }else{
+            return new Result(false, result.getMessage());
+        }
+
 	}
 
 
@@ -177,6 +183,7 @@ public class UserController {
 	public  Result updatePhone(String phone){
 		//获取到登录名
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
 		try {
 			userService.updatePhone(username,phone);
 			return new Result(true, "手机号修改成功");
@@ -197,7 +204,11 @@ public class UserController {
 	@RequestMapping("/findUser.do")
 	public TbUser findUser(){
 		String username= SecurityContextHolder.getContext().getAuthentication().getName();
-		return userService.findUser(username);
+
+		 TbUser user=userService.findUser(username);
+		 user.setPassword("");
+        System.out.println("密码的为"+user.getPassword());
+		 return user;
 	}
 
 
