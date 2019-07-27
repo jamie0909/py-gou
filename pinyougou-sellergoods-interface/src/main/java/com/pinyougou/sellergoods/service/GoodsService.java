@@ -71,4 +71,10 @@ public interface GoodsService {
 	 * @return
 	 */
 	public List<TbItem>	findItemListByGoodsIdListAndStatus(Long []goodsIds,String status);
+
+	/**
+	 * 商家根据商品id更新商品的上下架状态
+	 * by whk
+	 */
+    void updateIsMarketableStatus(Long id, String status);
 }
