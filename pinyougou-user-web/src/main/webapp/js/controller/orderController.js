@@ -234,8 +234,8 @@ app.controller('orderController' ,function($scope,$controller ,$location  ,order
         var a1 = Date.parse(new Date(date1));
         var a2 = Date.parse(new Date());
 
-        var hours = parseInt((a1-a2)/ (1000 * 60 * 60 )+15*24);//核心：时间戳相减，然后得到小时数
-        if(hours < 0){
+        var hours = parseInt((a2-a1)/ (1000 * 60 * 60 )+15*24);//核心：时间戳相减，然后得到小时数
+        if(hours < 0 || hours >15){
             return "";
         }
         var timeStr ="还剩"+ hours%24==0?Math.floor(hours/24)+'天':Math.floor(hours/24)+'天'+hours%24+'小时自动确认收货';
@@ -260,9 +260,51 @@ app.controller('orderController' ,function($scope,$controller ,$location  ,order
         orderService.findOrderListByOutOrderNo($location.search()['outTradeNo']).success(
             function (response) {
                 $scope.entity = response;
+
+
+                //切割时间
+                $scope.orderCreateTime = $scope.entity.orderList[0].createTime.split(" ");
+
+                //$scope.orderPayTime=[];
+                if ($scope.entity.orderList[0].paymentTime != null) {
+                    $scope.orderPayTime = $scope.entity.orderList[0].paymentTime.split(" ");
+                }
+
+
+                if($scope.entity.orderList[0].consignTime != null){
+                    //$scope.consignTime=[];
+                    $scope.consignTime = $scope.entity.orderList[0].consignTime.split(" ");
+
+                }
+
+                if($scope.entity.orderList[0].endTime !=null){
+                    //$scope.endTime=[];
+                    $scope.endTime = $scope.entity.orderList[0].endTime.split(" ");
+                }
+
+
+                if($scope.entity.orderList[0].closeTime != null){
+                    //$scope.closeTime=[];
+                    $scope.closeTime = $scope.entity.orderList[0].closeTime.split(" ");
+                }
+
+                $scope.statusNum = parseInt($scope.entity.payLog.status)+1;
+
+
             }
         )
     }
+
+
+
+
+
+
+
+
+
+
+
 
     $scope.isShow = function (orderEntity) {
         if(orderEntity.payLog.status == '6' ){

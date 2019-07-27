@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:white-space="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
-    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
     <title>订单详情</title>
     <link rel="icon" href="assets/img/favicon.ico">
 
-    <link rel="stylesheet" type="text/css" href="css/webbase.css" />
-    <link rel="stylesheet" type="text/css" href="css/pages-seckillOrder.css" />
+    <link rel="stylesheet" type="text/css" href="css/webbase.css"/>
+    <link rel="stylesheet" type="text/css" href="css/pages-seckillOrder.css"/>
 
-	<script type="text/javascript" src="plugins/angularjs/angular.min.js"> </script>
-	<script type="text/javascript" src="js/base.js"> </script>
-	<script type="text/javascript" src="js/service/orderService.js"> </script>
-	<script type="text/javascript" src="js/controller/orderController.js"> </script>
+    <script type="text/javascript" src="plugins/angularjs/angular.min.js"></script>
+    <script type="text/javascript" src="js/base.js"></script>
+    <script type="text/javascript" src="js/service/orderService.js"></script>
+    <script type="text/javascript" src="js/controller/orderController.js"></script>
 </head>
 
-<body ng-app="pinyougou" ng-controller="orderController" ng-init="findOne(19)">
+<body ng-app="pinyougou" ng-controller="orderController" ng-init="findOrder(12)">
+
 <!-- 头部栏位 -->
 <!--页面顶部-->
 <div id="nav-bottom">
@@ -28,7 +29,9 @@
                 <div class="shortcut">
                     <ul class="fl">
                         <li class="f-item">品优购欢迎您！</li>
-						<li class="f-item">请<a href="login.html" target="_blank">登录</a>　<span><a href="register.html" target="_blank">免费注册</a></span></li>
+                        <li class="f-item">请<a href="login.html" target="_blank">登录</a>　<span><a href="register.html"
+                                                                                                 target="_blank">免费注册</a></span>
+                        </li>
                     </ul>
                     <ul class="fr">
                         <li class="f-item">我的订单</li>
@@ -69,7 +72,7 @@
                             <form action="" class="sui-form form-inline">
                                 <!--searchAutoComplete-->
                                 <div class="input-append">
-									<input type="text" id="autocomplete" type="text" class="input-error input-xxlarge" />
+                                    <input type="text" id="autocomplete" type="text" class="input-error input-xxlarge"/>
                                     <button class="sui-btn btn-xlarge btn-danger" type="button">搜索</button>
                                 </div>
                             </form>
@@ -129,15 +132,15 @@
 
 <script type="text/javascript" src="js/plugins/jquery/jquery.min.js"></script>
 <script type="text/javascript">
-$(function(){
-	$("#service").hover(function(){
+    $(function () {
+        $("#service").hover(function () {
             $(".service").show();
-	},function(){
+        }, function () {
             $(".service").hide();
         });
-	$("#shopcar").hover(function(){
+        $("#shopcar").hover(function () {
             $("#shopcarlist").show();
-	},function(){
+        }, function () {
             $("#shopcarlist").hide();
         });
 
@@ -166,11 +169,11 @@ $(function(){
                 <div class="list-items">
                     <dl>
                         <dt><i>·</i> 订单中心</dt>
-							<dd ><a href="home-index.html"  class="list-active" >我的订单</a></dd>
-							<dd><a href="home-order-pay.html" >待付款</a></dd>
-							<dd><a href="home-order-send.html"  >待发货</a></dd>
-							<dd><a href="home-order-receive.html" >待收货</a></dd>
-							<dd><a href="home-order-evaluate.html" >待评价</a></dd>
+                        <dd><a href="home-index.html" class="list-active">我的订单</a></dd>
+                        <dd><a href="home-order-pay.html">待付款</a></dd>
+                        <dd><a href="home-order-send.html">待发货</a></dd>
+                        <dd><a href="home-order-receive.html">待收货</a></dd>
+                        <dd><a href="home-order-evaluate.html">待评价</a></dd>
                     </dl>
                     <dl>
                         <dt><i>·</i> 我的中心</dt>
@@ -183,8 +186,8 @@ $(function(){
                     <dl>
                         <dt><i>·</i> 设置</dt>
                         <dd><a href="home-setting-info.html">个人信息</a></dd>
-							<dd><a href="home-setting-address.html"  >地址管理</a></dd>
-							<dd><a href="home-setting-safe.html" >安全管理</a></dd>
+                        <dd><a href="home-setting-address.html">地址管理</a></dd>
+                        <dd><a href="home-setting-safe.html">安全管理</a></dd>
                     </dl>
                 </div>
             </div>
@@ -195,96 +198,99 @@ $(function(){
                         <h4>订单详情</h4>
                         <div class="order-bar">
                             <div class="sui-steps-round steps-round-auto steps-4">
-                                    <div class="finished">
+                                <div class="current">
                                     <div class="wrap">
                                         <div class="round">1</div>
                                         <div class="bar"></div>
                                     </div>
                                     <label>
                                         <span>提交订单</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+                                        <span>{{orderCreateTime[0]}}<br>{{orderCreateTime[1]}}</span>
+                                        <span></span>
                                     </label>
                                 </div>
-                                    <div class="current">
+                                <div class=" {{orderList.order.statusNum >1 ? 'current' : 'todo' }}">
                                     <div class="wrap">
                                         <div class="round">2</div>
                                         <div class="bar"></div>
                                     </div>
                                     <label>
                                         <span>付款成功</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+                                        <span>{{orderPayTime[0]}}</span>
+                                        <span>{{orderPayTime[1]}}</span>
                                     </label>
                                 </div>
-                                    <div class="todo">
+                                <div class=" {{orderList.order.statusNum >2 ? 'current':'todo'}}">
                                     <div class="wrap">
                                         <div class="round">3</div>
                                         <div class="bar"></div>
                                     </div>
                                     <label>
-                                            <span>发货</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+                                        <span>已发货</span>
+                                        <span>{{consignTime[0]}}</span>
+                                        <span>{{consignTime[1]}}</span>
                                     </label>
                                 </div>
-                                    <div class="todo">
+                                <div class=" {{orderList.order.statusNum >3 ? 'current':'todo'}} ">
                                     <div class="wrap">
                                         <div class="round">4</div>
                                         <div class="bar"></div>
                                     </div>
                                     <label>
                                         <span>确认收货</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+                                        <span>{{endTime[0]}}</span>
+                                        <span>{{endTime[1]}}</span>
                                     </label>
                                 </div>
 
-                                    <div class="todo last">
+
+                                <div class=" {{orderList.order.statusNum >4? 'current':'todo'}} ">
                                     <div class="wrap">
                                         <div class="round">5</div>
                                     </div>
                                     <label>
                                         <span>评价晒单</span>
-                                            <span>2016-06-27</span>
-                                            <span>13:03:53</span>
+                                        <span>{{closeTime[0]}}</span>
+                                        <span>{{closeTime[1]}}</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
                         <div class="order-state">
-                                <p>当前订单状态：<span class="red">已发货</span></p>
-                                <p>还剩06天00小时 自动确认收货</p>
+                            <p>当前订单状态：<span class="red">{{orderStatus[orderList.order.statusNum]}}</span></p>
+                            <p>还剩{{timeString}} 自动确认收货</p>
                         </div>
                     </div>
                     <div class="order-info">
                         <h5>订单信息</h5>
-                            <p>收货地址：{{orderList.receiverAreaName}}  </p>
-                            <p>订单单号：{{orderList.shippingCode}}</p>
-                            <p>下单时间：{{orderList.createTime}}</p>
-                            <p>支付时间：{{orderList.paymentTime}}</p>
-                            <p>支付方式：{{orderList.paymentType}}</p>
-                            <p>发货时间：{{orderList.consignTime}}</p>
+
+
+                        <p>收货地址：{{orderList.order.receiverAreaName}} </p>
+                        <p>订单单号：{{orderList.order.orderId}}</p>
+                        <p>下单时间：{{orderList.order.createTime}}</p>
+                        <p>支付时间：{{orderList.order.paymentTime}}</p>
+                        <p>支付方式：{{orderList.order.paymentType}}</p>
+                        <p>发货时间：{{orderList.order.consignTime}}</p>
                     </div>
                     <div class="order-goods">
                         <table class="sui-table">
                             <thead>
-                                        <th class="center" >商品</th>
-                                        <th class="center" >价格</th>
-                                        <th class="center" >数量</th>
-                                        <th class="center" >优惠</th>
-                                        <th class="center" >状态</th>
+                            <th class="center">商品</th>
+                            <th class="center">价格</th>
+                            <th class="center">数量</th>
+                            <th class="center">优惠</th>
+                            <th class="center">状态</th>
                             </thead>
 
                             <tbody>
                             <tr>
-                                        <td colspan="5">订单编号：787587819591509</td>
+                                <td colspan="5">订单编号：{{orderList.orderItem.orderId}}</td>
                             </tr>
                             <tr>
                                 <td>
-                                            <div class="typographic"><img src="img/goods.png" />
-                                                    <span>包邮 正品玛姬儿压缩面膜无纺布纸膜100粒 送泡瓶面膜刷喷瓶 新款</span>
-                                                    <span class="guige">规格：温泉喷雾150ml</span>
+                                    <div class="typographic"><img src="{{orderList.orderItem.picPath}}"/>
+                                        <span>{{orderList.orderItem.title}}</span>
+                                        <span class="guige">规格：{{orderList.orderItem.goodsId}}</span>
                                     </div>
                                 </td>
                                 <td>
@@ -295,15 +301,15 @@ $(function(){
                                 </td>
                                 <td>1</td>
                                 <td>无优惠</td>
-                                        <td>交易成功</td>
+                                <td>{{orderList.order.status}}</td>
                             </tr>
                             </tbody>
                         </table>
                         <div class="order-price">
-                                <p>商品总金额：￥1.8</p>
-                                <p>运费金额：，免费用</p>
+                            <p>商品总金额：￥{{orderList.orderItem.totalFee}}</p>
+                            <p>运费金额：，{{orderList.order.postFee}}</p>
                             <p>使用优惠券：无</p>
-                                <h4 class="red">实际支付：￥1.8</h4>
+                            <h4 class="red">实际支付：￥{{orderList.order.payment}}</h4>
                         </div>
                         <div class="clearfix"></div>
                     </div>
@@ -318,7 +324,7 @@ $(function(){
                             <li class="yui3-u-1-4">
                                 <div class="list-wrap">
                                     <div class="p-img">
-                                            <img src="img/_/itemlike01.png" />
+                                        <img src="img/_/itemlike01.png"/>
                                     </div>
                                     <div class="attr">
                                         <em>DELL戴尔Ins 15MR-7528SS 15英寸 银色 笔记本</em>
@@ -337,7 +343,7 @@ $(function(){
                             <li class="yui3-u-1-4">
                                 <div class="list-wrap">
                                     <div class="p-img">
-                                            <img src="img/_/itemlike02.png" />
+                                        <img src="img/_/itemlike02.png"/>
                                     </div>
                                     <div class="attr">
                                         <em>Apple苹果iPhone 6s/6s Plus 16G 64G 128G</em>
@@ -356,7 +362,7 @@ $(function(){
                             <li class="yui3-u-1-4">
                                 <div class="list-wrap">
                                     <div class="p-img">
-                                            <img src="img/_/itemlike03.png" />
+                                        <img src="img/_/itemlike03.png"/>
                                     </div>
                                     <div class="attr">
                                         <em>DELL戴尔Ins 15MR-7528SS 15英寸 银色 笔记本</em>
@@ -375,7 +381,7 @@ $(function(){
                             <li class="yui3-u-1-4">
                                 <div class="list-wrap">
                                     <div class="p-img">
-                                            <img src="img/_/itemlike04.png" />
+                                        <img src="img/_/itemlike04.png"/>
                                     </div>
                                     <div class="attr">
                                         <em>DELL戴尔Ins 15MR-7528SS 15英寸 银色 笔记本</em>

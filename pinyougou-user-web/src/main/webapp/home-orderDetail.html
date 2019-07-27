@@ -204,53 +204,53 @@ $(function(){
                                         </div>
                                         <label>
                                             <span>提交订单</span>
-                                            <span>{{(order.createTime|cutStr)[0]}}</span>
-                                            <span>{{(order.createTime|cutStr)[1]}}</span>
+                                            <span>{{orderCreateTime[0]}}<br>{{orderCreateTime[1]}}</span>
+                                            <span></span>
                                         </label>
                                     </div>
-                                    <div  class="{{isCurrent(order.status,'提交订单')}}">
+                                    <div  class="{{statusNum >1 ? 'current' : 'todo' }}">
                                         <div class="wrap">
                                         <div class="round">2</div>
                                         <div class="bar"></div>
                                         </div>
                                         <label>
                                             <span>付款成功</span>
-                                            <span ng-if="order.status > 1">{{(order.createTime|cutStr)[0]}}</span>
-                                            <span ng-if="order.status > 1">{{(order.createTime|cutStr)[1]}}</span>
+                                            <span>{{orderPayTime[0]}}</span>
+                                            <span>{{orderPayTime[1]}}</span>
                                         </label>
                                     </div>
 
-                                    <div class="{{isCurrent(order.status,'发货')}}">
+                                    <div class="{{statusNum >2 ? 'current':'todo'}}">
                                         <div class="wrap">
                                         <div class="round">3</div>
                                         <div class="bar"></div>
                                         </div>
                                         <label>
                                             <span>发货</span>
-                                            <span>{{(order.createTime|cutStr)[0]}}</span>
-                                            <span>{{(order.createTime|cutStr)[1]}}</span>
+                                            <span>{{consignTime[0]}}</span>
+                                            <span>{{consignTime[1]}}</span>
                                         </label>
                                     </div>
-                                    <div class="{{isCurrent(order.status,'确认收货')}}">
+                                    <div class="{{statusNum>3 ? 'current':'todo'}}">
                                         <div class="wrap">
                                         <div class="round">4</div>
                                         <div class="bar"></div>
                                         </div>
                                         <label>
                                             <span>确认收货</span>
-                                            <span>{{(order.createTime|cutStr)[0]}}</span>
-                                            <span>{{(order.createTime|cutStr)[1]}}</span>
+                                            <span>{{endTime[0]}}</span>
+                                            <span>{{endTime[1]}}</span>
                                         </label>
                                     </div>
                                     
-                                    <div class="{{isCurrent(order.status,'评价晒单')}}">
+                                    <div class="{{statusNum >4? 'current':'todo'}}">
                                         <div class="wrap">
                                         <div class="round">5</div>
                                         </div>
                                         <label>
                                             <span>评价晒单</span>
-                                            <span>{{(order.createTime|cutStr)[0]}}</span>
-                                            <span>{{(order.createTime|cutStr)[1]}}</span>
+                                            <span>{{closeTime[0]}}</span>
+                                            <span>{{closeTime[1]}}</span>
                                         </label>
                                     </div>
                                     </div>
